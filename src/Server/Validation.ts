@@ -14,5 +14,21 @@ export const validation = {
                 message: "Password must be at least 6 characters",
             },
         },
+       
+    },
+
+    Register:
+    {
+          firstNameValidation:{
+        required: "Firstname is required",
+    },
+
+    lastNameValidation:{
+        required: "Lastname is required",
+    },
+
+    roleValidation:{
+         required: "Role is required",
+    }
     }
 }
