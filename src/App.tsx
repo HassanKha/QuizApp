@@ -9,6 +9,7 @@ import Dashboard from "./Component/Dashboard/Dashboard"
 import MasterLayout from "./Component/Shere/MasterLayout"
 import AuthContextProvider from "./Context/AuthContextProvider"
 import { ToastContainer } from "react-toastify"
+import ResetPassword from "./Modules/Authentication/ResetPassword/ResetPassword"
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
         { path: "register", element: <Register /> },
         { path: "change-password", element: <ChangePassword /> },
         { path: "forget-password", element: <ForgetPassword /> },
+        { path: "reset-password", element: <ResetPassword /> },
       ],
       errorElement: <NotFound />
     },

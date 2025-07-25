@@ -11,6 +11,7 @@ import { axiosInstance, USERS_URLS } from "../../../Server/baseUrl";
 import { toast } from "react-toastify";
 
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { validation } from "../../../Server/Validation";
 
 
 export default function ForgotPassword() {
@@ -29,8 +30,7 @@ export default function ForgotPassword() {
       try {
         const res = await axiosInstance.post(USERS_URLS.forgetPassword, data);
         toast.success(res.data.message);
-        localStorage.setItem('token', res.data.data.accessToken);
-        navigate('/dashboard');
+        navigate('/reset-password');
       } catch (error: any) {
         toast.error(error.response?.data?.message || "Invalid email or password");
       } finally {
@@ -65,13 +65,7 @@ export default function ForgotPassword() {
                   <MdEmail className="h-8 w-8 text-white" />
                 </div>
                 <input
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
-                    },
-                  })}
+                    {...register('email', validation.login.email)}
                   type="email"
                   id="email"
                   placeholder="Type your email"
@@ -84,7 +78,7 @@ export default function ForgotPassword() {
       <button
   type="submit"
   disabled={isSubmitting}
-  className="flex items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+  className="flex cursor-pointer items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 >
   {loading ? "Sending..." : "Send email"}
   {loading ? (

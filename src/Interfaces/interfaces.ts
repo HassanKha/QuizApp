@@ -15,3 +15,11 @@ export interface UserRegister{
 export interface ForgotPasswordForm {
   email: string
 }
+
+// Add this to your existing interfaces file
+export interface ResetPasswordForm {
+  email: string
+  otp: string
+  password: string
+  confirmPassword: string
+}
