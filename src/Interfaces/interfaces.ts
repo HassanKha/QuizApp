@@ -11,3 +11,7 @@ export interface UserRegister{
     password:string,
     role:string
 }
+
+export interface ForgotPasswordForm {
+  email: string
+}

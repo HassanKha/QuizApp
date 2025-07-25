@@ -1,15 +1,17 @@
-"use client"
+
 
 import { useForm } from "react-hook-form"
 import { MdEmail  , MdCheckCircle  } from "react-icons/md";
 import FB from "../../../assets/FP-BG.png"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../../assets/Logo-white.png';
+import type { ForgotPasswordForm } from "../../../Interfaces/interfaces";
+import { useState } from "react";
+import { axiosInstance, USERS_URLS } from "../../../Server/baseUrl";
+import { toast } from "react-toastify";
 
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-interface ForgotPasswordForm {
-  email: string
-}
 
 export default function ForgotPassword() {
   const {
@@ -18,14 +20,26 @@ export default function ForgotPassword() {
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordForm>()
 
+    const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+
   const onSubmit = async (data: ForgotPasswordForm) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    console.log("Password reset email sent to:", data.email)
+   setLoading(true);
+      try {
+        const res = await axiosInstance.post(USERS_URLS.forgetPassword, data);
+        toast.success(res.data.message);
+        localStorage.setItem('token', res.data.data.accessToken);
+        navigate('/dashboard');
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || "Invalid email or password");
+      } finally {
+        setLoading(false);
+      }
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex">
+    <div className="min-h-screen bg-slate-900 flex font-nunito">
       {/* Left side - Form */}
       <div className="flex-1  flex flex-col justify-center px-8 lg:px-8">
         {/* Logo */}
@@ -67,14 +81,18 @@ export default function ForgotPassword() {
               {errors.email && <p className="mt-2 text-red-400 text-sm">{errors.email.message}</p>}
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Send email
-              <MdCheckCircle  className="w-6 h-6" />
-            </button>
+      <button
+  type="submit"
+  disabled={isSubmitting}
+  className="flex items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {loading ? "Sending..." : "Send email"}
+  {loading ? (
+    <AiOutlineLoading3Quarters className="w-6 h-6 animate-spin" />
+  ) : (
+    <MdCheckCircle className="w-6 h-6" />
+  )}
+</button>
           </form>
 
           <div className="mt-12 w-full text-right">

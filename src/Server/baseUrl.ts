@@ -17,4 +17,5 @@ axiosInstance.interceptors.request.use(
 export const USERS_URLS = {
     login: `${baseURL}/api/auth/login`,
     register: `${baseURL}/api/auth/register`,
+    forgetPassword: `${baseURL}/api/auth/forgot-password`,
 }
