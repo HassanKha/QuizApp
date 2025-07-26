@@ -19,4 +19,5 @@ export const USERS_URLS = {
     register: `${baseURL}/api/auth/register`,
     forgetPassword: `${baseURL}/api/auth/forgot-password`,
     resetPassword: `${baseURL}/api/auth/reset-password`,
+    ChangePassword: `${baseURL}/api/auth/change-password`,
 }

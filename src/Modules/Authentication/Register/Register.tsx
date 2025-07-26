@@ -7,15 +7,15 @@ import img4 from '../../../assets/email-1-svgrepo-com (1).svg';
 import img5 from '../../../assets/contact-details-svgrepo-com.svg';
 import eye from '../../../assets/eye-svgrepo-com.svg';
 import uneye from '../../../assets/eye-off-svgrepo-com.svg';
-
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { axiosInstance, USERS_URLS } from '../../../Server/baseUrl';
 import { useState } from 'react';
 import { validation } from '../../../Server/Validation';
 import { toast } from 'react-toastify';
-import { FaSpinner } from 'react-icons/fa';
 import type { UserRegister } from '../../../Interfaces/interfaces';
+import { MdCheckCircle } from 'react-icons/md';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
 
 export default function Register() {
@@ -85,9 +85,9 @@ export default function Register() {
                   <input
                     type="text"
                     id="first_name"
-                    className="bg-[#0f172a] border border-white text-white text-sm rounded-md block w-full ps-10 p-2.5 placeholder-white"
+                    className="bg-transparent border-[3px] border-white text-white text-sm rounded-lg block w-full pl-14 pr-14 py-4 placeholder-gray-400 placeholder-white"
                     placeholder="Enter your first name"
-                    {...register('first_name', validation.Register.firstNameValidation)}
+                    {...register('first_name', validation.register.firstNameValidation)}
                   />
                 </div>
                 {errors.first_name && (
@@ -95,7 +95,7 @@ export default function Register() {
                 )}
               </div>
 
-              {/* Last Name */}
+              
               <div className="w-1/2 mb-4">
                 <label htmlFor="last_name" className="block mb-2 text-sm font-medium text-white">
                   Last Name
@@ -107,9 +107,9 @@ export default function Register() {
                   <input
                     type="text"
                     id="last_name"
-                    className="bg-[#0f172a] border border-white text-white text-sm rounded-md block w-full ps-10 p-2.5 placeholder-white"
+                    className="bg-transparent border-[3px] border-white text-white text-sm rounded-lg block w-full pl-14 pr-14 py-4 placeholder-gray-400 placeholder-white"
                     placeholder="Enter your last name"
-                    {...register('last_name', validation.Register.lastNameValidation)}
+                    {...register('last_name', validation.register.lastNameValidation)}
                   />
                 </div>
                 {errors.last_name && (
@@ -119,7 +119,7 @@ export default function Register() {
             </div>
 
 
-            {/* Email */}
+            
             <label className="text-white block mb-2">Email</label>
             <div className="relative mb-2">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
@@ -127,7 +127,7 @@ export default function Register() {
               </div>
               <input
                 type="text"
-                className="bg-[#0f172a] border border-white text-white text-sm rounded-md block w-full ps-10 p-2.5 placeholder-white"
+                className="bg-transparent border-[3px] border-white text-white text-sm rounded-lg block w-full pl-14 pr-14 py-4 placeholder-gray-400 placeholder-white"
                 placeholder="Enter your email"
                 {...register('email', validation.login.email)}
               />
@@ -136,7 +136,7 @@ export default function Register() {
               <p className="text-red-500 text-xs mb-2">{errors.email.message}</p>
             )}
 
-            {/* Password */}
+           
             <label className="text-white block mb-2">Password</label>
             <div className="relative mb-2">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
@@ -144,7 +144,7 @@ export default function Register() {
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
-                className="bg-[#0f172a] border border-white text-white text-sm rounded-md block w-full ps-10 p-2.5 placeholder-white"
+                className="bg-transparent border-[3px] border-white text-white text-sm rounded-lg block w-full pl-14 pr-14 py-4 placeholder-gray-400 placeholder-white"
                 placeholder="Enter your password"
                 {...register('password', validation.login.password)}
               />
@@ -161,11 +161,11 @@ export default function Register() {
 
         
            
-            {/* Role */}
+            
             <label className="text-white block mb-2">Role</label>
             <select
-              className="bg-[#0f172a] border border-white text-white text-sm rounded-md block w-full p-2.5 mb-2"
-              {...register('role', validation.Register.roleValidation)}
+              className="bg-[#0f172a]  border-[3px] border-white text-white text-sm rounded-lg block w-full px-4 py-4 mb-2"
+              {...register('role', validation.register.roleValidation)}
             >
               <option value="">Select role</option>
               <option value="Student">Student</option>
@@ -177,26 +177,33 @@ export default function Register() {
 
             {/* Submit */}
             <div className="mt-5">
-              <button
-                type="submit"
-                className="bg-white text-black font-bold py-2 px-4 rounded"
-              >
-                {loading ? <FaSpinner className="animate-spin" /> : 'Sign up'}
-              </button>
+             <button
+              type="submit"
+              disabled={loading}
+              className="flex cursor-pointer items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Signing up..." : "Sign up"}
+              {loading ? (
+                <AiOutlineLoading3Quarters className="w-6 h-6 animate-spin" />
+              ) : (
+                <MdCheckCircle className="w-6 h-6" />
+              )}
+            </button>
+
             </div>
           </form>
         </div>
 
-        {/* Right Side Image */}
+        
         <div className="hidden md:flex md:w-6/12 w-full h-auto justify-center">
           <div
-            style={{ height: '85%' }}
+            style={{ height: '88%' }}
             className="imgAute bg-red-300 w-9/12 flex justify-center rounded-lg mt-12"
           >
             <img
               src={imgAuth}
               alt="imgAuth"
-              className="p-8 object-contain max-h-full"
+              className="w-full h-auto"
             />
           </div>
         </div>

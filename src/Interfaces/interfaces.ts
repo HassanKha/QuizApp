@@ -23,3 +23,8 @@ export interface ResetPasswordForm {
   password: string
   confirmPassword: string
 }
+export interface ChangePasswordForm {
+ 
+  password: string
+ password_new:string
+}
