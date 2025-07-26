@@ -1,12 +1,13 @@
 import logo from '../../../assets/Logo-white.png';
-import imgAuth from '../../../assets/Login Image.png';
 import img1 from '../../../assets/login.svg';
 import img2 from '../../../assets/regist.svg';
 import img3 from '../../../assets/input icon.svg';
 import img4 from '../../../assets/email-1-svgrepo-com (1).svg';
 import img5 from '../../../assets/contact-details-svgrepo-com.svg';
+import { MdVisibility, MdVisibilityOff } from "react-icons/md"
 import eye from '../../../assets/eye-svgrepo-com.svg';
 import uneye from '../../../assets/eye-off-svgrepo-com.svg';
+import FB from "../../../assets/FP-BG.png"
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { axiosInstance, USERS_URLS } from '../../../Server/baseUrl';
@@ -152,7 +153,7 @@ export default function Register() {
                 className="absolute inset-y-0 end-0 flex items-center pe-3 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                <img alt='eye' src={showPassword ? eye : uneye} className="w-5 h-5" />
+                {showPassword ? <MdVisibilityOff className="h-6 w-6 text-white" /> :<MdVisibility className="h-6 w-6 text-white" /> } 
               </div>
             </div>
             {errors.password && (
@@ -198,10 +199,10 @@ export default function Register() {
         <div className="hidden md:flex md:w-6/12 w-full h-auto justify-center">
           <div
             style={{ height: '88%' }}
-            className="imgAute bg-red-300 w-9/12 flex justify-center rounded-lg mt-12"
+            className="imgAute w-9/12 flex justify-center rounded-lg mt-12"
           >
             <img
-              src={imgAuth}
+              src={FB}
               alt="imgAuth"
               className="w-full h-auto"
             />
