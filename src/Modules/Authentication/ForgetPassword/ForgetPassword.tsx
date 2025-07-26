@@ -1,7 +1,7 @@
 
 
 import { useForm } from "react-hook-form"
-import { MdEmail  , MdCheckCircle  } from "react-icons/md";
+import { MdEmail, MdCheckCircle } from "react-icons/md";
 import FB from "../../../assets/FP-BG.png"
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../../assets/Logo-white.png';
@@ -21,32 +21,30 @@ export default function ForgotPassword() {
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordForm>()
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
 
   const onSubmit = async (data: ForgotPasswordForm) => {
-   setLoading(true);
-      try {
-        const res = await axiosInstance.post(USERS_URLS.forgetPassword, data);
-        toast.success(res.data.message);
-        navigate('/reset-password');
-      } catch (error: any) {
-        toast.error(error.response?.data?.message || "Invalid email or password");
-      } finally {
-        setLoading(false);
-      }
+    setLoading(true);
+    try {
+      const res = await axiosInstance.post(USERS_URLS.forgetPassword, data);
+      toast.success(res.data.message);
+      navigate('/reset-password');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="min-h-screen bg-slate-900 flex font-nunito">
-      {/* Left side - Form */}
       <div className="flex-1  flex flex-col justify-center px-8 lg:px-8">
-        {/* Logo */}
         <div className="mb-16">
           <div className="flex items-center gap-2">
             <div className="flex items-center">
-          <img src={logo} alt="logo" />
+              <img src={logo} alt="logo" />
             </div>
           </div>
         </div>
@@ -65,7 +63,7 @@ export default function ForgotPassword() {
                   <MdEmail className="h-8 w-8 text-white" />
                 </div>
                 <input
-                    {...register('email', validation.login.email)}
+                  {...register('email', validation.login.email)}
                   type="email"
                   id="email"
                   placeholder="Type your email"
@@ -75,18 +73,18 @@ export default function ForgotPassword() {
               {errors.email && <p className="mt-2 text-red-400 text-sm">{errors.email.message}</p>}
             </div>
 
-      <button
-  type="submit"
-  disabled={isSubmitting}
-  className="flex cursor-pointer items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
->
-  {loading ? "Sending..." : "Send email"}
-  {loading ? (
-    <AiOutlineLoading3Quarters className="w-6 h-6 animate-spin" />
-  ) : (
-    <MdCheckCircle className="w-6 h-6" />
-  )}
-</button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex cursor-pointer items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Sending..." : "Send email"}
+              {loading ? (
+                <AiOutlineLoading3Quarters className="w-6 h-6 animate-spin" />
+              ) : (
+                <MdCheckCircle className="w-6 h-6" />
+              )}
+            </button>
           </form>
 
           <div className="mt-12 w-full text-right">
@@ -100,18 +98,18 @@ export default function ForgotPassword() {
         </div>
       </div>
 
-      {/* Right side - Illustration */}
+
       <div className="hidden lg:flex flex-1  items-center justify-center p-8">
         <div className="max-w-lg">
-    
-           <img
+
+          <img
             src={FB}
             alt="Student with educational elements illustration"
             width={500}
             height={400}
             className="w-full h-auto"
-          /> 
-       
+          />
+
         </div>
       </div>
     </div>

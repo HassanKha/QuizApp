@@ -1,10 +1,9 @@
 import logo from '../../../assets/Logo-white.png';
-import imgAuth from '../../../assets/Login Image.png';
+import imgAuth from '../../../assets/FP-BG.png';
 import img1 from '../../../assets/login.svg';
 import img2 from '../../../assets/regist.svg';
 import img3 from '../../../assets/input icon.svg';
-import eye from '../../../assets/eye-svgrepo-com.svg';
-import uneye from '../../../assets/eye-off-svgrepo-com.svg';
+
 
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -13,7 +12,10 @@ import { useState } from 'react';
 import { validation } from '../../../Server/Validation';
 import { toast } from 'react-toastify';
 import type { Logged_in_Users } from '../../../Interfaces/interfaces';
-import { FaSpinner } from 'react-icons/fa';
+
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { MdCheckCircle, MdRemoveRedEye } from 'react-icons/md';
+import { IoEyeOffSharp } from 'react-icons/io5';
 
 
 
@@ -48,20 +50,20 @@ export default function Login() {
         <div className="md:w-6/12 p-10 w-full">
           <div className="loginContant">
             <img src={logo} alt="logo" />
-            <h4
+            <h3
               style={{ color: '#C5D86D' }}
               className="font-bold text-1xl mt-10"
             >
               Continue your learning journey with QuizWiz!
-            </h4>
+            </h3>
 
             <div className="flex flex-nowrap gap-6 pt-10 overflow-x-auto">
-              <button className="flex flex-col items-center bg-[#2d2d2d] text-white min-w-[140px] px-6 py-4 rounded-lg border-2 border-lime-300 hover:bg-[#3a3a3a] transition">
+              <button className="cursor-pointer flex flex-col items-center bg-[#2d2d2d] text-white min-w-[140px] px-6 py-4 rounded-lg border-2 border-lime-300 hover:bg-[#3a3a3a] transition">
                 <img src={img2} className="text-lime-300 text-5xl mb-2" />
                 <span className="text-sm">Sign in</span>
               </button>
               <Link to="/register">
-                <button className="flex flex-col items-center bg-[#2d2d2d] text-white min-w-[140px] px-6 py-4 rounded-lg hover:bg-[#3a3a3a] transition">
+                <button className="flex flex-col items-center bg-[#2d2d2d] text-white min-w-[140px] px-6 py-4 rounded-lg hover:bg-[#3a3a3a] transition cursor-pointer">
                   <img src={img1} className="text-white text-5xl mb-2" />
                   <span className="text-sm">Sign Up</span>
                 </button>
@@ -74,7 +76,7 @@ export default function Login() {
             <label htmlFor="email" className="text-white block mb-2">
               Email
             </label>
-            <div className="relative mb-1">
+            <div className="relative ">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                 <svg
                   className="w-5 h-5 text-white"
@@ -91,20 +93,20 @@ export default function Login() {
                 type="text"
                 id="email"
                 aria-label="Email Address"
-                className="bg-[#0f172a] border border-white text-white text-sm rounded-md focus:ring-lime-400 focus:border-lime-400 block w-full ps-10 p-2.5 placeholder-white"
+                className="bg-[#0f172a] border py-4 border-white text-white text-sm rounded-md focus:ring-lime-400 focus:border-lime-400 block w-full ps-10 p-2.5 placeholder-white"
                 placeholder="Type your email"
                 {...register('email', validation.login.email)}
               />
             </div>
             <div className="min-h-[20px]">
               {errors.email?.message && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-500 text-xs">
                   {String(errors.email.message)}
                 </p>
               )}
             </div>
 
-            <label htmlFor="password" className="text-white block mb-2 mt-4">
+            <label htmlFor="password" className="text-white block mb-2 ">
               Password
             </label>
             <div className="relative">
@@ -115,7 +117,7 @@ export default function Login() {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 aria-label="Password"
-                className="bg-[#0f172a] border border-white text-white text-sm rounded-md focus:ring-lime-400 focus:border-lime-400 block w-full ps-10 p-2.5 placeholder-white"
+                className="bg-[#0f172a] border py-4 border-white text-white text-sm rounded-md focus:ring-lime-400 focus:border-lime-400 block w-full ps-10 p-2.5 placeholder-white"
                 placeholder="Type your password"
                 {...register('password', validation.login.password)}
               />
@@ -124,9 +126,9 @@ export default function Login() {
                 onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? (
-                  <img src={eye} className="text-white w-5 h-5" />
+                  <MdRemoveRedEye className='text-white font-bold text-2xl' />
                 ) : (
-                  <img src={uneye} className="text-white w-5 h-5" />
+                  <IoEyeOffSharp className='text-white font-bold text-2xl' />
 
                 )}
               </div>
@@ -143,19 +145,17 @@ export default function Login() {
             <div className="flex items-center justify-between mt-5">
               <div className="text-sm">
                 <button
-                  type="submit"
-                  className="bg-white text-black font-bold py-2 px-4 rounded"
-                >
-                  {loading ? (<>
-                   <FaSpinner className="animate-spin" />
-                  </>
-
-
-                  ) : (
-                    'Sign in'
-                  )}
-
-                </button>
+                             type="submit"
+                            
+                             className="flex cursor-pointer items-center justify-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                           >
+                             {loading ? "Sending..." : "Sign In"}
+                             {loading ? (
+                               <AiOutlineLoading3Quarters className="w-6 h-6 animate-spin" />
+                             ) : (
+                               <MdCheckCircle className="w-6 h-6" />
+                             )}
+                           </button>
               </div>
               <div className="text-sm">
                 <p className="font-medium text-white">
@@ -172,15 +172,17 @@ export default function Login() {
           </form>
         </div>
 
-        <div className="hidden md:flex md:w-6/12 w-full justify-center">
+        <div className="hidden md:flex md:w-6/12 w-full justify-center ">
           <div
             style={{ height: '85%' }}
-            className="imgAute bg-red-300 w-9/12 flex justify-center rounded-lg mt-12"
+            className="imgAute   w-9/12 flex justify-center rounded-lg mt-12"
           >
             <img
               src={imgAuth}
               alt="imgAuth"
-              className="p-8 object-contain max-h-full"
+              className="object-contain max-h-full"
+              width={500}
+              height={400}
             />
           </div>
         </div>
