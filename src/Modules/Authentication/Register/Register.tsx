@@ -177,7 +177,7 @@ export default function Register() {
             )}
 
             {/* Submit */}
-            <div className="mt-5">
+            <div className="mt-5 flex items-center justify-between ">
              <button
               type="submit"
               disabled={loading}
@@ -190,6 +190,17 @@ export default function Register() {
                 <MdCheckCircle className="w-6 h-6" />
               )}
             </button>
+             <div className="text-sm">
+                <p className="font-medium text-white">
+                  Login?
+                  <Link
+                    className="text-lime-400 hover:text-lime-500"
+                    to="/"
+                  >
+                    {' '}click here
+                  </Link>
+                </p>
+              </div>
 
             </div>
           </form>
