@@ -10,6 +10,8 @@ import MasterLayout from "./Component/Shere/MasterLayout"
 import AuthContextProvider from "./Context/AuthContextProvider"
 import { ToastContainer } from "react-toastify"
 import ResetPassword from "./Modules/Authentication/ResetPassword/ResetPassword"
+import { Provider } from "react-redux"
+import { store } from "./Redux/store"
 
 function App() {
 
@@ -40,11 +42,11 @@ function App() {
 
   return (
     <>
-      <AuthContextProvider>
+      <Provider store={store}  >
         <RouterProvider router={routes}></RouterProvider>
-          <ToastContainer position="top-right" autoClose={2000} />
-      </AuthContextProvider>
+        <ToastContainer position="top-right" autoClose={2000} />
 
+      </Provider>
     </>
   )
 }

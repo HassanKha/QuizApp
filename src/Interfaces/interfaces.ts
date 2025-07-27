@@ -1,7 +1,13 @@
-export interface Logged_in_Users  {  
-    email: string,
-    password: string,
+export interface ILogData {
+  id?: string
+  email?: string
+  name?: string
+  role?: string
+}
 
+export interface AuthState {
+  token: string | null
+  LogData: ILogData | null
 }
 
 export interface UserRegister{
@@ -16,7 +22,6 @@ export interface ForgotPasswordForm {
   email: string
 }
 
-// Add this to your existing interfaces file
 export interface ResetPasswordForm {
   email: string
   otp: string
