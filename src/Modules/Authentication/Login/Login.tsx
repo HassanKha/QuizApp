@@ -11,11 +11,12 @@ import { axiosInstance, USERS_URLS } from '../../../Server/baseUrl';
 import { useState } from 'react';
 import { validation } from '../../../Server/Validation';
 import { toast } from 'react-toastify';
-import type { Logged_in_Users } from '../../../Interfaces/interfaces';
+
 
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { MdCheckCircle, MdRemoveRedEye } from 'react-icons/md';
 import { IoEyeOffSharp } from 'react-icons/io5';
+import type { Logged_in_Users } from '../../../Interfaces/interfaces';
 
 
 

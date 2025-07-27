@@ -1,15 +1,21 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import AuthLayout from "./AuthLayout/AuthLayout"
+import AuthLayout from "./Component/shared/AuthLayout"
 import Login from "./Modules/Authentication/Login/Login"
 import Register from "./Modules/Authentication/Register/Register"
 import ChangePassword from "./Modules/Authentication/ChangePassword/ChangePassword"
 import ForgetPassword from "./Modules/Authentication/ForgetPassword/ForgetPassword"
-import NotFound from "./Component/Shere/NotFound"
+import NotFound from "./Component/shared/NotFound"
 import Dashboard from "./Component/Dashboard/Dashboard"
-import MasterLayout from "./Component/Shere/MasterLayout"
-import AuthContextProvider from "./Context/AuthContextProvider"
+import MasterLayout from "./Component/shared/MasterLayout"
 import { ToastContainer } from "react-toastify"
 import ResetPassword from "./Modules/Authentication/ResetPassword/ResetPassword"
+import { Provider } from "react-redux"
+import { store } from "./Redux/store"
+
+import GroupsList from "./Modules/Instracutor/Groups/GroupsList"
+import StudentList from "./Modules/Instracutor/Student/StudentList"
+
+
 
 function App() {
 
@@ -27,11 +33,14 @@ function App() {
       errorElement: <NotFound />
     },
     {
-      path: "dashboard",
+      path: "",
       element: <MasterLayout />,
       children: [
         { index: true, element: <Dashboard /> },
-        { path: "dashboard", element: <Dashboard /> }
+        { path: "dashboard", element: <Dashboard /> },
+        { path: "students", element: <StudentList /> },
+    { path: "groups", element: <GroupsList /> }
+
 
       ]
     }
@@ -40,11 +49,11 @@ function App() {
 
   return (
     <>
-      <AuthContextProvider>
+      <Provider store={store}  >
         <RouterProvider router={routes}></RouterProvider>
-          <ToastContainer position="top-right" autoClose={2000} />
-      </AuthContextProvider>
+        <ToastContainer position="top-right" autoClose={2000} />
 
+      </Provider>
     </>
   )
 }
