@@ -17,8 +17,9 @@ export default function Navbar({ onMenuToggle }: HeaderProps) {
   const routeTitles: Record<string, string> = {
     "/dashboard": t("dashboard"),
     "/groups": t("groups"),
-    "/quizzes": t("quizzes"),
+    "/quizes": t("quizzes"),
     "/results": t("results"),
+    "/students": t("students"),
   };
 
   const pageTitle = routeTitles[location.pathname] || "";

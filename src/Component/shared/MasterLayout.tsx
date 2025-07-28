@@ -1,11 +1,14 @@
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import Navbar from "../shared/Navbar"
 import Sidebar from "../shared/Sidebar"
 import { Outlet } from "react-router-dom"
 
 
 export default function MasterLayout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+  const stored = localStorage.getItem("sidebarOpen");
+  return stored ? stored === "true" : false;
+});
 
   const handleMenuToggle = useCallback(() => {
     setIsSidebarOpen((prev) => !prev)
@@ -14,6 +17,11 @@ export default function MasterLayout() {
   const handleSidebarClose = useCallback(() => {
     setIsSidebarOpen(false)
   }, [])
+
+ useEffect(() => {
+    localStorage.setItem("sidebarOpen", String(isSidebarOpen));
+  }, [isSidebarOpen]);
+
 
 
   return (

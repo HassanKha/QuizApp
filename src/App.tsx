@@ -39,7 +39,8 @@ function App() {
         { index: true, element: <Dashboard /> },
         { path: "dashboard", element: <Dashboard /> },
         { path: "students", element: <StudentList /> },
-    { path: "groups", element: <GroupsList /> }
+    { path: "groups", element: <GroupsList /> },
+     { path: "quizes", element: <GroupsList /> }
 
 
       ]

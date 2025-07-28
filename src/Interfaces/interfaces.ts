@@ -39,3 +39,11 @@ export interface Logged_in_Users {
   email: string;
   password: string;
 }
+
+export interface SidebarProps {
+  isOpen: boolean
+  onClose: () => void
+  onMenuToggle: () => void
+  isSidebarOpen: boolean
+}
+
