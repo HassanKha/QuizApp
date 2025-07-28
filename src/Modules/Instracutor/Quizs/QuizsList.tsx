@@ -2,6 +2,8 @@
 import { HiComputerDesktop, HiArrowRight } from "react-icons/hi2"
 import { MdQuiz } from "react-icons/md"
 import img1 from "../../../assets/img1.png"
+import { useState } from "react"
+import QuizSetupModal from "./AddModel/QuizSetupModal"
 interface Quiz {
   id: number
   title: string
@@ -65,14 +67,19 @@ const completedQuizzes: CompletedQuiz[] = [
   },
 ]
 
+
+
+
 export default function QuizsList() {
+     const [isQuizModalOpen, setIsQuizModalOpen] = useState(false)
+
   return (
     <div className="p-4 sm:p-6 max-w-full ">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         {/* Left Column - Action Cards */}
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
-            <button className="flex flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
+            <button   onClick={() => setIsQuizModalOpen(true)} className="flex cursor-pointer flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
               <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4 lg:mb-6 group-hover:bg-gray-100 transition-colors duration-200">
                 <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
                   <MdQuiz className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
@@ -193,6 +200,8 @@ export default function QuizsList() {
           </div>
         </div>
       </div>
+         {/* Quiz Setup Modal */}
+      <QuizSetupModal isOpen={isQuizModalOpen} onClose={() => setIsQuizModalOpen(false)} />
     </div>
   )
 }
