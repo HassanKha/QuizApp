@@ -1,7 +1,13 @@
-
+import { useTranslation } from "react-i18next";
 
 export default function GroupsList() {
+  const { t, i18n } = useTranslation();
+
   return (
-    <div>Groups</div>
-  )
+    <>
+       <div>{t("groups")}</div>
+
+      
+    </>
+  );
 }
