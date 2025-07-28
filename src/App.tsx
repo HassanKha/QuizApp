@@ -14,6 +14,7 @@ import { store } from "./Redux/store"
 
 import GroupsList from "./Modules/Instracutor/Groups/GroupsList"
 import StudentList from "./Modules/Instracutor/Student/StudentList"
+import QuizsList from "./Modules/Instracutor/Quizs/QuizsList"
 
 
 
@@ -40,7 +41,7 @@ function App() {
         { path: "dashboard", element: <Dashboard /> },
         { path: "students", element: <StudentList /> },
     { path: "groups", element: <GroupsList /> },
-     { path: "quizes", element: <GroupsList /> }
+     { path: "quizes", element: <QuizsList /> }
 
 
       ]
