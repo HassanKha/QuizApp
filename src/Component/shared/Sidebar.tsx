@@ -1,22 +1,21 @@
-
-
-import { HiHome, HiUsers, HiDocumentText, HiBars3, HiQuestionMarkCircle } from "react-icons/hi2"
+import { HiHome, HiUsers, HiDocumentText, HiBars3, HiQuestionMarkCircle } from "react-icons/hi2";
 import { FaUserGraduate } from "react-icons/fa";
-import { MdQuiz } from "react-icons/md"
-import { Link, useLocation } from "react-router-dom"
-import logo from "../../assets/Log-icon.png"
+import { MdQuiz } from "react-icons/md";
+import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next"; 
+import logo from "../../assets/Log-icon.png";
 
 interface SidebarProps {
-  isOpen: boolean
-  onClose: () => void
-  onMenuToggle: () => void
-  isSidebarOpen: boolean
+  isOpen: boolean;
+  onClose: () => void;
+  onMenuToggle: () => void;
+  isSidebarOpen: boolean;
 }
 
 const navigationItems = [
   {
     icon: HiHome,
-    label: "Dashboard",
+    labelKey: "sidebar.dashboard",
     href: "/dashboard",
     badge: null,
     iconBg: "bg-orange-100",
@@ -24,7 +23,7 @@ const navigationItems = [
   },
   {
     icon: HiUsers,
-    label: "Groups",
+    labelKey: "sidebar.groups",
     href: "/groups",
     badge: null,
     iconBg: "bg-orange-100",
@@ -32,15 +31,15 @@ const navigationItems = [
   },
   {
     icon: FaUserGraduate,
-    label: "Students",
+    labelKey: "sidebar.students",
     href: "/students",
     badge: "2",
     iconBg: "bg-orange-100",
     iconColor: "text-black",
   },
-   {
+  {
     icon: MdQuiz,
-    label: "Quizes",
+    labelKey: "sidebar.quizzes",
     href: "/quizes",
     badge: null,
     iconBg: "bg-orange-100",
@@ -48,30 +47,28 @@ const navigationItems = [
   },
   {
     icon: HiDocumentText,
-    label: "Results",
+    labelKey: "sidebar.results",
     href: "/results",
     badge: null,
     iconBg: "bg-orange-100",
     iconColor: "text-black",
   },
-]
+];
 
 export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }: SidebarProps) {
-  const location = useLocation()
+  const location = useLocation();
+  const { t } = useTranslation(); // ✅ hook
 
-  // Function to check if current path matches the navigation item
   const isActiveItem = (href: string) => {
-    return location.pathname === href || location.pathname.startsWith(href + "/")
-  }
+    return location.pathname === href || location.pathname.startsWith(href + "/");
+  };
 
   return (
     <>
-      {/* Mobile overlay */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={onClose} aria-hidden="true" />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`
           fixed lg:static inset-y-0 left-0 z-50 bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out
@@ -81,7 +78,6 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
         `}
         aria-label="Main navigation"
       >
-        {/* Header */}
         <div className={`transition-all duration-300 ${isSidebarOpen ? "p-6" : "p-2 lg:p-4"}`}>
           <div className="flex items-center justify-center lg:justify-start">
             <div className={`flex items-center transition-all duration-300 ${isSidebarOpen ? "gap-4" : "gap-0"}`}>
@@ -93,7 +89,6 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
                 <HiBars3 className="w-5 h-5 lg:w-6 lg:h-6" />
               </button>
 
-              {/* Logo - only show when expanded */}
               <div
                 className={`transition-all duration-300 overflow-hidden ${
                   isSidebarOpen ? "w-16 opacity-100 ml-4" : "w-0 opacity-0 ml-0"
@@ -105,34 +100,27 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
           </div>
         </div>
 
-        {/* Navigation */}
         <nav className={`space-y-1 transition-all duration-300 ${isSidebarOpen ? "px-4" : "px-2"}`} role="navigation">
           {navigationItems.map((item) => {
-            const Icon = item.icon
-            const isActive = isActiveItem(item.href)
+            const Icon = item.icon;
+            const isActive = isActiveItem(item.href);
 
             return (
-              <div key={item.label} className="relative group">
+              <div key={item.labelKey} className="relative group">
                 <Link
                   to={item.href}
                   onClick={() => {
-                    // Close mobile sidebar when item is clicked
-                    if (window.innerWidth < 1024) {
-                      onClose()
-                    }
+                    if (window.innerWidth < 1024) onClose();
                   }}
                   className={`
                     flex items-center rounded-lg transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 w-full
                     ${isSidebarOpen ? "gap-4 px-4 py-4" : "gap-0 px-2 py-3 justify-center"}
-                    ${
-                      isActive
-                        ? "bg-gray-900 text-white focus-visible:ring-white focus-visible:ring-offset-gray-900"
-                        : "text-gray-700 hover:bg-gray-50"
-                    }
+                    ${isActive
+                      ? "bg-gray-900 text-white focus-visible:ring-white focus-visible:ring-offset-gray-900"
+                      : "text-gray-700 hover:bg-gray-50"}
                   `}
                   aria-current={isActive ? "page" : undefined}
                 >
-                  {/* Icon container - always centered when collapsed */}
                   <div className={`relative flex-shrink-0 ${!isSidebarOpen ? "mx-auto" : ""}`}>
                     <div
                       className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
@@ -148,42 +136,34 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
                     )}
                   </div>
 
-                  {/* Label - animate in/out */}
                   {isSidebarOpen && (
                     <span
                       className={`font-medium whitespace-nowrap transition-all duration-300 ${
                         isSidebarOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
                       }`}
                     >
-                      {item.label}
+                      {t(item.labelKey)}
                     </span>
                   )}
                 </Link>
 
-                {/* Tooltip for collapsed state - only on desktop */}
                 {!isSidebarOpen && (
                   <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 hidden lg:block">
-                    {item.label}
+                    {t(item.labelKey)}
                     <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
                   </div>
                 )}
               </div>
-            )
+            );
           })}
         </nav>
 
-        {/* Help section at bottom */}
-        <div
-          className={`absolute bottom-4 lg:bottom-8 w-full transition-all duration-300 ${isSidebarOpen ? "px-4" : "px-2"}`}
-        >
+        <div className={`absolute bottom-4 lg:bottom-8 w-full transition-all duration-300 ${isSidebarOpen ? "px-4" : "px-2"}`}>
           <div className="relative group">
             <Link
               to="/help"
               onClick={() => {
-                // Close mobile sidebar when help is clicked
-                if (window.innerWidth < 1024) {
-                  onClose()
-                }
+                if (window.innerWidth < 1024) onClose();
               }}
               className={`
                 flex items-center rounded-lg transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 text-gray-700 hover:bg-gray-50 w-full
@@ -197,20 +177,15 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
               </div>
 
               {isSidebarOpen && (
-                <span
-                  className={`font-medium whitespace-nowrap transition-all duration-300 ${
-                    isSidebarOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
-                  }`}
-                >
-                  Help
+                <span className="font-medium whitespace-nowrap transition-all duration-300">
+                  {t("sidebar.help")}
                 </span>
               )}
             </Link>
 
-            {/* Tooltip for collapsed state - only on desktop */}
             {!isSidebarOpen && (
               <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 hidden lg:block">
-                Help
+                {t("sidebar.help")}
                 <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
               </div>
             )}
@@ -218,5 +193,5 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
         </div>
       </aside>
     </>
-  )
+  );
 }

@@ -1,7 +1,11 @@
 {
-  "dashboard": "لوحة التحكم",
-  "groups": "المجموعات",
-  "quizzes": "الاختبارات",
-  "results": "النتائج",
-  "newQuiz": "اختبار جديد"
+  "sidebar": {
+    "dashboard": "لوحة التحكم",
+    "groups": "المجموعات",
+    "students": "الطلاب",
+    "quizzes": "الاختبارات",
+    "results": "النتائج",
+    "newQuiz": "اختبار جديد",
+    "help": "مساعدة"
+  }
 }

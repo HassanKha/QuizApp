@@ -1,6 +1,11 @@
-{"dashboard": "Dashboard",
-  "groups": "Groups",
-  "quizzes": "Quizzes",
-  "results": "Results",
-  "newQuiz": "New Quiz"
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "groups": "Groups",
+    "students": "Students",
+    "quizzes": "Quizzes",
+    "results": "Results",
+    "newQuiz": "New Quiz",
+    "help": "Help"
+  }
 }
