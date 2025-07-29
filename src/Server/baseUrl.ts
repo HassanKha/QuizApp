@@ -37,5 +37,7 @@ export const GROUPS_URLS = {
 }
 export const STUDENTS_URLS = {
   GET_ALL_STUDENTS:`/api/student/without-group`,
-  
+  GET_STUDENT_BY_ID:(id:string)=>`/api/student/${id}`,
+  DELETE_STUDENT:(id:string)=>`/api/student/${id}`,
+  DELETE_GROUP_STUDENT:(id:string)=>`/api/student/${id}`,  
 }
