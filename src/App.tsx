@@ -13,7 +13,7 @@ import { Provider } from "react-redux"
 import { store } from "./Redux/store"
 
 import GroupsList from "./Modules/Instracutor/Groups/GroupsList"
-import StudentList from "./Modules/Instracutor/Student/StudentList"
+import StudentList from "./Modules/Instracutor/StudentList/StudentList"
 import QuizsList from "./Modules/Instracutor/Quizs/QuizsList"
 
 

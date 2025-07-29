@@ -21,3 +21,8 @@ export const USERS_URLS = {
     resetPassword: `${baseURL}/api/auth/reset-password`,
     ChangePassword: `${baseURL}/api/auth/change-password`,
 }
+
+
+export const Student_URLS = {
+  getStudents: `${baseURL}/api/student`,
+}
