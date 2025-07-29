@@ -10,28 +10,41 @@ import { toast } from 'react-toastify';
 export default function StudentList() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [students, setStudents] = React.useState([]);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 12;
 
   const toggleMenu = (id: string) => {
     setOpenMenuId(openMenuId === id ? null : id);
   };
 
-  const [students, setStudents] = React.useState([]);
   async function fetchStudents() {
     setLoading(true);
     try {
       const response = await axiosInstance.get(`${Student_URLS.getStudents}`);
       setStudents(response.data);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       toast.error(error.response.data.message || "Failed to fetch students");
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     fetchStudents();
   }, []);
+
+  const filteredStudents = students.filter((student: any) =>
+    `${student.first_name} ${student.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const paginatedStudents = filteredStudents.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+  const numPage = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <>
@@ -42,8 +55,30 @@ export default function StudentList() {
       )}
 
       <div className="listStudent  px-4 py-6">
+        <form className="max-w-md mx-5 mb-5">
+          <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+          <div className="relative">
+            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+              <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+              </svg>
+            </div>
+            <input
+              type="search"
+              id="default-search"
+              className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search by student name..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+              }}
+            />
+          </div>
+        </form>
+
         <div className="flex justify-center flex-wrap gap-4 ">
-          {students.map((user: any) => (
+          {paginatedStudents.map((user: any) => (
             <div
               key={user._id}
               className=" relative flex items-center justify-between p-4 gap-4 bg-white rounded-lg shadow-md w-full md:w-[48%] lg:w-[31%]"
@@ -70,14 +105,12 @@ export default function StudentList() {
                 </div>
               </div>
 
-
               <div
                 onClick={() => toggleMenu(user._id)}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-transform duration-200 hover:scale-110 cursor-pointer relative z-10"
               >
                 <IoIosArrowForward className="text-black text-lg" />
               </div>
-
 
               {openMenuId === user._id && (
                 <div className="absolute  right-4 top-16 bg-white  shadow-lg rounded-md z-50 w-50 text-sm drop_List_Student  ">
@@ -89,9 +122,73 @@ export default function StudentList() {
             </div>
           ))}
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-6">
+            <ul className="inline-flex -space-x-px text-sm">
+              <li
+                onClick={() => setPage((old) => Math.max(old - 1, 1))}
+                className={`cursor-pointer px-3 py-2 ml-0 leading-tight border rounded-l-lg 
+                  ${page === 1 ? 'text-gray-400 border-gray-300 bg-white cursor-not-allowed' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
+              >
+                Previous
+              </li>
+              <li
+                onClick={() => setPage(1)}
+                className={`cursor-pointer px-3 py-2 leading-tight border 
+                  ${page === 1 ? 'text-white bg-blue-600 border-blue-600' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
+              >
+                1
+              </li>
+              {page > 3 && totalPages > 5 && (
+                <li
+                  className="cursor-pointer px-3 py-2 border border-gray-300 bg-white"
+                  onClick={() => setPage(Math.max(1, page - 2))}
+                >
+                  ...
+                </li>
+              )}
+              {numPage
+                .filter(i => i !== 1 && i !== totalPages)
+                .filter(i => i >= page - 1 && i <= page + 1)
+                .map(i => (
+                  <li
+                    key={i}
+                    onClick={() => setPage(i)}
+                    className={`cursor-pointer px-3 py-2 leading-tight border 
+                      ${page === i ? 'text-white bg-blue-600 border-blue-600' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
+                  >
+                    {i}
+                  </li>
+                ))}
+              {page < totalPages - 2 && totalPages > 5 && (
+                <li
+                  className="cursor-pointer px-3 py-2 border border-gray-300 bg-white"
+                  onClick={() => setPage(Math.min(totalPages, page + 2))}
+                >
+                  ...
+                </li>
+              )}
+              {totalPages > 1 && (
+                <li
+                  onClick={() => setPage(totalPages)}
+                  className={`cursor-pointer px-3 py-2 leading-tight border  
+                    ${page === totalPages ? 'text-white bg-blue-600 border-blue-600' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
+                >
+                  {totalPages}
+                </li>
+              )}
+              <li
+                onClick={() => setPage((old) => Math.min(old + 1, totalPages))}
+                className={`cursor-pointer px-3 py-2 leading-tight border rounded-r-lg
+                  ${page === totalPages ? 'text-gray-400 border-gray-300 bg-white cursor-not-allowed' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
+              >
+                Next
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
-
-
     </>
   )
 }
