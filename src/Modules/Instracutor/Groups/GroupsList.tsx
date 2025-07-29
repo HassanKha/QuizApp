@@ -7,6 +7,7 @@ import Select from 'react-select';
 
 import { axiosInstance, GROUPS_URLS, STUDENTS_URLS } from '../../../Server/baseUrl';
 import DeleteModal from '../../../Component/shared/Delete';
+import { IoCloseSharp } from 'react-icons/io5';
 
 interface Group {
   _id: string;
@@ -396,7 +397,7 @@ export default function GroupsList() {
         className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl font-bold"
         aria-label="Close Modal"
       >
-        &times;
+        <IoCloseSharp />
       </button>
 
       {/* المحتوى */}
