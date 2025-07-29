@@ -14,10 +14,23 @@ axiosInstance.interceptors.request.use(
     },
     (error) => Promise.reject(error)
 );
+
 export const USERS_URLS = {
     login: `${baseURL}/api/auth/login`,
     register: `${baseURL}/api/auth/register`,
     forgetPassword: `${baseURL}/api/auth/forgot-password`,
     resetPassword: `${baseURL}/api/auth/reset-password`,
     ChangePassword: `${baseURL}/api/auth/change-password`,
+}
+
+export const GROUPS_URLS = {
+  GET_ALL_GROUPS:`/api/group`,
+  ADD_GROUP:`/api/group`,
+  GET_GROUP_BY_ID:(id:string)=>`/api/group/${id}`,
+  DELETE_GROUP:(id:string)=>`/api/group/${id}`,
+  UPDATE_GROUP:(id:string)=>`/api/group/${id}`
+}
+export const STUDENTS_URLS = {
+  GET_ALL_STUDENTS:`/api/student/without-group`,
+  
 }
