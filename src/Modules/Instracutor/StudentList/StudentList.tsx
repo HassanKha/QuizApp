@@ -1,10 +1,9 @@
-// StudentList.tsx
 import React, { useEffect, useState, Fragment } from 'react';
 import { axiosInstance, Student_URLS, STUDENTS_URLS } from '../../../Server/baseUrl';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import './StudentList.css';
 import { IoIosArrowForward } from 'react-icons/io';
-import { FaRegEye } from 'react-icons/fa';
+import { FaRegEye, FaSpinner } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { Dialog, Transition } from '@headlessui/react';
@@ -184,7 +183,7 @@ export default function StudentList() {
                     <FaRegEye className="mr-2 text-green-600 text-lg" /> View
                   </button>
                   <button onClick={() => deleteStudent(user._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
-                    <MdDelete className="mr-2 text-red-600 text-lg" /> Delete student
+                   <MdDelete className="mr-2 text-red-600 text-lg" /> Delete student
                   </button>
 
                 </div>
@@ -204,7 +203,6 @@ export default function StudentList() {
                 Previous
               </li>
 
-              {/* Always show page 1 */}
               <li
                 onClick={() => setPage(1)}
                 className={`cursor-pointer px-3 py-2 leading-tight border 
@@ -213,7 +211,6 @@ export default function StudentList() {
                 1
               </li>
 
-              {/* Ellipsis before current range */}
               {page > 3 && totalPages > 5 && (
                 <li
                   className="cursor-pointer px-3 py-2 border border-gray-300 bg-white"
@@ -223,7 +220,6 @@ export default function StudentList() {
                 </li>
               )}
 
-              {/* Middle numbers (surrounding current page) */}
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(i => i !== 1 && i !== totalPages)
                 .filter(i => i >= page - 1 && i <= page + 1)
@@ -238,7 +234,6 @@ export default function StudentList() {
                   </li>
                 ))}
 
-              {/* Ellipsis after current range */}
               {page < totalPages - 2 && totalPages > 5 && (
                 <li
                   className="cursor-pointer px-3 py-2 border border-gray-300 bg-white"

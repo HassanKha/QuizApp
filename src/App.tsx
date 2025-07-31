@@ -15,6 +15,7 @@ import { store } from "./Redux/store"
 import GroupsList from "./Modules/Instracutor/Groups/GroupsList"
 import StudentList from "./Modules/Instracutor/StudentList/StudentList"
 import QuizsList from "./Modules/Instracutor/Quizs/QuizsList"
+import ProtectedRouting from "./Component/shared/ProtectedRouting"
 
 
 
@@ -35,7 +36,7 @@ function App() {
     },
     {
       path: "",
-      element: <MasterLayout />,
+      element:<ProtectedRouting><MasterLayout /></ProtectedRouting> ,
       children: [
         { index: true, element: <Dashboard /> },
         { path: "dashboard", element: <Dashboard /> },

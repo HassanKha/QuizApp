@@ -3,8 +3,6 @@ import imgAuth from '../../../assets/FP-BG.png';
 import img1 from '../../../assets/login.svg';
 import img2 from '../../../assets/regist.svg';
 import img3 from '../../../assets/input icon.svg';
-
-
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { axiosInstance, USERS_URLS } from '../../../Server/baseUrl';
@@ -17,6 +15,8 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { MdCheckCircle, MdRemoveRedEye } from 'react-icons/md';
 import { IoEyeOffSharp } from 'react-icons/io5';
 import type { Logged_in_Users } from '../../../Interfaces/interfaces';
+import { setToken } from '../../../Redux/authSlice';
+import { useDispatch } from 'react-redux';
 
 
 
@@ -31,19 +31,27 @@ export default function Login() {
     formState: { errors },
   } = useForm<Logged_in_Users>();
 
-  const onSubmit = async (data: Logged_in_Users): Promise<void> => {
-    setLoading(true);
-    try {
-      const res = await axiosInstance.post(USERS_URLS.login, data);
-      toast.success(res.data.message);
-      localStorage.setItem('token', res.data.data.accessToken);
-      navigate('/dashboard');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Invalid email or password");
-    } finally {
-      setLoading(false);
-    }
-  };
+const dispatch = useDispatch();
+
+const onSubmit = async (data: Logged_in_Users): Promise<void> => {
+  setLoading(true);
+  try {
+    const res = await axiosInstance.post(USERS_URLS.login, data);    
+    toast.success(res.data.message);
+
+    const token = res.data.data.accessToken;
+    const user = res.data.data.profile;
+
+    dispatch(setToken({ token, user }));
+
+    navigate('/dashboard');
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || "Invalid email or password");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="login min-h-screen overflow-hidden bg-[#0f172a]">

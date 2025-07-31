@@ -2,11 +2,11 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { ILogData, AuthState } from '../Interfaces/interfaces'
 
+const userData = localStorage.getItem('user');
+
 const initialState: AuthState = {
   token: localStorage.getItem('token'),
-  LogData: localStorage.getItem('user')
-    ? JSON.parse(localStorage.getItem('user') as string)
-    : null,
+  LogData: userData && userData !== 'undefined' ? JSON.parse(userData) : null,
 }
 
 const authSlice = createSlice({

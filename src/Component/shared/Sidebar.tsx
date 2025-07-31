@@ -4,6 +4,8 @@ import { MdQuiz } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next"; 
 import logo from "../../assets/Log-icon.png";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../Redux/store";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -28,6 +30,7 @@ const navigationItems = [
     badge: null,
     iconBg: "bg-orange-100",
     iconColor: "text-black",
+    onlyFor: ["Admin", "Instructor"], // ✅ السماح لأدوار معينة فقط
   },
   {
     icon: FaUserGraduate,
@@ -36,6 +39,7 @@ const navigationItems = [
     badge: "2",
     iconBg: "bg-orange-100",
     iconColor: "text-black",
+    onlyFor: ["Admin", "Instructor"], // ✅ السماح لأدوار معينة فقط
   },
   {
     icon: MdQuiz,
@@ -57,7 +61,8 @@ const navigationItems = [
 
 export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }: SidebarProps) {
   const location = useLocation();
-  const { t } = useTranslation(); // ✅ hook
+  const { t } = useTranslation(); 
+  const user = useSelector((state: RootState) => state.auth.LogData);
 
   const isActiveItem = (href: string) => {
     return location.pathname === href || location.pathname.startsWith(href + "/");
@@ -101,61 +106,69 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
         </div>
 
         <nav className={`space-y-1 transition-all duration-300 ${isSidebarOpen ? "px-4" : "px-2"}`} role="navigation">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = isActiveItem(item.href);
+          {navigationItems
+            .filter((item) => {
+              // ✅ لو فيه onlyFor نتحقق من صلاحية الدور
+              if (item.onlyFor) {
+                return item.onlyFor.includes(user?.role || "");
+              }
+              return true;
+            })
+            .map((item) => {
+              const Icon = item.icon;
+              const isActive = isActiveItem(item.href);
 
-            return (
-              <div key={item.labelKey} className="relative group">
-                <Link
-                  to={item.href}
-                  onClick={() => {
-                    if (window.innerWidth < 1024) onClose();
-                  }}
-                  className={`
-                    flex items-center rounded-lg transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 w-full
-                    ${isSidebarOpen ? "gap-4 px-4 py-4" : "gap-0 px-2 py-3 justify-center"}
-                    ${isActive
-                      ? "bg-gray-900 text-white focus-visible:ring-white focus-visible:ring-offset-gray-900"
-                      : "text-gray-700 hover:bg-gray-50"}
-                  `}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  <div className={`relative flex-shrink-0 ${!isSidebarOpen ? "mx-auto" : ""}`}>
-                    <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
-                        isActive ? "bg-white" : item.iconBg
-                      }`}
-                    >
-                      <Icon className={`w-5 h-5 ${isActive ? "text-gray-900" : item.iconColor}`} aria-hidden="true" />
+              return (
+                <div key={item.labelKey} className="relative group">
+                  <Link
+                    to={item.href}
+                    onClick={() => {
+                      if (window.innerWidth < 1024) onClose();
+                    }}
+                    className={`
+                      flex items-center rounded-lg transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 w-full
+                      ${isSidebarOpen ? "gap-4 px-4 py-4" : "gap-0 px-2 py-3 justify-center"}
+                      ${isActive
+                        ? "bg-gray-900 text-white focus-visible:ring-white focus-visible:ring-offset-gray-900"
+                        : "text-gray-700 hover:bg-gray-50"}
+                    `}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    <div className={`relative flex-shrink-0 ${!isSidebarOpen ? "mx-auto" : ""}`}>
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                          isActive ? "bg-white" : item.iconBg
+                        }`}
+                      >
+                        <Icon className={`w-5 h-5 ${isActive ? "text-gray-900" : item.iconColor}`} aria-hidden="true" />
+                      </div>
+                      {item.badge && (
+                        <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px] z-10">
+                          {item.badge}
+                        </span>
+                      )}
                     </div>
-                    {item.badge && (
-                      <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px] z-10">
-                        {item.badge}
+
+                    {isSidebarOpen && (
+                      <span
+                        className={`font-medium whitespace-nowrap transition-all duration-300 ${
+                          isSidebarOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
+                        }`}
+                      >
+                        {t(item.labelKey)}
                       </span>
                     )}
-                  </div>
+                  </Link>
 
-                  {isSidebarOpen && (
-                    <span
-                      className={`font-medium whitespace-nowrap transition-all duration-300 ${
-                        isSidebarOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
-                      }`}
-                    >
+                  {!isSidebarOpen && (
+                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 hidden lg:block">
                       {t(item.labelKey)}
-                    </span>
+                      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
+                    </div>
                   )}
-                </Link>
-
-                {!isSidebarOpen && (
-                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 hidden lg:block">
-                    {t(item.labelKey)}
-                    <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                </div>
+              );
+            })}
         </nav>
 
         <div className={`absolute bottom-4 lg:bottom-8 w-full transition-all duration-300 ${isSidebarOpen ? "px-4" : "px-2"}`}>

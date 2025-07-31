@@ -1,9 +1,12 @@
 export interface ILogData {
-  id?: string
-  email?: string
-  name?: string
-  role?: string
+  id?: string;
+  email?: string;
+  name?: string;
+  role?: string;
+  first_name?: string;
+  last_name?: string;
 }
+
 
 export interface AuthState {
   token: string | null
