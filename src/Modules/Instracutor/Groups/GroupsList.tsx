@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { FaPlusCircle, FaEdit, FaTrash, FaTimes, FaCheck, FaSpinner, FaEye } from 'react-icons/fa';
 import Loader from '../../../Component/shared/Loader';
 import { useForm, Controller } from 'react-hook-form';
@@ -163,7 +163,8 @@ export default function GroupsList() {
   };
 
   const deleteGroup = async () => {
-    try {
+    if(currentGroupId){
+ try {
       setmodalLoading(true);
       let res = await axiosInstance.delete(GROUPS_URLS.DELETE_GROUP(currentGroupId));
       console.log(res?.data);
@@ -176,6 +177,8 @@ export default function GroupsList() {
     } finally {
       setmodalLoading(false);
     }
+    }
+   
   };
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { MdQuiz } from "react-icons/md"
 import img1 from "../../../assets/img1.png"
 import { useState } from "react"
 import QuizSetupModal from "./AddModel/QuizSetupModal"
+import { useNavigate } from "react-router-dom"
 interface Quiz {
   id: number
   title: string
@@ -69,10 +70,9 @@ const completedQuizzes: CompletedQuiz[] = [
 
 
 
-
 export default function QuizsList() {
      const [isQuizModalOpen, setIsQuizModalOpen] = useState(false)
-
+const navigate = useNavigate();
   return (
     <div className="p-4 sm:p-6 max-w-full ">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -88,7 +88,7 @@ export default function QuizsList() {
               <span className="text-base lg:text-lg font-semibold text-gray-900 text-center">Set up a new quiz</span>
             </button>
 
-            <button className="flex flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
+            <button onClick={()=> navigate("/questions")} className="flex cursor-pointer flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
               <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4 lg:mb-6 group-hover:bg-gray-100 transition-colors duration-200">
                 <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
                   <HiComputerDesktop className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
@@ -156,9 +156,9 @@ export default function QuizsList() {
 
             <div className="overflow-x-auto">
               <div className="overflow-hidden rounded-xl border border-gray-200 min-w-full">
-                <table className="w-full min-w-[600px]">
+                <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-gray-900">
+                    <tr className="bg-gray-900 ">
                       <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
                         Title
                       </th>

@@ -1,13 +1,13 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { axiosInstance, Student_URLS, STUDENTS_URLS } from '../../../Server/baseUrl';
 import { IoCheckmarkCircle } from 'react-icons/io5';
 import './StudentList.css';
 import { IoIosArrowForward } from 'react-icons/io';
-import { FaRegEye, FaSpinner } from 'react-icons/fa';
+import { FaRegEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { Dialog, Transition } from '@headlessui/react';
-import { HiOutlineUser, HiOutlineMail, HiOutlineShieldCheck, HiOutlineUsers } from 'react-icons/hi';
+import { HiOutlineUser, HiOutlineShieldCheck, HiOutlineUsers } from 'react-icons/hi';
 
 interface Student {
   _id: string;

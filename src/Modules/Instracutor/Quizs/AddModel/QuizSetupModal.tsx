@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { HiXMark , HiCheck } from "react-icons/hi2"
 import type { QuizFormData, QuizSetupModalProps } from "../../../../Interfaces/Quizzes/Interfaces"
+import { axiosInstance, GROUPS_URLS, Quizzes_URLS } from "../../../../Server/baseUrl"
+import { toast } from "react-toastify"
 
 
 
@@ -16,6 +18,8 @@ const durationOptions = [
 ]
 
 const questionOptions = [
+    { value: 5, label: "1" },
+     { value: 5, label: "3" },
   { value: 5, label: "5" },
   { value: 10, label: "10" },
   { value: 15, label: "15" },
@@ -33,27 +37,15 @@ const scoreOptions = [
 ]
 
 const difficultyOptions = [
-  { value: "entry", label: "Entry" },
-  { value: "beginner", label: "Beginner" },
-  { value: "intermediate", label: "Intermediate" },
-  { value: "advanced", label: "Advanced" },
-  { value: "expert", label: "Expert" },
+  { value: "easy", label: "easy" },
+  { value: "medium", label: "medium" },
+  { value: "hard", label: "hard" },
 ]
 
 const categoryOptions = [
   { value: "FE", label: "Frontend (FE)" },
   { value: "BE", label: "Backend (BE)" },
-  { value: "FS", label: "Full Stack (FS)" },
-  { value: "DS", label: "Data Science (DS)" },
-  { value: "ML", label: "Machine Learning (ML)" },
-]
-
-const groupOptions = [
-  { value: "JSB", label: "JavaScript Basics (JSB)" },
-  { value: "RCT", label: "React (RCT)" },
-  { value: "NJS", label: "Node.js (NJS)" },
-  { value: "PYT", label: "Python (PYT)" },
-  { value: "JAV", label: "Java (JAV)" },
+  { value: "DO", label: "DevOps" },
 ]
 
 export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps) {
@@ -77,7 +69,7 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
       description: "",
       scheduleDate: "",
       scheduleTime: "",
-      difficultyLevel: "entry",
+      difficultyLevel: "easy",
       categoryType: "FE",
       groupName: "JSB",
     },
@@ -128,10 +120,30 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
 
 
 
-  const onSubmit = async (data: QuizFormData) => {
-    console.log("Quiz data submitted:", data)
-
+  const onSubmit = async (formData: QuizFormData) => {
+  const formattedData = {
+    title: formData.title,
+    description: formData.description || "",
+    group: formData.groupName, // Ensure this is the group ID
+    questions_number: String(formData.numberOfQuestions),
+    difficulty: formData.difficultyLevel,
+    type: formData.categoryType,
+    schadule: new Date(
+      `${formData.scheduleDate}T${formData.scheduleTime}`
+    ).toISOString(),
+    duration: String(formData.duration),
+    score_per_question: String(formData.scorePerQuestion),
   }
+
+  console.log("Submitting transformed data:", formattedData)
+
+  try {
+    const response = await axiosInstance.post(Quizzes_URLS.SetUP_Quizz, formattedData)
+    toast.success(response.data.message)
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || "Failed to create quiz")
+  }
+}
 
   const handleFormSubmit = async (data: QuizFormData) => {
     setIsSubmitting(true)
@@ -151,7 +163,41 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
     onClose()
   }
 
-  if (!isOpen) return null
+
+
+
+
+  const [groupOptions, setGroupOptions] = useState<{ label: string; value: string }[]>([])
+  const [loadingGroups, setLoadingGroups] = useState(false)
+  
+ const getGroups = async () => {
+  setLoadingGroups(true)
+  try {
+    const res = await axiosInstance.get(GROUPS_URLS.GET_ALL_GROUPS)
+
+    const groupData = res?.data
+
+    const formattedOptions = groupData?.map((group: any) => ({
+      label: group.name,
+      value: group._id,
+    }))
+
+    setGroupOptions(formattedOptions)
+    console.log("Formatted Groups:", formattedOptions)
+  } catch (error: any) {
+    console.error("Error fetching groups:", error)
+    toast.error("Failed to fetch groups.")
+  } finally {
+    setLoadingGroups(false)
+  }
+}
+
+  useEffect(() => {
+    getGroups()
+  }, [])
+  
+  
+    if (!isOpen) return null
 
   return (
     <div
@@ -175,8 +221,8 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
             
               type="submit"
               form="quiz-form"
-              disabled={!isValid || isSubmitting}
-              className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
+              className="p-2 text-green-600 cursor-pointer hover:bg-green-50 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Save quiz"
             >
               <HiCheck className="w-6 h-6" />
@@ -211,7 +257,6 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
         minLength: { value: 3, message: "Title must be at least 3 characters" },
         maxLength: { value: 100, message: "Title must be less than 100 characters" },
       })}
-      ref={firstInputRef}
       type="text"
       id="title"
       className="w-full h-full px-4 py-3 bg-orange-50 border  border-none rounded-r-xl focus:outline-none "
@@ -429,23 +474,32 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
     <div className="min-w-[100px] px-4 py-2 flex items-center justify-center bg-[#FFEDDF] text-sm font-medium text-gray-700">
       Group
     </div>
-    <Controller
-      name="groupName"
-      control={control}
-      render={({ field }) => (
-        <select
-          {...field}
-          id="groupName"
-          className="w-full px-4 py-2 border-none bg-transparent focus:outline-none"
-        >
+  <Controller
+  name="groupName"
+  control={control}
+  rules={{ required: "Group is required" }}
+  render={({ field }) => (
+    <select
+      {...field}
+      id="groupName"
+      disabled={loadingGroups}
+      className="w-full px-4 py-2 border-none bg-transparent focus:outline-none"
+    >
+      {loadingGroups ? (
+        <option value="">Loading groups...</option>
+      ) : (
+        <>
+          <option value="">Select a group</option>
           {groupOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
-        </select>
+        </>
       )}
-    />
+    </select>
+  )}
+/>
   </div>
 </div>
 

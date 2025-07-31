@@ -16,6 +16,7 @@ import GroupsList from "./Modules/Instracutor/Groups/GroupsList"
 import StudentList from "./Modules/Instracutor/StudentList/StudentList"
 import QuizsList from "./Modules/Instracutor/Quizs/QuizsList"
 import ProtectedRouting from "./Component/shared/ProtectedRouting"
+import Questions from "./Modules/Instracutor/Questions/Questions"
 
 
 
@@ -42,8 +43,8 @@ function App() {
         { path: "dashboard", element: <Dashboard /> },
         { path: "students", element: <StudentList /> },
     { path: "groups", element: <GroupsList /> },
-     { path: "quizes", element: <QuizsList /> }
-
+     { path: "quizes", element: <QuizsList /> },
+   { path: "questions", element: <Questions /> }
 
       ]
     }

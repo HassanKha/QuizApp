@@ -71,7 +71,7 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={onClose} aria-hidden="true" />
+        <div className="fixed inset-0  bg-opacity-50 z-40 lg:hidden" onClick={onClose} aria-hidden="true" />
       )}
 
       <aside

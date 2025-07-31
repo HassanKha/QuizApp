@@ -41,3 +41,13 @@ export const STUDENTS_URLS = {
   DELETE_STUDENT:(id:string)=>`/api/student/${id}`,
   DELETE_GROUP_STUDENT:(id:string)=>`/api/student/${id}`,  
 }
+
+export const Quizzes_URLS = {
+  SetUP_Quizz:`/api/quiz`,
+
+}
+
+export const Questions_URLS = {
+  SetUP_Questions:`/api/question`,
+
+}

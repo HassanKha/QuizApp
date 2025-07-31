@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { HiBars3, HiChevronDown } from "react-icons/hi2"
 import { MdQuiz } from "react-icons/md"
 import { useLocation, useNavigate } from "react-router-dom";
@@ -26,11 +26,12 @@ export default function Navbar({ onMenuToggle }: HeaderProps) {
     navigate("/login");
   }
   const routeTitles: Record<string, string> = {
-    "/dashboard": t("sidebar.dashboard"),
-    "/groups": t("sidebar.groups"),
-    "/quizes": t("sidebar.quizzes"),
-    "/results": t("sidebar.results"),
-    "/students": t("sidebar.students"),
+    "/dashboard": "Dashboard",
+    "/groups": "Groups",
+    "/quizes": "Quizes",
+    "/results": "Results",
+    "/students": "Students",
+        "/questions": "Questions",
   };
 
 
