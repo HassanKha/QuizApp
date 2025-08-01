@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { HiBars3, HiChevronDown } from "react-icons/hi2"
-import { MdQuiz } from "react-icons/md"
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
@@ -25,20 +25,22 @@ export default function Navbar({ onMenuToggle }: HeaderProps) {
     localStorage.removeItem("token");
     navigate("/login");
   }
-  const routeTitles: Record<string, string> = {
-    "/dashboard": "Dashboard",
-    "/groups": "Groups",
-    "/quizes": "Quizes",
-    "/results": "Results",
-    "/students": "Students",
-        "/questions": "Questions",
-  };
 
 
+const routeTitles = (pathname: string): string => {
+  if (pathname.includes("/quizes")) return "Quizzes";
+  if (pathname.includes("/students")) return "Students";
+  if (pathname.includes("/groups")) return "Groups";
+  if (pathname.includes("/questions")) return "Questions";
+  if (pathname.includes("/dashboard")) return "Dashboard";
+  if (pathname.includes("/results")) return "Results";
+
+  return "Page";
+};
 
 
-  const pageTitle = routeTitles[location.pathname] || "";
-
+  const pageTitle = routeTitles(location.pathname) || "";
+console.log(location.pathname)
   return (
     <header className="bg-white border-b border-gray-200 px-4  sm:px-6 py-4 sticky top-0 z-40">
       <div className="flex items-center justify-between">
@@ -57,13 +59,7 @@ export default function Navbar({ onMenuToggle }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
-          <button
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed sm:flex"
-            aria-label={t("newQuiz")}
-          >
-            <MdQuiz className="w-4 h-4" aria-hidden="true" />
-            <span>{t("newQuiz")}</span>
-          </button>
+
 
           <button
             className="px-4 dark:bg-black py-1 bg-gray-300 text-black rounded"

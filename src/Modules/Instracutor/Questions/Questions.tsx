@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { HiEye, HiPencilSquare, HiTrash, HiPlus, HiMagnifyingGlass } from "react-icons/hi2"
 import QuestionSetupModal, { type QuestionFormData } from "./AddModel/QuestionSetupModal"
 import { toast } from "react-toastify"
 import { axiosInstance, Questions_URLS } from "../../../Server/baseUrl"
+import { FaSpinner } from "react-icons/fa"
 // import QuestionSetupModal, { type QuestionFormData } from "@/components/QuestionSetupModal" // Import the new modal
 
 interface Question {
@@ -10,89 +11,15 @@ interface Question {
   title: string
   description: string
   difficulty: string
-  date: string
   hasActions: boolean // To simulate rows with/without action buttons
 }
 
-const initialQuestions: Question[] = [
-  {
-    id: 1,
-    title: "What is Html",
-    description: "Lorem lorem ..",
-    difficulty: "Entry Level",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-  {
-    id: 2,
-    title: "C programming",
-    description: "Group 2",
-    difficulty: "Advanced",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-  {
-    id: 3,
-    title: "Python",
-    description: "Group 3",
-    difficulty: "Mid Level",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-  {
-    id: 4,
-    title: "What is Html",
-    description: "Lorem lorem ..",
-    difficulty: "Entry Level",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-  {
-    id: 5,
-    title: "C programming",
-    description: "Group 2",
-    difficulty: "Advanced",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-  {
-    id: 6,
-    title: "Python",
-    description: "Group 3",
-    difficulty: "Mid Level",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-  {
-    id: 7,
-    title: "What is Html",
-    description: "Lorem lorem ..",
-    difficulty: "Entry Level",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-  {
-    id: 8,
-    title: "Python",
-    description: "Group 3",
-    difficulty: "Mid Level",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-  {
-    id: 9,
-    title: "C programming",
-    description: "Group 2",
-    difficulty: "Advanced",
-    date: "12 / 02 / 2023",
-    hasActions: true,
-  },
-]
+
 
 export default function QuestionBankPage() {
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
-  const [questionsData, setQuestionsData] = useState<Question[]>(initialQuestions)
+  const [questionsData, setQuestionsData] = useState<Question[]>([])
 
   const handleView = (question: Question) => {
     console.log("View question:", question.title)
@@ -129,10 +56,27 @@ const handleAddQuestion = async (payload: QuestionFormData) => {
       (question) =>
         question.title.toLowerCase().includes(lowerCaseSearchTerm) ||
         question.description.toLowerCase().includes(lowerCaseSearchTerm) ||
-        question.difficulty.toLowerCase().includes(lowerCaseSearchTerm) ||
-        question.date.toLowerCase().includes(lowerCaseSearchTerm),
+        question.difficulty.toLowerCase().includes(lowerCaseSearchTerm) 
     )
   }, [questionsData, searchTerm])
+  const [loading, setLoading] = useState(false);
+
+    async function fetchQuestion() {
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get(Questions_URLS.SetUP_Questions);
+        setQuestionsData(response.data);
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || "Failed to fetch students");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    useEffect(() => {
+      fetchQuestion();
+    }, []);
+  
 
   return (
     <>
@@ -169,25 +113,24 @@ const handleAddQuestion = async (payload: QuestionFormData) => {
               <table className="w-full min-w-[700px]">
                 <thead>
                   <tr className="bg-gray-900">
-                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
+                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
                       Question Title
                     </th>
-                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
+                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
                       Question Desc
                     </th>
-                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
+                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
                       Question difficulty level
                     </th>
-                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                      Date
-                    </th>
-                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
+
+                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredQuestions.length > 0 ? (
+                  
+                  {!loading && filteredQuestions.length > 0  ? (
                     filteredQuestions.map((question, index) => (
                       <tr
                         key={question.id}
@@ -204,11 +147,8 @@ const handleAddQuestion = async (payload: QuestionFormData) => {
                         <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">
                           {question.difficulty}
                         </td>
-                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">
-                          {question.date}
-                        </td>
                         <td className="py-3 sm:py-4 px-3 sm:px-6">
-                          {question.hasActions && (
+                         
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => handleView(question)}
@@ -232,16 +172,19 @@ const handleAddQuestion = async (payload: QuestionFormData) => {
                                 <HiTrash className="w-5 h-5" />
                               </button>
                             </div>
-                          )}
+                     
                         </td>
                       </tr>
                     ))
                   ) : (
-                    <tr>
-                      <td colSpan={5} className="py-8 text-center text-gray-500">
-                        No questions found.
-                      </td>
-                    </tr>
+                  <tr>
+  <td colSpan={5} className="py-12 text-center text-gray-500">
+    <div className="flex flex-col items-center justify-center gap-2">
+      <FaSpinner className="animate-spin text-xl" />
+      No questions found.
+    </div>
+  </td>
+</tr>
                   )}
                 </tbody>
               </table>

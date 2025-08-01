@@ -48,7 +48,7 @@ const categoryOptions = [
   { value: "DO", label: "DevOps" },
 ]
 
-export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps) {
+export default function QuizSetupModal({ isOpen, onClose, setGeneratedQuizCode,setIsQuizSuccessModalOpen ,defaultValues }: QuizSetupModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const firstInputRef = useRef<HTMLInputElement>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -61,7 +61,7 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
     formState: { errors, isValid },
   } = useForm<QuizFormData>({
     mode: "onChange",
-    defaultValues: {
+    defaultValues: defaultValues || {
       title: "",
       duration: 10,
       numberOfQuestions: 15,
@@ -74,6 +74,27 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
       groupName: "JSB",
     },
   })
+
+useEffect(() => {
+  if (isOpen) {
+    if (defaultValues) {
+      reset(defaultValues)
+    } else {
+      reset({
+        title: "",
+        duration: 10,
+        numberOfQuestions: 15,
+        scorePerQuestion: 1,
+        description: "",
+        scheduleDate: "",
+        scheduleTime: "",
+        difficultyLevel: "easy",
+        categoryType: "FE",
+        groupName: "JSB",
+      })
+    }
+  }
+}, [isOpen, defaultValues, reset])
 
   // Focus management
   useEffect(() => {
@@ -140,6 +161,12 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
   try {
     const response = await axiosInstance.post(Quizzes_URLS.SetUP_Quizz, formattedData)
     toast.success(response.data.message)
+    console.log(response.data.data)
+    if(setGeneratedQuizCode && setIsQuizSuccessModalOpen){
+       setGeneratedQuizCode(response.data.data.code)
+setIsQuizSuccessModalOpen(true)
+    }
+   
   } catch (error: any) {
     toast.error(error.response?.data?.message || "Failed to create quiz")
   }
@@ -320,8 +347,8 @@ export default function QuizSetupModal({ isOpen, onClose }: QuizSetupModalProps)
         className="w-full h-full px-4 py-3 border-none bg-orange-50 border border-orange-200 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
         aria-invalid={errors.numberOfQuestions ? "true" : "false"}
       >
-        {questionOptions.map((option) => (
-          <option key={option.value} value={option.value}>
+        {questionOptions.map((option, i) => (
+          <option key={i} value={option.value}>
             {option.label}
           </option>
         ))}

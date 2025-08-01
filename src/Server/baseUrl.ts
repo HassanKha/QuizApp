@@ -43,8 +43,11 @@ export const STUDENTS_URLS = {
 }
 
 export const Quizzes_URLS = {
-  SetUP_Quizz:`/api/quiz`,
-
+  SetUP_Quizz: `/api/quiz`,
+  Get_QuizzID: (id: string) => `/api/quiz/${id}`,
+  Update_Quizz: (id: string) => `/api/quiz/${id}`,
+  delete_QuizzID: (id: string) => `/api/quiz/${id}`,
+  completed_Quizz: `/api/quiz/completed`,
 }
 
 export const Questions_URLS = {
