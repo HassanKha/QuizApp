@@ -52,5 +52,6 @@ export const Quizzes_URLS = {
 
 export const Questions_URLS = {
   SetUP_Questions:`/api/question`,
-
+  Delete_Question:(id:string)=>`/api/question/${id}`,
+  Update_Question:(id:string)=>`/api/question/${id}`
 }

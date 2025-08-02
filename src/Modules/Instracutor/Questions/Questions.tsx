@@ -3,38 +3,108 @@ import { HiEye, HiPencilSquare, HiTrash, HiPlus, HiMagnifyingGlass } from "react
 import QuestionSetupModal, { type QuestionFormData } from "./AddModel/QuestionSetupModal"
 import { toast } from "react-toastify"
 import { axiosInstance, Questions_URLS } from "../../../Server/baseUrl"
-import { FaSpinner } from "react-icons/fa"
+import { FaCheck, FaSpinner, FaTimes } from "react-icons/fa"
+import DeleteModal from "../../../Component/shared/Delete"
+import { useForm } from "react-hook-form"
 // import QuestionSetupModal, { type QuestionFormData } from "@/components/QuestionSetupModal" // Import the new modal
 
+
+interface UpdatedQuestion{
+  answer:"A" | "B" | "C" | "D"
+}
+
 interface Question {
-  id: number
+  _id: string
   title: string
   description: string
   difficulty: string
   hasActions: boolean // To simulate rows with/without action buttons
+  answer:string
 }
 
 
 
 export default function QuestionBankPage() {
+  const [showModal, setShowModal] = useState(false);
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [questionsData, setQuestionsData] = useState<Question[]>([])
+  const [questionId, setQuestionId] = useState<string| null>(null)
+   const [showDeleteModal, setShowDeleteModal] = useState(false);
+    let [modalLoading, setmodalLoading] = useState<boolean>(false);
+
+let { register, formState: { errors }, handleSubmit ,setValue} = useForm<UpdatedQuestion>();
+    
+ const showModalUpdate = (question:Question) => {
+  console.log(question.answer);
+  setQuestionId(question._id)
+  setValue("answer",question?.answer)
+    setShowModal(true);
+  };
+
+   const closeModalUpdate = () => {
+    setShowModal(false);
+   
+  };
+
+    const openDeleteModal = (question:Question) => {
+      console.log(question._id);
+      setQuestionId(question?._id)
+    setShowDeleteModal(true);
+   
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  
+  };
 
   const handleView = (question: Question) => {
     console.log("View question:", question.title)
     // Implement view logic
   }
 
-  const handleEdit = (question: Question) => {
-    console.log("Edit question:", question.title)
-    // Implement edit logic
-  }
+  // const handleEdit = () => {
+  //   console.log("Edit question:")
+  //   // Implement edit logic
+  // }
+   const updateQuestionAnswer = async (data:UpdatedQuestion) => {
+      try {
+        setmodalLoading(true)
+        const res = await axiosInstance.put(Questions_URLS.Update_Question(questionId),data)
+        console.log(res?.data?.message);
+        toast.success(res?.data?.message)
+        fetchQuestion()
+        closeModalUpdate()
+   
+      } catch (err:any) {
+        
+        toast.error(err?.response?.data?.message || "An error occurred.")
+       
+      } finally {
+        setmodalLoading(false)
+      }
+    }
 
-  const handleDelete = (question: Question) => {
-    console.log("Delete question:", question.title)
-    // Implement delete logic
-    setQuestionsData(questionsData.filter((q) => q.id !== question.id))
+  const handleDeleteQuestion = async() => {
+    try{
+      setmodalLoading(true)
+      let res = await axiosInstance.delete(Questions_URLS.Delete_Question(questionId))
+      console.log(res);
+      toast.success(res?.data?.message)
+      closeDeleteModal()
+      fetchQuestion()
+      
+    }
+    catch(error:any){
+      console.log(error);
+      toast.error(error?.response?.data?.message)
+      
+    }
+    finally{
+      setmodalLoading(false)
+    }
+    
   }
 
 const handleAddQuestion = async (payload: QuestionFormData) => {
@@ -133,7 +203,7 @@ const handleAddQuestion = async (payload: QuestionFormData) => {
                   {!loading && filteredQuestions.length > 0  ? (
                     filteredQuestions.map((question, index) => (
                       <tr
-                        key={question.id}
+                        key={question._id}
                         className={`border-b border-gray-200 last:border-b-0 ${
                           index % 2 === 0 ? "bg-white" : "bg-gray-50"
                         }`}
@@ -158,14 +228,14 @@ const handleAddQuestion = async (payload: QuestionFormData) => {
                                 <HiEye className="w-5 h-5" />
                               </button>
                               <button
-                                onClick={() => handleEdit(question)}
+                                onClick={() => showModalUpdate(question)}
                                 className="p-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                                 aria-label={`Edit ${question.title}`}
                               >
                                 <HiPencilSquare className="w-5 h-5" />
                               </button>
                               <button
-                                onClick={() => handleDelete(question)}
+                                onClick={() => openDeleteModal(question)}
                                 className="p-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                                 aria-label={`Delete ${question.title}`}
                               >
@@ -193,12 +263,69 @@ const handleAddQuestion = async (payload: QuestionFormData) => {
         </div>
       </div>
 
+        {showModal && (
+              <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white w-[800px] rounded-lg shadow-lg">
+      
+                  <form onSubmit={handleSubmit(updateQuestionAnswer)}>
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                       Update Quiz
+                      </h3>
+                      <div className="flex items-center gap-4">
+                        <button
+                          type='submit'
+                          disabled={modalLoading}
+                          className="text-gray-600 hover:text-green-600 transition-colors"
+                        >
+                          {modalLoading ? <FaSpinner className="animate-spin" /> : <FaCheck className="text-xl" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={closeModalUpdate}
+                          className="text-gray-600 hover:text-red-600 transition-colors"
+                        >
+                          <FaTimes className="text-xl" />
+                        </button>
+                      </div>
+                    </div>
+      
+                    <div className="p-6 space-y-4">
+                      <div className="relative flex border border-gray-200 rounded-lg focus-within:border-gray-200">
+                        <label htmlFor="groupName" className="flex items-center justify-center flex-shrink-0 bg-[#f8ebd9] text-lg font-bold text-black px-4 py-3 rounded-l-lg" style={{ minWidth: '110px' }}>
+                          Question Answer
+                        </label>
+                        <input
+                          id="groupName"
+                          {...register('answer', { required: 'Answer is required' })}
+                          type="text"
+                          className="flex-grow px-4 py-3 rounded-r-lg focus:outline-none text-gray-800"
+                        />
+                      </div>
+                      {errors.answer && <p className='text-red-600 text-sm mt-1'>{errors.answer.message}</p>}
+      
+                      
+                     
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
       {/* Question Setup Modal */}
       <QuestionSetupModal
   isOpen={isQuestionModalOpen}
   onClose={() => setIsQuestionModalOpen(false)}
   onSubmit={handleAddQuestion}
 />
+
+<DeleteModal
+        show={showDeleteModal}
+        onClose={closeDeleteModal}
+        onDeleteConfirm={handleDeleteQuestion} 
+        title="Delete Question" 
+        loading={modalLoading} 
+      />
     </>
   )
 }

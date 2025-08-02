@@ -1,22 +1,41 @@
-
 import { useEffect, useState } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { HiCalendarDays, HiClock, HiPencilSquare, HiChevronRight, HiTrash } from "react-icons/hi2"
-import type { Quiz, QuizFormData } from "../../../../Interfaces/Quizzes/Interfaces"
+import type { Quiz, QuizFormData, UpdatedQuiz } from "../../../../Interfaces/Quizzes/Interfaces"
 import { axiosInstance, Quizzes_URLS } from "../../../../Server/baseUrl"
 import QuizSetupModal from "../AddModel/QuizSetupModal"
 import ConfirmationModal from "../../../../Component/shared/ConfirmationModal"
 import { toast } from "react-toastify"
+import { useForm } from "react-hook-form"
+import { FaCheck, FaSpinner, FaTimes } from "react-icons/fa"
 
 
 export default function QuizDetailsPage() {
-  const { id } = useParams<{ id: string }>() // Use 'code' as the parameter name
+  const { id } = useParams<{ id: string }>() 
+  const [showModal, setShowModal] = useState(false);
+  let [modalLoading, setmodalLoading] = useState<boolean>(false);
   const navigate = useNavigate()
   const [quiz, setQuiz] = useState<Quiz | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
+  
+
+ const showModalUpdate = () => {
+    console.log(id);
+    setShowModal(true);
+    setValue('title',quiz?.title)
+  };
+
+   const closeModalUpdate = () => {
+    setShowModal(false);
+   
+  };
+
+
+   let { register, formState: { errors }, handleSubmit ,setValue} = useForm<UpdatedQuiz>();
+
 
   const fetchQuiz = async () => {
     setLoading(true)
@@ -32,15 +51,28 @@ export default function QuizDetailsPage() {
     }
   }
 
+  const updateQuiz = async (data:UpdatedQuiz) => {
+    try {
+      setmodalLoading(true)
+      const res = await axiosInstance.put(Quizzes_URLS.Update_Quizz(id || ""),data)
+      console.log(res?.data?.message);
+      toast.success(res?.data?.message)
+      closeModalUpdate()
+      navigate('/quizes')
+    } catch (err:any) {
+      
+      toast.error(err?.response?.data?.message || "An error occurred.")
+     
+    } finally {
+      setmodalLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (id) {
       fetchQuiz()
     }
   }, [id])
-
-//   const handleEditClick = () => {
-//     setIsEditModalOpen(true)
-//   }
 
 
   const handleDeleteClick = () => {
@@ -182,7 +214,7 @@ export default function QuizDetailsPage() {
               <span>Delete</span>
             </button>
             <button
-            //   onClick={handleEditClick}
+              onClick={showModalUpdate}
               className="flex cursor-pointer items-center gap-2 px-6 py-3 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition-all duration-200"
               aria-label="Edit quiz details"
             >
@@ -198,11 +230,10 @@ export default function QuizDetailsPage() {
         <QuizSetupModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          defaultValues={defaultEditValues} // Pass default values for editing
+          defaultValues={defaultEditValues} 
         />
       )}
 
-      {/* Confirmation Modal for Deletion */}
       <ConfirmationModal
         isOpen={isDeleteConfirmOpen}
         onClose={() => setIsDeleteConfirmOpen(false)}
@@ -211,6 +242,58 @@ export default function QuizDetailsPage() {
         message={`Are you sure you want to delete the quiz "${quiz.title}"? This action cannot be undone.`}
         confirmText="Delete"
       />
+      
+
+        {showModal && (
+        <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white w-[800px] rounded-lg shadow-lg">
+
+            <form onSubmit={handleSubmit(updateQuiz)}>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800">
+                 Update Quiz
+                </h3>
+                <div className="flex items-center gap-4">
+                  <button
+                    type='submit'
+                    disabled={modalLoading}
+                    className="text-gray-600 hover:text-green-600 transition-colors"
+                  >
+                    {modalLoading ? <FaSpinner className="animate-spin" /> : <FaCheck className="text-xl" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeModalUpdate}
+                    className="text-gray-600 hover:text-red-600 transition-colors"
+                  >
+                    <FaTimes className="text-xl" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <div className="relative flex border border-gray-200 rounded-lg focus-within:border-gray-200">
+                  <label htmlFor="groupName" className="flex items-center justify-center flex-shrink-0 bg-[#f8ebd9] text-lg font-bold text-black px-4 py-3 rounded-l-lg" style={{ minWidth: '110px' }}>
+                    Quiz Title
+                  </label>
+                  <input
+                    id="groupName"
+                    {...register('title', { required: 'Quiz Title is required' })}
+                    type="text"
+                    className="flex-grow px-4 py-3 rounded-r-lg focus:outline-none text-gray-800"
+                  />
+                </div>
+                {errors.title && <p className='text-red-600 text-sm mt-1'>{errors.title.message}</p>}
+
+                
+               
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+
     </>
   )
 }

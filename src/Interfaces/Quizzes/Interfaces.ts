@@ -41,3 +41,7 @@ export interface Quiz {
   __v: number
   participants: number
 }
+
+export interface UpdatedQuiz{
+  title:string
+}
