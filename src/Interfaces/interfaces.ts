@@ -7,7 +7,15 @@ export interface ILogData {
   last_name?: string;
 }
 
-
+export interface topStudent {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  avg_score: number;
+  group: {
+    name: string;
+  };
+}
 export interface AuthState {
   token: string | null
   LogData: ILogData | null

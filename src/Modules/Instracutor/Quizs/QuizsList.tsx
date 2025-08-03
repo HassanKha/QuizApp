@@ -11,27 +11,34 @@ import { axiosInstance, Quizzes_URLS } from "../../../Server/baseUrl"
 import type { Quiz } from "../../../Interfaces/Quizzes/Interfaces"
 import { FaSpinner } from "react-icons/fa"
 import QuizSuccessModal from "./AddModel/QuizSuccessModal"
+import { useSelector } from "react-redux"
+import type { RootState } from "../../../Redux/store"
 
 
 
 
 
 export default function QuizsList() {
-     const [isQuizModalOpen, setIsQuizModalOpen] = useState(false)
-     const [_, setQuizzes] = useState<Quiz[]>([])
-const [upcomingQuizzes, setUpcomingQuizzes] = useState<Quiz[]>([])
-const [CompleteQuizzes, setCompleteQuizzes] = useState<Quiz[]>([])
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false)
+  const [_, setQuizzes] = useState<Quiz[]>([])
+  const [upcomingQuizzes, setUpcomingQuizzes] = useState<Quiz[]>([])
+  const [CompleteQuizzes, setCompleteQuizzes] = useState<Quiz[]>([])
 
-const navigate = useNavigate();
-const [loadingUpcoming, setLoadingUpcoming] = useState(true)
-const [loadingComplete, setLoadingComplete] = useState(true)
+  const navigate = useNavigate();
+  const [loadingUpcoming, setLoadingUpcoming] = useState(true)
+  const [loadingComplete, setLoadingComplete] = useState(true)
   const [isQuizSuccessModalOpen, setIsQuizSuccessModalOpen] = useState(false)
   const [generatedQuizCode, setGeneratedQuizCode] = useState("")
 
+ const user = useSelector((state: RootState) => state.auth.LogData);
 
-   async function fetchCompleteQuizzes() {
+  
+  if (user?.role === "Student") {
+    navigate('/dashboard')
+  }
+  async function fetchCompleteQuizzes() {
     try {
-        const res = await axiosInstance.get(Quizzes_URLS.completed_Quizz); 
+      const res = await axiosInstance.get(Quizzes_URLS.completed_Quizz);
       const all = res.data || []
 
       setQuizzes(all)
@@ -54,40 +61,40 @@ const [loadingComplete, setLoadingComplete] = useState(true)
   }
 
 
-useEffect(() => {
-  async function fetchAllQuizzes() {
-    try {
-        const res = await axiosInstance.get(Quizzes_URLS.SetUP_Quizz); 
-      const all = res.data || []
+  useEffect(() => {
+    async function fetchAllQuizzes() {
+      try {
+        const res = await axiosInstance.get(Quizzes_URLS.SetUP_Quizz);
+        const all = res.data || []
 
-      setQuizzes(all)
+        setQuizzes(all)
 
-      const now = new Date()
+        const now = new Date()
 
-      const upcoming = all
-        .filter((quiz: Quiz) => new Date(quiz.schadule) > now)
-        .sort((a: Quiz, b: Quiz) => new Date(a.schadule).getTime() - new Date(b.schadule).getTime())
-        .slice(0, 2)
+        const upcoming = all
+          .filter((quiz: Quiz) => new Date(quiz.schadule) > now)
+          .sort((a: Quiz, b: Quiz) => new Date(a.schadule).getTime() - new Date(b.schadule).getTime())
+          .slice(0, 2)
 
-      setUpcomingQuizzes(upcoming)
-    } catch (err) {
-      toast.error("Failed to load quizzes")
-      console.error(err)
+        setUpcomingQuizzes(upcoming)
+      } catch (err) {
+        toast.error("Failed to load quizzes")
+        console.error(err)
+      }
+      finally {
+        setLoadingUpcoming(false)
+      }
     }
-    finally {
-      setLoadingUpcoming(false)
-    }
-  }
 
-  fetchAllQuizzes()
-  fetchCompleteQuizzes()
-}, [])
+    fetchAllQuizzes()
+    fetchCompleteQuizzes()
+  }, [])
 
   const handleViewDetails = (id: string) => {
     navigate(`/quizes/${id}`)
   }
 
-    const handleQuizSuccessClose = () => {
+  const handleQuizSuccessClose = () => {
     setIsQuizSuccessModalOpen(false)
   }
 
@@ -98,7 +105,7 @@ useEffect(() => {
         {/* Left Column - Action Cards */}
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
-            <button   onClick={() => setIsQuizModalOpen(true)} className="flex cursor-pointer flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
+            <button onClick={() => setIsQuizModalOpen(true)} className="flex cursor-pointer flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
               <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4 lg:mb-6 group-hover:bg-gray-100 transition-colors duration-200">
                 <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
                   <MdQuiz className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
@@ -107,7 +114,7 @@ useEffect(() => {
               <span className="text-base lg:text-lg font-semibold text-gray-900 text-center">Set up a new quiz</span>
             </button>
 
-            <button onClick={()=> navigate("/questions")} className="flex cursor-pointer flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
+            <button onClick={() => navigate("/questions")} className="flex cursor-pointer flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
               <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4 lg:mb-6 group-hover:bg-gray-100 transition-colors duration-200">
                 <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
                   <HiComputerDesktop className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
@@ -116,65 +123,65 @@ useEffect(() => {
               <span className="text-base lg:text-lg font-semibold text-gray-900 text-center">Question Bank</span>
             </button>
           </div>
-     <AllQuizzesPage/>
+          <AllQuizzesPage />
         </div>
 
         {/* Right Column - Upcoming and Completed Quizzes */}
         <div className="space-y-6">
           {/* Upcoming Quizzes */}
-       <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
-  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Upcoming quizzes</h2>
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Upcoming quizzes</h2>
 
-  {loadingUpcoming ? (
-    <div className="flex justify-center py-10">
-      <FaSpinner className="text-2xl text-gray-500 animate-spin" />
-    </div>
-  ) : upcomingQuizzes.length === 0 ? (
-    <div className="text-gray-500 text-center py-8">No upcoming quizzes found.</div>
-  ) : (
-    <div className="space-y-3 bg-white sm:space-y-4">
-      {upcomingQuizzes.map((quiz) => (
-        <div
-          key={quiz._id}
-          className="flex items-center gap-3 sm:gap-4 lg:gap-6 p-4 sm:p-6 bg-white rounded-2xl border border-orange-100 hover:shadow-md transition-all duration-200"
-        >
-          {/* Quiz Illustration */}
-          <div className="w-16 h-16 bg-orange-50 sm:w-20 sm:h-20 lg:w-32 lg:h-32 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <img
-              src={img1}
-              alt={`${quiz.title} illustration`}
-              className="w-full h-full sm:w-12 sm:h-12 lg:w-full lg:h-full object-contain"
-            />
+            {loadingUpcoming ? (
+              <div className="flex justify-center py-10">
+                <FaSpinner className="text-2xl text-gray-500 animate-spin" />
+              </div>
+            ) : upcomingQuizzes.length === 0 ? (
+              <div className="text-gray-500 text-center py-8">No upcoming quizzes found.</div>
+            ) : (
+              <div className="space-y-3 bg-white sm:space-y-4">
+                {upcomingQuizzes.map((quiz) => (
+                  <div
+                    key={quiz._id}
+                    className="flex items-center gap-3 sm:gap-4 lg:gap-6 p-4 sm:p-6 bg-white rounded-2xl border border-orange-100 hover:shadow-md transition-all duration-200"
+                  >
+                    {/* Quiz Illustration */}
+                    <div className="w-16 h-16 bg-orange-50 sm:w-20 sm:h-20 lg:w-32 lg:h-32 rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <img
+                        src={img1}
+                        alt={`${quiz.title} illustration`}
+                        className="w-full h-full sm:w-12 sm:h-12 lg:w-full lg:h-full object-contain"
+                      />
+                    </div>
+
+                    {/* Quiz Details */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base lg:text-xl mb-1 sm:mb-2 line-clamp-2">
+                        {quiz.title}
+                      </h3>
+                      <p className="text-gray-600 mb-2 sm:mb-3 text-xs sm:text-sm lg:text-base">
+                        {new Date(quiz.schadule).toLocaleString()}
+                      </p>
+                      <p className="text-gray-700 text-xs sm:text-sm lg:text-base">
+                        <span className="font-medium">No. of students enrolled:</span> {quiz.participants}
+                      </p>
+                    </div>
+
+                    {/* Open Button */}
+                    <button
+                      onClick={() => handleViewDetails(quiz._id)}
+                      className="flex cursor-pointer items-center gap-2 px-3 sm:px-4 lg:px-6 py-2 sm:py-3 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
+                    >
+                      <span className="font-medium text-xs sm:text-sm lg:text-base">Open</span>
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 bg-[#C5D86D] rounded-full flex items-center justify-center">
+                        <HiArrowRight className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+                      </div>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-
-          {/* Quiz Details */}
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 text-sm sm:text-base lg:text-xl mb-1 sm:mb-2 line-clamp-2">
-              {quiz.title}
-            </h3>
-            <p className="text-gray-600 mb-2 sm:mb-3 text-xs sm:text-sm lg:text-base">
-              {new Date(quiz.schadule).toLocaleString()}
-            </p>
-            <p className="text-gray-700 text-xs sm:text-sm lg:text-base">
-              <span className="font-medium">No. of students enrolled:</span> {quiz.participants}
-            </p>
-          </div>
-
-          {/* Open Button */}
-          <button
-            onClick={() => handleViewDetails(quiz._id)}
-            className="flex cursor-pointer items-center gap-2 px-3 sm:px-4 lg:px-6 py-2 sm:py-3 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
-          >
-            <span className="font-medium text-xs sm:text-sm lg:text-base">Open</span>
-            <div className="w-4 h-4 sm:w-5 sm:h-5 bg-[#C5D86D] rounded-full flex items-center justify-center">
-              <HiArrowRight className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-            </div>
-          </button>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
 
           {/* Completed Quizzes */}
           <div className="bg-white w-full rounded-2xl  border border-gray-200 p-4 sm:p-6">
@@ -206,53 +213,52 @@ useEffect(() => {
                     </tr>
                   </thead>
                   <tbody>
-           {loadingComplete ? (
-    <tr>
-      <td colSpan={4} className="py-10 text-center text-gray-500">
-        <FaSpinner className="text-2xl animate-spin inline-block" />
-      </td>
-    </tr>
-  ) : CompleteQuizzes.length === 0 ? (
-    <tr>
-      <td colSpan={4} className="py-8 text-center text-gray-500">
-        No completed quizzes found.
-      </td>
-    </tr>
-  ) : (
-    <div className="overflow-x-auto">
-      <div className="overflow-hidden rounded-xl border border-gray-200 min-w-full">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-900">
-              <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Title</th>
-              <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Group name</th>
-              <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">No. of persons in group</th>
-              <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {CompleteQuizzes.map((quiz, index) => (
-              <tr
-                key={quiz._id}
-                className={`border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors duration-200 ${
-                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                }`}
-              >
-                <td className="py-3 sm:py-4 px-3 sm:px-6 font-medium text-gray-900 text-sm sm:text-base">
-                  {quiz.title}
-                </td>
-                <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">{quiz.type}</td>
-                <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">
-                  {quiz.participants} persons
-                </td>
-                <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">{quiz.duration}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )}
+                    {loadingComplete ? (
+                      <tr>
+                        <td colSpan={4} className="py-10 text-center text-gray-500">
+                          <FaSpinner className="text-2xl animate-spin inline-block" />
+                        </td>
+                      </tr>
+                    ) : CompleteQuizzes.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="py-8 text-center text-gray-500">
+                          No completed quizzes found.
+                        </td>
+                      </tr>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <div className="overflow-hidden rounded-xl border border-gray-200 min-w-full">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="bg-gray-900">
+                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Title</th>
+                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Group name</th>
+                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">No. of persons in group</th>
+                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Date</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {CompleteQuizzes.map((quiz, index) => (
+                                <tr
+                                  key={quiz._id}
+                                  className={`border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors duration-200 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                    }`}
+                                >
+                                  <td className="py-3 sm:py-4 px-3 sm:px-6 font-medium text-gray-900 text-sm sm:text-base">
+                                    {quiz.title}
+                                  </td>
+                                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">{quiz.type}</td>
+                                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">
+                                    {quiz.participants} persons
+                                  </td>
+                                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">{quiz.duration}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -260,9 +266,9 @@ useEffect(() => {
           </div>
         </div>
       </div>
-         {/* Quiz Setup Modal */}
-      <QuizSetupModal setGeneratedQuizCode={setGeneratedQuizCode} setIsQuizSuccessModalOpen={setIsQuizSuccessModalOpen}  isOpen={isQuizModalOpen} onClose={() => setIsQuizModalOpen(false)}   />
-          {/* Quiz Success Modal */}
+      {/* Quiz Setup Modal */}
+      <QuizSetupModal setGeneratedQuizCode={setGeneratedQuizCode} setIsQuizSuccessModalOpen={setIsQuizSuccessModalOpen} isOpen={isQuizModalOpen} onClose={() => setIsQuizModalOpen(false)} />
+      {/* Quiz Success Modal */}
       <QuizSuccessModal isOpen={isQuizSuccessModalOpen} onClose={handleQuizSuccessClose} quizCode={generatedQuizCode} />
     </div>
   )

@@ -7,6 +7,9 @@ import { FaCheck, FaSpinner, FaTimes } from "react-icons/fa";
 import DeleteModal from "../../../Component/shared/Delete";
 import { useForm } from "react-hook-form";
 import QuestionViewModal, { type QuestionData } from "./ViewModal/QuestionDetailsModal";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../Redux/store";
+import { useNavigate } from "react-router-dom";
 
 interface UpdatedQuestion {
   answer: "A" | "B" | "C" | "D";
@@ -77,7 +80,7 @@ export default function QuestionBankPage() {
       toast.error("Question ID is missing. Cannot update.");
       return;
     }
-    
+
     try {
       setmodalLoading(true);
       const res = await axiosInstance.put(Questions_URLS.Update_Question(questionId), data);
@@ -90,7 +93,12 @@ export default function QuestionBankPage() {
       setmodalLoading(false);
     }
   };
+  const user = useSelector((state: RootState) => state.auth.LogData);
 
+  let navigate = useNavigate()
+  if (user?.role === "Student") {
+    navigate('/dashboard')
+  }
   const handleDeleteQuestion = async () => {
     if (!questionId) {
       toast.error("Question ID is missing. Cannot delete.");
@@ -114,7 +122,7 @@ export default function QuestionBankPage() {
     try {
       await axiosInstance.post(Questions_URLS.SetUP_Questions, payload);
       toast.success("Question added successfully");
-      fetchQuestion(); 
+      fetchQuestion();
     } catch (error) {
       toast.error("Failed to add question");
       console.error(error);
@@ -203,9 +211,8 @@ export default function QuestionBankPage() {
                     filteredQuestions.map((question, index) => (
                       <tr
                         key={question._id}
-                        className={`border-b border-gray-200 last:border-b-0 ${
-                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                        }`}
+                        className={`border-b border-gray-200 last:border-b-0 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                          }`}
                       >
                         <td className="py-3 sm:py-4 px-3 sm:px-6 font-medium text-gray-900 text-sm sm:text-base">
                           {question.title}

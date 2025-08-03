@@ -8,6 +8,9 @@ import { MdDelete } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import { Dialog, Transition } from '@headlessui/react';
 import { HiOutlineUser, HiOutlineShieldCheck, HiOutlineUsers } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../../Redux/store';
+import { useNavigate } from 'react-router-dom';
 
 interface Student {
   _id: string;
@@ -81,7 +84,12 @@ export default function StudentList() {
   const toggleMenu = (id: string) => {
     setOpenMenuId(openMenuId === id ? null : id);
   };
+  const user = useSelector((state: RootState) => state.auth.LogData);
 
+  let navigate = useNavigate()
+  if (user?.role === "Student") {
+    navigate('/dashboard')
+  }
   async function fetchStudents() {
     setLoading(true);
     try {
@@ -183,7 +191,7 @@ export default function StudentList() {
                     <FaRegEye className="mr-2 text-green-600 text-lg" /> View
                   </button>
                   <button onClick={() => deleteStudent(user._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
-                   <MdDelete className="mr-2 text-red-600 text-lg" /> Delete student
+                    <MdDelete className="mr-2 text-red-600 text-lg" /> Delete student
                   </button>
 
                 </div>
@@ -264,7 +272,7 @@ export default function StudentList() {
             </ul>
           </div>
         )}
-  
+
       </div>
 
       <StudentDetailsModal isOpen={showModal} onClose={() => setShowModal(false)} student={selectedStudent} />

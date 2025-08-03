@@ -55,3 +55,7 @@ export const Questions_URLS = {
   Delete_Question:(id:string)=>`/api/question/${id}`,
   Update_Question:(id:string)=>`/api/question/${id}`
 }
+export const TOP_STUDENTS = {
+  GET_TOP_STUDENTS:`/api/student/top-five`,
+
+}

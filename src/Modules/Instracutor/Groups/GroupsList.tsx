@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaPlusCircle, FaEdit, FaTrash, FaTimes, FaCheck, FaSpinner, FaEye } from 'react-icons/fa';
 import Loader from '../../../Component/shared/Loader';
 import { useForm, Controller } from 'react-hook-form';
@@ -8,6 +8,9 @@ import Select from 'react-select';
 import { axiosInstance, GROUPS_URLS, STUDENTS_URLS } from '../../../Server/baseUrl';
 import DeleteModal from '../../../Component/shared/Delete';
 import { IoCloseSharp } from 'react-icons/io5';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../../Redux/store';
+import { useNavigate } from 'react-router-dom';
 
 interface Group {
   _id: string;
@@ -45,7 +48,7 @@ export default function GroupsList() {
     }
   });
   let [Groups, setGroups] = useState<Group[]>([]);
-  let [Group, setGroup] = useState<Group| null>(null);
+  let [Group, setGroup] = useState<Group | null>(null);
   let [Students, setStudents] = useState<Student[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showModalGroup, setShowModalGroup] = useState(false);
@@ -54,28 +57,30 @@ export default function GroupsList() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [currentGroupId, setCurrentGroupId] = useState<string | null>(null);
+  const user = useSelector((state: RootState) => state.auth.LogData);
+
 
   const showModalAdd = () => {
     setShowModal(true);
     setIsUpdateMode(false);
     setCurrentGroupId(null);
-    reset({ 
+    reset({
       name: '',
       students: []
     });
   };
 
-  const showSpecificGroupModal = (group:Group) => {
+  const showSpecificGroupModal = (group: Group) => {
     setShowModalGroup(true);
     getSelectedGroup(group._id)
-    
+
   };
 
   const closeModalAdd = () => {
     setShowModal(false);
     setIsUpdateMode(false);
     setCurrentGroupId(null);
-    reset({ 
+    reset({
       name: '',
       students: []
     });
@@ -104,7 +109,7 @@ export default function GroupsList() {
     }
   };
 
-  const getSelectedGroup = async (_id:string) => {
+  const getSelectedGroup = async (_id: string) => {
     try {
       setmodalLoading(true)
       let res = await axiosInstance.get(GROUPS_URLS.GET_GROUP_BY_ID(_id));
@@ -113,7 +118,7 @@ export default function GroupsList() {
       console.error(error);
       toast.error("Failed to fetch students.");
     }
-    finally{
+    finally {
       setmodalLoading(false)
     }
   };
@@ -125,7 +130,7 @@ export default function GroupsList() {
 
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
-  
+
   };
 
   const GetGroupForUpdate = (group: Group) => {
@@ -152,8 +157,8 @@ export default function GroupsList() {
         toast.success(res?.data?.message);
       }
 
-      closeModalAdd(); 
-      getAllGroups(); 
+      closeModalAdd();
+      getAllGroups();
     } catch (error: any) {
       console.error(error?.response?.data?.message);
       toast.error(error?.response?.data?.message || "An error occurred.");
@@ -163,33 +168,33 @@ export default function GroupsList() {
   };
 
   const deleteGroup = async () => {
-    if(currentGroupId){
- try {
-      setmodalLoading(true);
-      let res = await axiosInstance.delete(GROUPS_URLS.DELETE_GROUP(currentGroupId));
-      console.log(res?.data);
-      toast.success(res?.data?.message);
-      closeDeleteModal(); 
-      getAllGroups(); 
-    } catch (error: any) {
-      console.error(error?.response?.data?.message);
-      toast.error(error?.response?.data?.message || "An error occurred.");
-    } finally {
-      setmodalLoading(false);
+    if (currentGroupId) {
+      try {
+        setmodalLoading(true);
+        let res = await axiosInstance.delete(GROUPS_URLS.DELETE_GROUP(currentGroupId));
+        console.log(res?.data);
+        toast.success(res?.data?.message);
+        closeDeleteModal();
+        getAllGroups();
+      } catch (error: any) {
+        console.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.message || "An error occurred.");
+      } finally {
+        setmodalLoading(false);
+      }
     }
-    }
-   
+
   };
 
   useEffect(() => {
     getAllGroups();
-   
-  }, []); 
+
+  }, []);
 
   useEffect(() => {
-   
-    getAllStudents(); 
-  }, [Students]); 
+
+    getAllStudents();
+  }, [Students]);
 
 
   const studentOptions: StudentOption[] = Students.map(student => ({
@@ -197,9 +202,13 @@ export default function GroupsList() {
     label: `${student.first_name} ${student.last_name}`
   }));
 
+  let navigate = useNavigate()
+  if (user?.role === "Student") {
+    navigate('/dashboard')
+  }
   return (
     <>
-     
+
 
       <div className="flex-1 p-2 md:p-2  min-h-screen">
         <div className="bg-white border border-gray-300 rounded-lg p-6">
@@ -238,17 +247,17 @@ export default function GroupsList() {
                         <button onClick={() => { GetGroupForUpdate(group); }} className="text-black cursor-pointer hover:text-green-600 transition">
                           <FaEdit className="w-5 h-5" />
                         </button>
-                        <button onClick={()=>{openDeleteModal(group)}}>
+                        <button onClick={() => { openDeleteModal(group) }}>
                           <span className="text-black cursor-pointer hover:text-red-600 transition">
-                          <FaTrash className="w-5 h-5" />
-                        </span>
+                            <FaTrash className="w-5 h-5" />
+                          </span>
                         </button>
-                        <button onClick={()=>{showSpecificGroupModal(group)}}>
+                        <button onClick={() => { showSpecificGroupModal(group) }}>
                           <span className="text-black cursor-pointer hover:text-sky-600 transition">
-                          <FaEye className="w-5 h-5" />
-                        </span>
+                            <FaEye className="w-5 h-5" />
+                          </span>
                         </button>
-                        
+
                       </div>
                     </div>
                   ))
@@ -259,7 +268,7 @@ export default function GroupsList() {
             )}
           </div>
 
-         
+
         </div>
       </div>
 
@@ -338,9 +347,9 @@ export default function GroupsList() {
                               paddingLeft: '1rem',
                             }),
                             input: (baseStyles) => ({
-                                ...baseStyles,
-                                margin: '0',
-                                padding: '0',
+                              ...baseStyles,
+                              margin: '0',
+                              padding: '0',
                             }),
                             placeholder: (baseStyles) => ({
                               ...baseStyles,
@@ -352,23 +361,23 @@ export default function GroupsList() {
                               color: '#6b7280',
                             }),
                             clearIndicator: (baseStyles) => ({
-                                ...baseStyles,
-                                color: '#6b7280',
+                              ...baseStyles,
+                              color: '#6b7280',
                             }),
                             multiValue: (baseStyles) => ({
-                                ...baseStyles,
-                                backgroundColor: '#e0e0e0',
+                              ...baseStyles,
+                              backgroundColor: '#e0e0e0',
                             }),
                             multiValueLabel: (baseStyles) => ({
-                                ...baseStyles,
-                                color: '#333',
+                              ...baseStyles,
+                              color: '#333',
                             }),
                             multiValueRemove: (baseStyles) => ({
-                                ...baseStyles,
-                                ':hover': {
-                                    backgroundColor: '#d0d0d0',
-                                    color: '#c0392b',
-                                },
+                              ...baseStyles,
+                              ':hover': {
+                                backgroundColor: '#d0d0d0',
+                                color: '#c0392b',
+                              },
                             }),
                           }}
                         />
@@ -383,43 +392,43 @@ export default function GroupsList() {
         </div>
       )}
 
-     
+
       <DeleteModal
         show={showDeleteModal}
         onClose={closeDeleteModal}
-        onDeleteConfirm={deleteGroup} 
-        title="Delete Group" 
-        loading={modalLoading} 
+        onDeleteConfirm={deleteGroup}
+        title="Delete Group"
+        loading={modalLoading}
       />
 
-{showModalGroup && (
-  <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-    <div className="bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl shadow-2xl w-[90%] max-w-lg p-6 relative animate-fade-in">
-      <button
-        onClick={() => setShowModalGroup(false)}
-        className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl font-bold"
-        aria-label="Close Modal"
-      >
-        <IoCloseSharp />
-      </button>
+      {showModalGroup && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl shadow-2xl w-[90%] max-w-lg p-6 relative animate-fade-in">
+            <button
+              onClick={() => setShowModalGroup(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl font-bold"
+              aria-label="Close Modal"
+            >
+              <IoCloseSharp />
+            </button>
 
-      {/* المحتوى */}
-      {modalLoading ? (
-       <Loader/>
-      ) : (
-        <>
-          <h2 className="text-2xl font-bold mb-6 text-center border-b pb-2">Group Details</h2>
-          <div className="space-y-3">
-            <p><span className="font-semibold">Group Name:</span> {Group?.name}</p>
-            <p><span className="font-semibold">Instructor:</span> {Group?.instructor}</p>
-            <p><span className="font-semibold">Status:</span> {Group?.status}</p>
-            <p><span className="font-semibold">Students:</span> {Group?.students?.length}</p>
+            {/* المحتوى */}
+            {modalLoading ? (
+              <Loader />
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold mb-6 text-center border-b pb-2">Group Details</h2>
+                <div className="space-y-3">
+                  <p><span className="font-semibold">Group Name:</span> {Group?.name}</p>
+                  <p><span className="font-semibold">Instructor:</span> {Group?.instructor}</p>
+                  <p><span className="font-semibold">Status:</span> {Group?.status}</p>
+                  <p><span className="font-semibold">Students:</span> {Group?.students?.length}</p>
+                </div>
+              </>
+            )}
           </div>
-        </>
+        </div>
       )}
-    </div>
-  </div>
-)}
 
     </>
   );
