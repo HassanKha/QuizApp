@@ -23,11 +23,15 @@ export default function QuizDetailsPage() {
   
 
  const showModalUpdate = () => {
-    console.log(id);
-    setShowModal(true);
-    setValue('title',quiz?.title)
-  };
-
+   
+    if (quiz) {
+        console.log(id);
+        setShowModal(true);
+        setValue('title', quiz.title);
+    } else {
+        toast.error("Quiz data is not available yet.");
+    }
+};
    const closeModalUpdate = () => {
     setShowModal(false);
    
