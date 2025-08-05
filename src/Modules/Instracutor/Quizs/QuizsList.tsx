@@ -1,4 +1,3 @@
-
 import { HiComputerDesktop, HiArrowRight } from "react-icons/hi2"
 import { MdQuiz } from "react-icons/md"
 import img1 from "../../../assets/img1.png"
@@ -13,9 +12,7 @@ import { FaSpinner } from "react-icons/fa"
 import QuizSuccessModal from "./AddModel/QuizSuccessModal"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../../Redux/store"
-
-
-
+import { t } from "i18next"
 
 
 export default function QuizsList() {
@@ -111,7 +108,7 @@ export default function QuizsList() {
                   <MdQuiz className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
                 </div>
               </div>
-              <span className="text-base lg:text-lg font-semibold text-gray-900 text-center">Set up a new quiz</span>
+              <span className="text-base lg:text-lg font-semibold text-gray-900 text-center">{t("QuizsList.setupQuiz")}</span>
             </button>
 
             <button onClick={() => navigate("/questions")} className="flex cursor-pointer flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
@@ -120,7 +117,7 @@ export default function QuizsList() {
                   <HiComputerDesktop className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
                 </div>
               </div>
-              <span className="text-base lg:text-lg font-semibold text-gray-900 text-center">Question Bank</span>
+              <span className="text-base lg:text-lg font-semibold text-gray-900 text-center">{t("QuizsList.questionBank")}</span>
             </button>
           </div>
           <AllQuizzesPage />
@@ -130,14 +127,14 @@ export default function QuizsList() {
         <div className="space-y-6">
           {/* Upcoming Quizzes */}
           <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Upcoming quizzes</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">{t("QuizsList.upcomingQuizzes")}</h2>
 
             {loadingUpcoming ? (
               <div className="flex justify-center py-10">
                 <FaSpinner className="text-2xl text-gray-500 animate-spin" />
               </div>
             ) : upcomingQuizzes.length === 0 ? (
-              <div className="text-gray-500 text-center py-8">No upcoming quizzes found.</div>
+              <div className="text-gray-500 text-center py-8">{t("QuizsList.noUpcoming")}</div>
             ) : (
               <div className="space-y-3 bg-white sm:space-y-4">
                 {upcomingQuizzes.map((quiz) => (
@@ -163,7 +160,7 @@ export default function QuizsList() {
                         {new Date(quiz.schadule).toLocaleString()}
                       </p>
                       <p className="text-gray-700 text-xs sm:text-sm lg:text-base">
-                        <span className="font-medium">No. of students enrolled:</span> {quiz.participants}
+                        <span className="font-medium">{t("QuizsList.enrolled")}:</span> {quiz.participants}
                       </p>
                     </div>
 
@@ -172,7 +169,7 @@ export default function QuizsList() {
                       onClick={() => handleViewDetails(quiz._id)}
                       className="flex cursor-pointer items-center gap-2 px-3 sm:px-4 lg:px-6 py-2 sm:py-3 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"
                     >
-                      <span className="font-medium text-xs sm:text-sm lg:text-base">Open</span>
+                      <span className="font-medium text-xs sm:text-sm lg:text-base">{t("QuizsList.open")}</span>
                       <div className="w-4 h-4 sm:w-5 sm:h-5 bg-[#C5D86D] rounded-full flex items-center justify-center">
                         <HiArrowRight className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                       </div>
@@ -186,9 +183,9 @@ export default function QuizsList() {
           {/* Completed Quizzes */}
           <div className="bg-white w-full rounded-2xl  border border-gray-200 p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Completed Quizzes</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{t("QuizsList.completedQuizzes")}</h2>
               <button className="flex items-center gap-2 text-orange-500 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 rounded-lg px-2 sm:px-3 py-2">
-                <span className="text-sm sm:text-base text-gray-900">Results</span>
+                <span className="text-sm sm:text-base text-gray-900">{t("QuizsList.results")}</span>
                 <HiArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#C5D86D]" />
               </button>
             </div>
@@ -199,16 +196,16 @@ export default function QuizsList() {
                   <thead>
                     <tr className="bg-gray-900 ">
                       <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                        Title
+                        {t("QuizsList.title")}
                       </th>
                       <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                        Group name
+                        {t("QuizsList.groupName")}
                       </th>
                       <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                        No. of persons in group
+                        {t("QuizsList.persons")}
                       </th>
                       <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                        Date
+                         {t("QuizsList.date")}
                       </th>
                     </tr>
                   </thead>

@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import logo from "../../assets/Log-icon.png";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../Redux/store";
+import { useEffect } from "react";
+import i18n from "../../i18n";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -67,6 +69,11 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
   const isActiveItem = (href: string) => {
     return location.pathname === href || location.pathname.startsWith(href + "/");
   };
+
+  useEffect(() => {
+    const dir = i18n.language === "ar" ? "rtl" : "ltr";
+    document.documentElement.dir = dir;
+  }, [i18n.language]);
 
   return (
     <>

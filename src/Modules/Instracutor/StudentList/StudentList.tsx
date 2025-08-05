@@ -11,6 +11,7 @@ import { HiOutlineUser, HiOutlineShieldCheck, HiOutlineUsers } from 'react-icons
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../Redux/store';
 import { useNavigate } from 'react-router-dom';
+import { t } from 'i18next';
 
 interface Student {
   _id: string;
@@ -43,25 +44,25 @@ function StudentDetailsModal({ isOpen, onClose, student }: { isOpen: boolean; on
           >
             <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
               <div className="flex justify-between items-center mb-4">
-                <Dialog.Title className="text-lg font-bold">Student Details</Dialog.Title>
+                <Dialog.Title className="text-lg font-bold">{t("studentDetails.title")}</Dialog.Title>
                 <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-3xl font-bold">×</button>
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg mb-4">
                 <h3 className="flex items-center text-gray-700 font-semibold mb-2">
-                  <HiOutlineUser className="mr-2" /> Personal Information
+                  <HiOutlineUser className="mr-2" /> {t("studentDetails.personalInfo")}
                 </h3>
-                <p><strong>Full Name:</strong> {student.first_name} {student.last_name}</p>
-                <p className="flex items-center gap-2"> <strong>Email:</strong>{student.email}</p>
-                <p><strong>Student ID:</strong> {student._id}</p>
+                <p><strong>{t("studentDetails.fullName")}:</strong> {student.first_name} {student.last_name}</p>
+                  <p><strong>{t("studentDetails.email")}:</strong> {student.email}</p>
+                  <p><strong>{t("studentDetails.studentId")}:</strong> {student._id}</p>
                 <p className="flex items-center gap-1"><HiOutlineShieldCheck className="text-sm" /> {student.role || 'student'}</p>
               </div>
 
               <div className="bg-green-50 p-4 rounded-lg">
                 <h3 className="flex items-center text-gray-700 font-semibold mb-2">
-                  <HiOutlineUsers className="mr-2" /> Group Information
+                    <HiOutlineUsers className="mr-2" /> {t("studentDetails.groupInfo")}
                 </h3>
-                <p><strong>Group Name:</strong> {student.group?.name || "No Group"}</p>
+               <p><strong>{t("studentDetails.groupName")}:</strong> {student.group?.name || t("studentDetails.noGroup")}</p>
               </div>
             </Dialog.Panel>
           </Transition.Child>
@@ -153,7 +154,7 @@ export default function StudentList() {
         <form className="max-w-md mx-5 mb-5">
           <input
             type="search"
-            placeholder="Search by student name..."
+           placeholder={t("studentList.searchPlaceholder")}
             className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
             value={searchTerm}
             onChange={(e) => {
@@ -174,9 +175,11 @@ export default function StudentList() {
                 />
                 <div>
                   <h4 className="font-semibold text-lg">{user.first_name} {user.last_name}</h4>
-                  <span className="block text-sm text-gray-600">Group: {user.group?.name || "No Group"}</span>
+                 <span className="block text-sm text-gray-600">
+                    {t("studentList.group")}: {user.group?.name || t("studentDetails.noGroup")}
+                  </span>
                   <div className="flex items-center gap-1 text-green-600 text-sm mt-1">
-                    <span>{user.status}</span>
+                    <span>{t(`status.${user.status.toLowerCase()}`)}</span>
                     <IoCheckmarkCircle />
                   </div>
                 </div>
@@ -188,10 +191,10 @@ export default function StudentList() {
               {openMenuId === user._id && (
                 <div className="absolute right-4 top-16 bg-white shadow-lg rounded-md z-20 text-sm w-48">
                   <button onClick={() => viewStudent(user._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
-                    <FaRegEye className="mr-2 text-green-600 text-lg" /> View
+                    <FaRegEye className="mr-2 text-green-600 text-lg" /> {t("actions.view")}
                   </button>
                   <button onClick={() => deleteStudent(user._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
-                    <MdDelete className="mr-2 text-red-600 text-lg" /> Delete student
+                   <MdDelete className="mr-2 text-red-600 text-lg" /> {t("actions.delete")}
                   </button>
 
                 </div>
@@ -208,7 +211,7 @@ export default function StudentList() {
                 className={`cursor-pointer px-3 py-2 ml-0 leading-tight border rounded-l-lg 
           ${page === 1 ? 'text-gray-400 border-gray-300 bg-white cursor-not-allowed' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
               >
-                Previous
+               {t("pagination.previous")}
               </li>
 
               <li
@@ -267,7 +270,7 @@ export default function StudentList() {
                 className={`cursor-pointer px-3 py-2 leading-tight border rounded-r-lg
           ${page === totalPages ? 'text-gray-400 border-gray-300 bg-white cursor-not-allowed' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
               >
-                Next
+                {t("pagination.next")}
               </li>
             </ul>
           </div>

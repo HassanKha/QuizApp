@@ -7,5 +7,77 @@
     "results": "النتائج",
     "newQuiz": "اختبار جديد",
     "help": "مساعدة"
+  },
+  "GroupsList": {
+    "title": "قائمة المجموعات",
+    "addGroup": "إضافة مجموعة",
+    "group": "المجموعة",
+    "studentsCount": "عدد الطلاب",
+    "update": "تحديث المجموعة",
+    "create": "إنشاء مجموعة جديدة",
+    "groupName": "اسم المجموعة",
+    "listStudents": "قائمة الطلاب",
+    "selectStudents": "اختر الطلاب...",
+    "deleteGroup": "حذف المجموعة",
+    "groupDetails": "تفاصيل المجموعة",
+    "instructor": "المشرف",
+    "status": "الحالة",
+    "students": "الطلاب",
+    "noGroups": "لا توجد مجموعات"
+  },
+  "QuizsList":{
+  "setupQuiz": "إعداد اختبار جديد",
+  "questionBank": "بنك الأسئلة",
+ "upcomingQuizzes": "الاختبارات القادمة",
+  "noUpcoming": "لا توجد اختبارات قادمة.",
+  "completedQuizzes": "الاختبارات المكتملة",
+  "results": "النتائج",
+  "title": "العنوان",
+ "groupName": "اسم المجموعة",
+  "persons":  "عدد الأشخاص في المجموعة",
+  "date": "التاريخ",
+  "enrolled":  "عدد الطلاب المسجلين",
+  "open": "فتح",
+ " failedToLoad": "فشل في تحميل الاختبارات"
+  },
+  "Dashboard": {
+    "upcomingQuizzes": "أحدث 5 اختبارات قادمة",
+    "noUpcomingQuizzes": "لا يوجد اختبارات قادمة حاليًا",
+    "loadingUpcoming": "جاري تحميل الاختبارات القادمة...",
+    "viewQuizDirectory": "عرض كل الاختبارات",
+    "topStudents": "أفضل 5 طلاب",
+    "allStudents": "عرض كل الطلاب",
+    "loadingTopStudents": "جاري تحميل أفضل الطلاب...",
+    "enrolled": "المسجلين",
+    "students": "طلاب",
+    "classRank": "الترتيب في المجموعة",
+    "avgScore": "متوسط الدرجات"
+  },
+  "studentDetails": {
+    "title": "تفاصيل الطالب",
+    "personalInfo": "المعلومات الشخصية",
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "studentId": "معرّف الطالب",
+    "groupInfo": "معلومات المجموعة",
+    "groupName": "اسم المجموعة",
+    "noGroup": "بدون مجموعة"
+  },
+  "studentList": {
+    "searchPlaceholder": "ابحث باسم الطالب...",
+    "group": "المجموعة"
+  },
+  "actions": {
+    "view": "عرض",
+    "delete": "حذف الطالب"
+  },
+  "pagination": {
+    "previous": "السابق",
+    "next": "التالي"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
   }
+
 }

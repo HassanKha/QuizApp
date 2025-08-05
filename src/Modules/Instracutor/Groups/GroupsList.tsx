@@ -11,6 +11,7 @@ import { IoCloseSharp } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../Redux/store';
 import { useNavigate } from 'react-router-dom';
+import { t } from 'i18next';
 
 interface Group {
   _id: string;
@@ -213,7 +214,7 @@ export default function GroupsList() {
       <div className="flex-1 p-2 md:p-2  min-h-screen">
         <div className="bg-white border border-gray-300 rounded-lg p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Groups list</h2>
+           <h2 className="text-2xl font-bold text-gray-800">{t("GroupsList.title")}</h2>
             <button
               onClick={() => { showModalAdd(); }}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-[#D9D9D9] rounded-full shadow-sm text-sm text-[#2D2D2D] hover:bg-[#F5F5F5] transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50"
@@ -221,7 +222,7 @@ export default function GroupsList() {
               <div className="flex items-center justify-center flex-shrink-0">
                 <FaPlusCircle className="text-2xl font-bolder text-black" />
               </div>
-              <span className="font-bold text-black">Add Group</span>
+              <span className="font-bold text-black">{t("GroupsList.addGroup")}</span>
             </button>
           </div>
 
@@ -239,8 +240,8 @@ export default function GroupsList() {
                       className="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between border border-gray-200"
                     >
                       <div className="flex-grow">
-                        <h3 className="font-semibold text-gray-800 text-lg">Group : {group?.name}</h3>
-                        <p className="text-sm text-gray-500 mt-1">No. of students : {group?.students?.length}</p>
+                        <h3 className="font-semibold text-gray-800 text-lg">{t("GroupsList.group")} : {group?.name}</h3>
+                        <p className="text-sm text-gray-500 mt-1">{t("GroupsList.studentsCount")} : {group?.students?.length}</p>
                       </div>
 
                       <div className="flex space-x-3">
@@ -262,7 +263,7 @@ export default function GroupsList() {
                     </div>
                   ))
                 ) : (
-                  <p className="col-span-1 md:col-span-2 text-center text-gray-500 py-10">No groups found.</p>
+                  <p className="col-span-1 md:col-span-2 text-center text-gray-500 py-10">{t("GroupsList.noGroups")}</p>
                 )}
               </>
             )}
@@ -417,12 +418,12 @@ export default function GroupsList() {
               <Loader />
             ) : (
               <>
-                <h2 className="text-2xl font-bold mb-6 text-center border-b pb-2">Group Details</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center border-b pb-2">{t("GroupsList.groupDetails")}</h2>
                 <div className="space-y-3">
-                  <p><span className="font-semibold">Group Name:</span> {Group?.name}</p>
-                  <p><span className="font-semibold">Instructor:</span> {Group?.instructor}</p>
-                  <p><span className="font-semibold">Status:</span> {Group?.status}</p>
-                  <p><span className="font-semibold">Students:</span> {Group?.students?.length}</p>
+                  <p><span className="font-semibold">{t("GroupsList.groupName")}:</span> {Group?.name}</p>
+                  <p><span className="font-semibold">{t("GroupsList.instructor")}:</span> {Group?.instructor}</p>
+                  <p><span className="font-semibold">{t("GroupsList.status")}:</span> {Group?.status}</p>
+                  <p><span className="font-semibold">{t("GroupsList.students")}:</span> {Group?.students?.length}</p>
                 </div>
               </>
             )}

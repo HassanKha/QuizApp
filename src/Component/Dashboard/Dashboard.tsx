@@ -17,6 +17,7 @@ import {
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../Redux/store";
+import { t } from "i18next";
 
 interface Student {
   _id: string;
@@ -230,34 +231,34 @@ export default function Dashboard() {
     <div className="w-full px-4 py-6">
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="mt-10 w-full lg:w-1/2">
-          <h2 className="text-lg font-semibold mb-4">Upcoming 5 quizzes</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("Dashboard.upcomingQuizzes")}</h2>
           {isLoading
             ? renderLoadingBox()
             : quizzes.length > 0
               ? quizzes.slice(0, 5).map(renderQuizCard)
-              : renderLoadingBox("No upcoming quizzes available")}
+              : renderLoadingBox(t("Dashboard.noUpcomingQuizzes"))}
 
           <Link
             to="/quizes"
             className="text-green-600 mt-3 text-sm font-semibold flex items-center hover:underline"
           >
-            View Quiz directory <FaLongArrowAltRight className="ml-1" />
+             {t("Dashboard.viewQuizDirectory")} <FaLongArrowAltRight className="ml-1" />
           </Link>
         </div>
 
         <div className="w-full lg:w-1/2 rounded-xl border bg-white shadow p-4 space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Top 5 Students</h2>
+            <h2 className="text-lg font-semibold">{t("Dashboard.topStudents")}</h2>
             <Link
               to="/students"
               className="text-sm font-bold hover:underline flex items-center"
             >
-              All Students <FaLongArrowAltRight className="ml-1 text-green-400 text-lg" />
+              {t("Dashboard.allStudents")} <FaLongArrowAltRight className="ml-1 text-green-400 text-lg" />
             </Link>
           </div>
           <div className="space-y-3">
             {isLoading
-              ? renderLoadingBox("Loading top students...")
+              ? renderLoadingBox(t("Dashboard.loadingTopStudents"))
               : topStudents.slice(0, 5).map(renderStudentCard)}
           </div>
         </div>
