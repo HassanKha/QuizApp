@@ -10,6 +10,7 @@ import QuestionViewModal, { type QuestionData } from "./ViewModal/QuestionDetail
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../Redux/store";
 import { useNavigate } from "react-router-dom";
+import { t } from "i18next";
 
 interface UpdatedQuestion {
   answer: "A" | "B" | "C" | "D";
@@ -163,14 +164,14 @@ export default function QuestionBankPage() {
       <div className="p-4 sm:p-6 max-w-7xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Bank Of Questions</h1>
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">{t("questions.title")}</h1>
             <button
               onClick={() => setIsQuestionModalOpen(true)}
               className="flex cursor-pointer items-center gap-2 px-4 py-2 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition-all duration-200"
               aria-label="Add new question"
             >
               <HiPlus className="w-5 h-5" />
-              <span>Add Question</span>
+              <span>{t("questions.addQuestion")}</span>
             </button>
           </div>
 
@@ -179,7 +180,7 @@ export default function QuestionBankPage() {
             <HiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search questions..."
+             placeholder={t("questions.searchPlaceholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900"
@@ -193,16 +194,16 @@ export default function QuestionBankPage() {
                 <thead>
                   <tr className="bg-gray-900">
                     <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                      Question Title
+                     {t("questions.titleCol")}
                     </th>
                     <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                      Question Desc
+                     {t("questions.descriptionCol")}
                     </th>
                     <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                      Question difficulty level
+                      {t("questions.difficultyCol")}
                     </th>
                     <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                      Actions
+                      {t("questions.actionsCol")}
                     </th>
                   </tr>
                 </thead>
@@ -276,7 +277,7 @@ export default function QuestionBankPage() {
           <div className="bg-white w-[800px] rounded-lg shadow-lg">
             <form onSubmit={handleSubmit(updateQuestionAnswer)}>
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800">Update Quiz</h3>
+                <h3 className="text-lg font-semibold text-gray-800">{t("questions.updateTitle")}</h3>
                 <div className="flex items-center gap-4">
                   <button
                     type="submit"
@@ -301,7 +302,7 @@ export default function QuestionBankPage() {
                     className="flex items-center justify-center flex-shrink-0 bg-[#f8ebd9] text-lg font-bold text-black px-4 py-3 rounded-l-lg"
                     style={{ minWidth: "110px" }}
                   >
-                    Question Answer
+                    {t("questions.answerLabel")}
                   </label>
                   <input
                     id="groupName"

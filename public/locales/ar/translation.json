@@ -5,6 +5,7 @@
     "students": "الطلاب",
     "quizzes": "الاختبارات",
     "results": "النتائج",
+    "questions":"الاسئله",
     "newQuiz": "اختبار جديد",
     "help": "مساعدة"
   },
@@ -78,6 +79,20 @@
   "status": {
     "active": "نشط",
     "inactive": "غير نشط"
+  },
+  "questions": {
+    "title": "بنك الأسئلة",
+    "addQuestion": "إضافة سؤال",
+    "titleCol": "عنوان السؤال",
+    "descriptionCol": "وصف السؤال",
+    "searchPlaceholder": "بحث عن الاسئله",
+    "difficultyCol": "مستوى الصعوبة",
+    "actionsCol": "إجراءات",
+    "loading": "جارٍ تحميل الأسئلة...",
+    "noQuestions": "لا يوجد أسئلة.",
+    "updateTitle": "تعديل السؤال",
+    "answerLabel": "الإجابة الصحيحة",
+    "answerRequired": "الإجابة مطلوبة"
   }
 
 }

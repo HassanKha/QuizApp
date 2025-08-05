@@ -31,7 +31,7 @@ const routeTitles = (pathname: string): string => {
  if (pathname.includes("/quizes")) return t("sidebar.quizzes");
   if (pathname.includes("/students")) return t("sidebar.students");
   if (pathname.includes("/groups")) return t("sidebar.groups");
-  if (pathname.includes("/questions")) return t("sidebar.questionBank");
+  if (pathname.includes("/questions")) return t("sidebar.questions");
   if (pathname.includes("/dashboard")) return t("sidebar.dashboard");
   if (pathname.includes("/results")) return t("sidebar.results");
   return "Page";
