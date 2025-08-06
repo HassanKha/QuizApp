@@ -20,6 +20,7 @@ import Questions from "./Modules/Instracutor/Questions/Questions";
 import QuizDetails from "./Modules/Instracutor/Quizs/AllQuizzs/QuizDetails";
 import Quizs from "./Modules/Student/Quizs/Quizs";
 import Results from "./Modules/Student/Results/Results";
+import QuizExam from "./Modules/Student/QuizExam/QuizExam";
 
 function App() {
   let routes = createBrowserRouter([
@@ -49,6 +50,7 @@ function App() {
         { path: "students", element: <StudentList /> },
         { path: "groups", element: <GroupsList /> },
         { path: "quizes", element: <QuizsList /> },
+        { path: "quiz-exam", element: <QuizExam /> },
         { path: "quizes-std", element: <Quizs /> },
         { path: "quizes/:id", element: <QuizDetails /> },   
         { path: "questions", element: <Questions /> },

@@ -88,7 +88,7 @@ export default function Quizs() {
         let res = await axiosInstance.post(Students_Quizes.Join_Quizz,data)
         console.log(res.data);
         toast.success(res?.data?.message)
-        navigate('/Quiz')
+        navigate('/quiz-exam',{state:res?.data?.data?.quiz})
       }
       catch(error:any){
         console.log(error);
