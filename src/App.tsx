@@ -18,6 +18,8 @@ import QuizsList from "./Modules/Instracutor/Quizs/QuizsList";
 import ProtectedRouting from "./Component/shared/ProtectedRouting";
 import Questions from "./Modules/Instracutor/Questions/Questions";
 import QuizDetails from "./Modules/Instracutor/Quizs/AllQuizzs/QuizDetails";
+import Quizs from "./Modules/Student/Quizs/Quizs";
+import Results from "./Modules/Student/Results/Results";
 
 function App() {
   let routes = createBrowserRouter([
@@ -47,8 +49,10 @@ function App() {
         { path: "students", element: <StudentList /> },
         { path: "groups", element: <GroupsList /> },
         { path: "quizes", element: <QuizsList /> },
-          { path: "quizes/:id", element: <QuizDetails /> },   
+        { path: "quizes-std", element: <Quizs /> },
+        { path: "quizes/:id", element: <QuizDetails /> },   
         { path: "questions", element: <Questions /> },
+        { path: "results", element: <Results /> },
       ],
     },
   ]);

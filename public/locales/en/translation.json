@@ -4,6 +4,7 @@
     "groups": "Groups",
     "students": "Students",
     "quizzes": "Quizzes",
+    "quizes-std": "Quizes-std",
     "results": "Results",
     "questions":"Qusetions",
     "newQuiz": "New Quiz",
@@ -93,6 +94,29 @@
     "updateTitle": "Update Quiz",
     "answerLabel": "Question Answer",
     "answerRequired": "Answer is required"
+  },
+  "quizPage": {
+    "joinQuiz": "Join Quiz",
+    "upcoming": "Upcoming Quizzes",
+    "noData": "No quizzes available",
+    "completed": "Completed Quizzes",
+    "results": "Results",
+    "title": "Title",
+    "groupName": "Group name",
+    "numOfPersons": "No. of persons in group",
+    "date": "Date",
+    "status": "Status",
+    "code": "Code",
+    "open": "Open",
+    "opened":"Opened",
+    "closed": "Closed",
+    "loading": "Loading...",
+    "modal": {
+      "title": "Join Quiz",
+      "submit": "Join",
+      "cancel": "Cancel",
+      "codeRequired": "Code is required"
+    }
   }
 }
 

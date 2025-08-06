@@ -4,6 +4,7 @@
     "groups": "المجموعات",
     "students": "الطلاب",
     "quizzes": "الاختبارات",
+    "quizes-std": "الاختبارات",
     "results": "النتائج",
     "questions":"الاسئله",
     "newQuiz": "اختبار جديد",
@@ -93,6 +94,29 @@
     "updateTitle": "تعديل السؤال",
     "answerLabel": "الإجابة الصحيحة",
     "answerRequired": "الإجابة مطلوبة"
+  },
+  "quizPage": {
+    "joinQuiz": "انضم إلى اختبار",
+    "upcoming": "الاختبارات القادمة",
+    "noData": "لا توجد اختبارات حالياً",
+    "completed": "الاختبارات المكتملة",
+    "results": "النتائج",
+    "title": "الاسم",
+    "groupName": "اسم المجموعة",
+    "numOfPersons": "عدد الأفراد في المجموعة",
+    "date": "التاريخ",
+    "status": "الحالة",
+    "code": "الكود",
+    "open":"افتح",
+    "opened":"مفتوح",
+    "closed": "مغلق",
+    "loading": "جاري التحميل...",
+    "modal": {
+      "title": "انضم إلى اختبار",
+      "submit": "انضمام",
+      "cancel": "إلغاء",
+      "codeRequired": "الكود مطلوب"
+    }
   }
 
 }

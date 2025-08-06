@@ -59,3 +59,10 @@ export const TOP_STUDENTS = {
   GET_TOP_STUDENTS:`/api/student/top-five`,
 
 }
+
+export const Students_Quizes = {
+  First_Five_Incomming_Quizz: `/api/quiz/incomming`,
+  Last_Five_Completed_Quizz: `/api/quiz/completed`,
+  Join_Quizz: `/api/quiz/join`
+}
+

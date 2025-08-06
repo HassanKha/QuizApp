@@ -32,7 +32,7 @@ const navigationItems = [
     badge: null,
     iconBg: "bg-orange-100",
     iconColor: "text-black",
-    onlyFor: ["Admin", "Instructor"], // ✅ السماح لأدوار معينة فقط
+    onlyFor: ["Admin", "Instructor"], 
   },
   {
     icon: FaUserGraduate,
@@ -41,7 +41,7 @@ const navigationItems = [
     badge: "2",
     iconBg: "bg-orange-100",
     iconColor: "text-black",
-    onlyFor: ["Admin", "Instructor"], // ✅ السماح لأدوار معينة فقط
+    onlyFor: ["Admin", "Instructor"],
   },
   {
     icon: MdQuiz,
@@ -50,6 +50,16 @@ const navigationItems = [
     badge: null,
     iconBg: "bg-orange-100",
     iconColor: "text-black",
+    onlyFor: ["Admin", "Instructor"], 
+  },
+  {
+    icon: MdQuiz,
+    labelKey: "sidebar.quizes-std",
+    href: "/quizes-std",
+    badge: null,
+    iconBg: "bg-orange-100",
+    iconColor: "text-black",
+    onlyFor: ["User", "Student"], 
   },
   {
     icon: HiDocumentText,
