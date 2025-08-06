@@ -45,3 +45,14 @@ export interface Quiz {
 export interface UpdatedQuiz{
   title:string
 }
+export interface Question {
+  _id: string;
+  title: string;
+  options: {
+    A: string;
+    B: string;
+    C: string;
+    D: string;
+    [key: string]: string;
+  };
+}

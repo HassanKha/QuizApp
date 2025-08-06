@@ -54,7 +54,8 @@ function App() {
         { path: "quizes-std", element: <Quizs /> },
         { path: "quizes/:id", element: <QuizDetails /> },   
         { path: "questions", element: <Questions /> },
-        { path: "results", element: <Results /> },
+        { path: "quiz-result", element: <Results /> },
+
       ],
     },
   ]);

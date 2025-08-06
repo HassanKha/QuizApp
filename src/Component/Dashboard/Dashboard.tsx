@@ -151,7 +151,7 @@ export default function Dashboard() {
       fetchTopStudents();
       fetchQuizzes();
     }
-    setTimeout(() => setIsLoading(false), 500); 
+    setTimeout(() => setIsLoading(false), 500);
   }, []);
 
   const renderLoadingBox = (text = "Loading upcoming quizzes...") => (
@@ -174,11 +174,15 @@ export default function Dashboard() {
           👥 <span className="font-medium">Enrolled:</span> {quiz.enrolled} students
         </p>
       </div>
-      <div className="flex flex-col items-end">
-        <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full mb-3">
-          ● {quiz.status.charAt(0).toUpperCase() + quiz.status.slice(1)}
-        </span>
-      </div>
+      <span
+        className={`text-xs font-semibold px-3 py-1 rounded-full mb-3 ${quiz.status === "open"
+            ? "bg-green-100 text-green-700"
+            : "bg-red-100 text-red-700"
+          }`}
+      >
+        ● {quiz.status.charAt(0).toUpperCase() + quiz.status.slice(1)}
+      </span>
+
     </div>
   );
 
@@ -226,8 +230,8 @@ export default function Dashboard() {
     );
   }
 
-  return (  
-    
+  return (
+
     <div className="w-full px-4 py-6">
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="mt-10 w-full lg:w-1/2">
@@ -242,7 +246,7 @@ export default function Dashboard() {
             to="/quizes"
             className="text-green-600 mt-3 text-sm font-semibold flex items-center hover:underline"
           >
-             {t("Dashboard.viewQuizDirectory")} <FaLongArrowAltRight className="ml-1" />
+            {t("Dashboard.viewQuizDirectory")} <FaLongArrowAltRight className="ml-1" />
           </Link>
         </div>
 

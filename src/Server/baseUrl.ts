@@ -63,6 +63,8 @@ export const TOP_STUDENTS = {
 export const Students_Quizes = {
   First_Five_Incomming_Quizz: `/api/quiz/incomming`,
   Last_Five_Completed_Quizz: `/api/quiz/completed`,
-  Join_Quizz: `/api/quiz/join`
+  Join_Quizz: `/api/quiz/join`,
+  Quizs_Without_Answers: (id: string) => `/api/quiz/without-answers/${id}`,
+  SubmitQuiz:(id: string) =>  `/api/quiz/submit/${id}`,
 }
 
