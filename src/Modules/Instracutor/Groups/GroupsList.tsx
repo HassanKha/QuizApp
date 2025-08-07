@@ -195,10 +195,10 @@ export default function GroupsList() {
   useEffect(() => {
 
     getAllStudents();
-  }, [Students]);
+  }, []);
 
 
-  const studentOptions: StudentOption[] = Students.map(student => ({
+  const studentOptions: StudentOption[] =  Students?.map(student => ({
     value: student._id,
     label: `${student.first_name} ${student.last_name}`
   }));

@@ -64,7 +64,7 @@ const navigationItems = [
   {
     icon: HiDocumentText,
     labelKey: "sidebar.results",
-    href: "/results",
+    href: "/quiz-result",
     badge: null,
     iconBg: "bg-orange-100",
     iconColor: "text-black",

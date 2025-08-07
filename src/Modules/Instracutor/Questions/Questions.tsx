@@ -47,7 +47,16 @@ export default function QuestionBankPage() {
   const { register, formState: { errors }, handleSubmit, setValue } = useForm<UpdatedQuestion>();
 
   const handleViewQuestion = (question: Question) => {
-    setSelectedQuestion(question);
+    // Map Question to QuestionData, adding a default or derived 'type'
+    setSelectedQuestion({
+      title: question.title,
+      description: question.description,
+      options: question.options,
+      answer: question.answer as "A" | "B" | "C" | "D",
+      difficulty: question.difficulty as "easy" | "medium" | "hard",
+      type: "FE", // Replace "FE" with the correct value if available in your data
+      points: question.points
+    });
     setIsModalOpen(true);
   };
 

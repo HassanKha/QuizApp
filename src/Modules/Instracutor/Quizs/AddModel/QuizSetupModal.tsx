@@ -18,8 +18,8 @@ const durationOptions = [
 ]
 
 const questionOptions = [
-    { value: 5, label: "1" },
-     { value: 5, label: "3" },
+    { value: 1, label: "1" },
+     { value: 3, label: "3" },
   { value: 5, label: "5" },
   { value: 10, label: "10" },
   { value: 15, label: "15" },
@@ -533,7 +533,7 @@ setIsQuizSuccessModalOpen(true)
           </div>
 
           {/* Submit Button for Mobile */}
-          <div className="flex justify-end pt-4 border-t border-gray-200 sm:hidden">
+          <div className="flex cursor-pointer justify-end pt-4 border-t border-gray-200 sm:hidden">
             <button
               type="submit"
               disabled={!isValid || isSubmitting}

@@ -17,7 +17,7 @@ import { t } from "i18next"
 
 export default function QuizsList() {
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false)
-  const [_, setQuizzes] = useState<Quiz[]>([])
+  const [CompletedQuizes, setQuizzes] = useState<Quiz[]>([])
   const [upcomingQuizzes, setUpcomingQuizzes] = useState<Quiz[]>([])
   const [CompleteQuizzes, setCompleteQuizzes] = useState<Quiz[]>([])
 
@@ -33,21 +33,19 @@ export default function QuizsList() {
   if (user?.role === "Student") {
     navigate('/dashboard')
   }
+
   async function fetchCompleteQuizzes() {
+    setLoadingComplete(true)
     try {
       const res = await axiosInstance.get(Quizzes_URLS.completed_Quizz);
       const all = res.data || []
 
       setQuizzes(all)
 
-      const now = new Date()
 
-      const upcoming = all
-        .filter((quiz: Quiz) => new Date(quiz.schadule) > now)
-        .sort((a: Quiz, b: Quiz) => new Date(a.schadule).getTime() - new Date(b.schadule).getTime())
-        .slice(0, 2)
 
-      setCompleteQuizzes(upcoming)
+
+      setCompleteQuizzes(all)
     } catch (err) {
       toast.error("Failed to load quizzes")
       console.error(err)
@@ -184,7 +182,7 @@ export default function QuizsList() {
           <div className="bg-white w-full rounded-2xl  border border-gray-200 p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4 sm:mb-6">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{t("QuizsList.completedQuizzes")}</h2>
-              <button className="flex items-center gap-2 text-orange-500 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 rounded-lg px-2 sm:px-3 py-2">
+              <button onClick={()=> navigate('/quiz-result')} className="flex cursor-pointer items-center gap-2 text-orange-500 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 rounded-lg px-2 sm:px-3 py-2">
                 <span className="text-sm sm:text-base text-gray-900">{t("QuizsList.results")}</span>
                 <HiArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#C5D86D]" />
               </button>
@@ -193,22 +191,7 @@ export default function QuizsList() {
             <div className="overflow-x-auto">
               <div className="overflow-hidden rounded-xl border border-gray-200 min-w-full">
                 <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-gray-900 ">
-                      <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                        {t("QuizsList.title")}
-                      </th>
-                      <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                        {t("QuizsList.groupName")}
-                      </th>
-                      <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                        {t("QuizsList.persons")}
-                      </th>
-                      <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                         {t("QuizsList.date")}
-                      </th>
-                    </tr>
-                  </thead>
+    
                   <tbody>
                     {loadingComplete ? (
                       <tr>
@@ -216,7 +199,7 @@ export default function QuizsList() {
                           <FaSpinner className="text-2xl animate-spin inline-block" />
                         </td>
                       </tr>
-                    ) : CompleteQuizzes.length === 0 ? (
+                    ) : CompletedQuizes.length === 0 ? (
                       <tr>
                         <td colSpan={4} className="py-8 text-center text-gray-500">
                           No completed quizzes found.
@@ -228,10 +211,10 @@ export default function QuizsList() {
                           <table className="w-full text-sm">
                             <thead>
                               <tr className="bg-gray-900">
-                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Title</th>
-                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Group name</th>
-                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">No. of persons in group</th>
-                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">Date</th>
+                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">  {t("QuizsList.title")}</th>
+                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">{t("QuizsList.groupName")}</th>
+                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">{t("QuizsList.persons")}</th>
+                                <th className="text-left py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">{t("QuizsList.date")}</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -248,7 +231,7 @@ export default function QuizsList() {
                                   <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">
                                     {quiz.participants} persons
                                   </td>
-                                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">{quiz.duration}</td>
+                                  <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">{quiz.schadule}</td>
                                 </tr>
                               ))}
                             </tbody>

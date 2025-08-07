@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { axiosInstance, Students_Quizes } from '../../../Server/baseUrl';
 import { GiAlarmClock } from 'react-icons/gi';
 import { HiArrowRight } from 'react-icons/hi';
@@ -154,7 +154,7 @@ export default function Quizs() {
               {t("quizPage.title")}: {quiz?.title}
             </h3>
             <p className="text-black mb-2 sm:mb-3 text-xs sm:text-sm lg:text-base">
-              {t("quizPage.date")}: {quiz?.createdAt && new Date(quiz?.createdAt).toLocaleString()}
+              {t("quizPage.date")}: {quiz?.schadule && new Date(quiz?.schadule).toLocaleString()}
             </p>
             <p className="text-black mb-2 sm:mb-3 text-xs sm:text-sm lg:text-base">
              {t("quizPage.code")}: {quiz?.code}

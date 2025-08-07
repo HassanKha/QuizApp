@@ -19,8 +19,12 @@ import ProtectedRouting from "./Component/shared/ProtectedRouting";
 import Questions from "./Modules/Instracutor/Questions/Questions";
 import QuizDetails from "./Modules/Instracutor/Quizs/AllQuizzs/QuizDetails";
 import Quizs from "./Modules/Student/Quizs/Quizs";
-import Results from "./Modules/Student/Results/Results";
+//import Results from "./Modules/Student/Results/Results";
 import QuizExam from "./Modules/Student/QuizExam/QuizExam";
+import ResultsPage from "./Modules/Instracutor/Results/Results";
+import QuizView from "./Modules/Instracutor/Results/Quiz-Result/QuizView";
+import SODResulrs from "./Component/shared/SODResulrs";
+import QuizStudentView from "./Modules/Student/Results/Quiz-Result/QuizStudentView";
 
 function App() {
   let routes = createBrowserRouter([
@@ -54,8 +58,9 @@ function App() {
         { path: "quizes-std", element: <Quizs /> },
         { path: "quizes/:id", element: <QuizDetails /> },   
         { path: "questions", element: <Questions /> },
-        { path: "quiz-result", element: <Results /> },
-
+        { path: "quiz-result", element: <SODResulrs><ResultsPage /></SODResulrs> },
+{ path: "quiz-result-view", element: <QuizView /> },
+{ path: "quiz-result-studentview", element: <QuizStudentView /> },
       ],
     },
   ]);
