@@ -52,3 +52,108 @@ export const validation = {
     },
   },
 };
+
+
+
+export const quizValidation = {
+  title: {
+    required: "Title is required",
+    minLength: {
+      value: 3,
+      message: "Title must be at least 3 characters",
+    },
+    maxLength: {
+      value: 100,
+      message: "Title must be less than 100 characters",
+    },
+  },
+
+  duration: {
+    required: "Duration is required",
+  },
+
+  numberOfQuestions: {
+    required: "Number of questions is required",
+  },
+
+  scorePerQuestion: {
+    required: "Score per question is required",
+  },
+
+  description: {
+    maxLength: {
+      value: 500,
+      message: "Description must be less than 500 characters",
+    },
+  },
+
+  scheduleDate: {
+    required: "Schedule date is required",
+  },
+
+  scheduleTime: {
+    required: "Schedule time is required",
+  },
+
+  groupName: {
+    required: "Group is required",
+  },
+};
+
+
+// src/validations/questionValidations.ts
+export const questionValidation = {
+  title: {
+    required: "Title is required",
+    minLength: {
+      value: 3,
+      message: "Title must be at least 3 characters",
+    },
+    maxLength: {
+      value: 200,
+      message: "Title must be less than 200 characters",
+    },
+  },
+
+  description: {
+    maxLength: {
+      value: 1000,
+      message: "Description must be less than 1000 characters",
+    },
+  },
+
+  options: {
+    A: {
+      required: "Option A is required",
+      maxLength: {
+        value: 200,
+        message: "Option A must be less than 200 characters",
+      },
+    },
+    B: {
+      required: "Option B is required",
+      maxLength: {
+        value: 200,
+        message: "Option B must be less than 200 characters",
+      },
+    },
+    C: {
+      required: "Option C is required",
+      maxLength: {
+        value: 200,
+        message: "Option C must be less than 200 characters",
+      },
+    },
+    D: {
+      required: "Option D is required",
+      maxLength: {
+        value: 200,
+        message: "Option D must be less than 200 characters",
+      },
+    },
+  },
+
+  answer: {
+    required: "Right answer is required",
+  },
+};

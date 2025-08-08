@@ -7,32 +7,8 @@ import { axiosInstance, Quizzes_URLS } from "../../../../Server/baseUrl"
 import { FaSpinner } from "react-icons/fa"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../../../Redux/store"
+import type { Quiz, QuizSectionProps } from "../../../../Interfaces/Quizzes/Interfaces"
 
-interface Quiz {
-  _id: string
-  code: string
-  title: string
-  description: string
-  status: "open" | "closed"
-  instructor: string
-  group: string
-  questions_number: number
-  questions: string[]
-  schadule: string
-  duration: number
-  score_per_question: number
-  type: string
-  difficulty: string
-  updatedAt: string
-  createdAt: string
-  __v: number
-  participants: number
-}
-
-interface QuizSectionProps {
-  showTitle?: boolean
-  embedded?: boolean
-}
 
 export default function QuizSection({ showTitle = true, embedded = true }: QuizSectionProps) {
   const [searchTerm, setSearchTerm] = useState("")

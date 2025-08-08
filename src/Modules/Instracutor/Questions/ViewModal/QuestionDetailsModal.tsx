@@ -1,11 +1,8 @@
 import { useEffect, useRef } from "react"
 import { HiXMark } from "react-icons/hi2"
+import type { QuestionViewModalProps } from "../../../../Interfaces/Questions/Interfaces"
 
-interface QuestionViewModalProps {
-  isOpen: boolean
-  onClose: () => void
-  question: QuestionData | null 
-}
+
 
 export interface QuestionData {
   title: string

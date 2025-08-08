@@ -12,7 +12,6 @@ export default function QuizSuccessModal({ isOpen, onClose, quizCode }: QuizSucc
   const modalRef = useRef<HTMLDivElement>(null)
   const [copySuccess, setCopySuccess] = useState(false)
 
-  // Escape key handler
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -31,7 +30,6 @@ export default function QuizSuccessModal({ isOpen, onClose, quizCode }: QuizSucc
     }
   }, [isOpen, onClose])
 
-  // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -52,10 +50,10 @@ export default function QuizSuccessModal({ isOpen, onClose, quizCode }: QuizSucc
     try {
       await navigator.clipboard.writeText(quizCode)
       setCopySuccess(true)
-      setTimeout(() => setCopySuccess(false), 2000) // Reset success message after 2 seconds
+      setTimeout(() => setCopySuccess(false), 2000) 
     } catch (err) {
       console.error("Failed to copy text: ", err)
-      // Optionally, show an error message to the user
+
     }
   }
 

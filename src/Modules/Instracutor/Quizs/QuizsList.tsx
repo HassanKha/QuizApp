@@ -123,7 +123,6 @@ export default function QuizsList() {
 
         {/* Right Column - Upcoming and Completed Quizzes */}
         <div className="space-y-6">
-          {/* Upcoming Quizzes */}
           <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">{t("QuizsList.upcomingQuizzes")}</h2>
 
@@ -140,7 +139,6 @@ export default function QuizsList() {
                     key={quiz._id}
                     className="flex items-center gap-3 sm:gap-4 lg:gap-6 p-4 sm:p-6 bg-white rounded-2xl border border-orange-100 hover:shadow-md transition-all duration-200"
                   >
-                    {/* Quiz Illustration */}
                     <div className="w-16 h-16 bg-orange-50 sm:w-20 sm:h-20 lg:w-32 lg:h-32 rounded-2xl flex items-center justify-center flex-shrink-0">
                       <img
                         src={img1}
@@ -149,7 +147,6 @@ export default function QuizsList() {
                       />
                     </div>
 
-                    {/* Quiz Details */}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-gray-900 text-sm sm:text-base lg:text-xl mb-1 sm:mb-2 line-clamp-2">
                         {quiz.title}
@@ -162,7 +159,6 @@ export default function QuizsList() {
                       </p>
                     </div>
 
-                    {/* Open Button */}
                     <button
                       onClick={() => handleViewDetails(quiz._id)}
                       className="flex cursor-pointer items-center gap-2 px-3 sm:px-4 lg:px-6 py-2 sm:py-3 bg-white text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 flex-shrink-0"

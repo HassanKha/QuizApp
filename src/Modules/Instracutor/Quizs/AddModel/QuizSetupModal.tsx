@@ -1,57 +1,35 @@
-import { useState, useEffect, useRef } from "react"
-import { useForm, Controller } from "react-hook-form"
-import { HiXMark , HiCheck } from "react-icons/hi2"
-import type { QuizFormData, QuizSetupModalProps } from "../../../../Interfaces/Quizzes/Interfaces"
-import { axiosInstance, GROUPS_URLS, Quizzes_URLS } from "../../../../Server/baseUrl"
-import { toast } from "react-toastify"
+import { useState, useEffect, useRef } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { HiXMark, HiCheck } from "react-icons/hi2";
+import type {
+  QuizFormData,
+  QuizSetupModalProps,
+} from "../../../../Interfaces/Quizzes/Interfaces";
+import {
+  axiosInstance,
+  GROUPS_URLS,
+  Quizzes_URLS,
+} from "../../../../Server/baseUrl";
+import { toast } from "react-toastify";
+import {
+  categoryOptions,
+  difficultyOptions,
+  durationOptions,
+  questionOptions,
+  scoreOptions,
+} from "./Options/DropdownOptions";
+import { quizValidation } from "../../../../Server/Validation";
 
-
-
-const durationOptions = [
-  { value: 5, label: "5" },
-  { value: 10, label: "10" },
-  { value: 15, label: "15" },
-  { value: 20, label: "20" },
-  { value: 30, label: "30" },
-  { value: 45, label: "45" },
-  { value: 60, label: "60" },
-]
-
-const questionOptions = [
-    { value: 1, label: "1" },
-     { value: 3, label: "3" },
-  { value: 5, label: "5" },
-  { value: 10, label: "10" },
-  { value: 15, label: "15" },
-  { value: 20, label: "20" },
-  { value: 25, label: "25" },
-  { value: 30, label: "30" },
-]
-
-const scoreOptions = [
-  { value: 1, label: "1" },
-  { value: 2, label: "2" },
-  { value: 3, label: "3" },
-  { value: 4, label: "4" },
-  { value: 5, label: "5" },
-]
-
-const difficultyOptions = [
-  { value: "easy", label: "easy" },
-  { value: "medium", label: "medium" },
-  { value: "hard", label: "hard" },
-]
-
-const categoryOptions = [
-  { value: "FE", label: "Frontend (FE)" },
-  { value: "BE", label: "Backend (BE)" },
-  { value: "DO", label: "DevOps" },
-]
-
-export default function QuizSetupModal({ isOpen, onClose, setGeneratedQuizCode,setIsQuizSuccessModalOpen ,defaultValues }: QuizSetupModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null)
-  const firstInputRef = useRef<HTMLInputElement>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export default function QuizSetupModal({
+  isOpen,
+  onClose,
+  setGeneratedQuizCode,
+  setIsQuizSuccessModalOpen,
+  defaultValues,
+}: QuizSetupModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -73,158 +51,157 @@ export default function QuizSetupModal({ isOpen, onClose, setGeneratedQuizCode,s
       categoryType: "FE",
       groupName: "JSB",
     },
-  })
+  });
 
-useEffect(() => {
-  if (isOpen) {
-    if (defaultValues) {
-      reset(defaultValues)
-    } else {
-      reset({
-        title: "",
-        duration: 10,
-        numberOfQuestions: 15,
-        scorePerQuestion: 1,
-        description: "",
-        scheduleDate: "",
-        scheduleTime: "",
-        difficultyLevel: "easy",
-        categoryType: "FE",
-        groupName: "JSB",
-      })
+  useEffect(() => {
+    if (isOpen) {
+      if (defaultValues) {
+        reset(defaultValues);
+      } else {
+        reset({
+          title: "",
+          duration: 10,
+          numberOfQuestions: 15,
+          scorePerQuestion: 1,
+          description: "",
+          scheduleDate: "",
+          scheduleTime: "",
+          difficultyLevel: "easy",
+          categoryType: "FE",
+          groupName: "JSB",
+        });
+      }
     }
-  }
-}, [isOpen, defaultValues, reset])
+  }, [isOpen, defaultValues, reset]);
 
-  // Focus management
   useEffect(() => {
     if (isOpen && firstInputRef.current) {
-      firstInputRef.current.focus()
+      firstInputRef.current.focus();
     }
-  }, [isOpen])
+  }, [isOpen]);
 
-  // Escape key handler
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
-        onClose()
+        onClose();
       }
-    }
+    };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleEscape)
-      document.body.style.overflow = "hidden"
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEscape)
-      document.body.style.overflow = "unset"
-    }
-  }, [isOpen, onClose])
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, onClose]);
 
-  // Click outside handler
+ 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose()
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        onClose();
       }
-    }
+    };
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [isOpen, onClose])
-
-
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   const onSubmit = async (formData: QuizFormData) => {
-  const formattedData = {
-    title: formData.title,
-    description: formData.description || "",
-    group: formData.groupName, // Ensure this is the group ID
-    questions_number: String(formData.numberOfQuestions),
-    difficulty: formData.difficultyLevel,
-    type: formData.categoryType,
-    schadule: new Date(
-      `${formData.scheduleDate}T${formData.scheduleTime}`
-    ).toISOString(),
-    duration: String(formData.duration),
-    score_per_question: String(formData.scorePerQuestion),
-  }
+    const formattedData = {
+      title: formData.title,
+      description: formData.description || "",
+      group: formData.groupName,
+      questions_number: String(formData.numberOfQuestions),
+      difficulty: formData.difficultyLevel,
+      type: formData.categoryType,
+      schadule: new Date(
+        `${formData.scheduleDate}T${formData.scheduleTime}`
+      ).toISOString(),
+      duration: String(formData.duration),
+      score_per_question: String(formData.scorePerQuestion),
+    };
 
-  console.log("Submitting transformed data:", formattedData)
+    console.log("Submitting transformed data:", formattedData);
 
-  try {
-    const response = await axiosInstance.post(Quizzes_URLS.SetUP_Quizz, formattedData)
-    toast.success(response.data.message)
-    console.log(response.data.data)
-    if(setGeneratedQuizCode && setIsQuizSuccessModalOpen){
-       setGeneratedQuizCode(response.data.data.code)
-setIsQuizSuccessModalOpen(true)
+    try {
+      const response = await axiosInstance.post(
+        Quizzes_URLS.SetUP_Quizz,
+        formattedData
+      );
+      toast.success(response.data.message);
+      console.log(response.data.data);
+      if (setGeneratedQuizCode && setIsQuizSuccessModalOpen) {
+        setGeneratedQuizCode(response.data.data.code);
+        setIsQuizSuccessModalOpen(true);
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to create quiz");
     }
-   
-  } catch (error: any) {
-    toast.error(error.response?.data?.message || "Failed to create quiz")
-  }
-}
+  };
 
   const handleFormSubmit = async (data: QuizFormData) => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-      await onSubmit(data)
-      reset()
-      onClose()
+      await onSubmit(data);
+      reset();
+      onClose();
     } catch (error) {
-      console.error("Error submitting quiz:", error)
+      console.error("Error submitting quiz:", error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleClose = () => {
-    reset()
-    onClose()
-  }
+    reset();
+    onClose();
+  };
 
+  const [groupOptions, setGroupOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [loadingGroups, setLoadingGroups] = useState(false);
 
+  const getGroups = async () => {
+    setLoadingGroups(true);
+    try {
+      const res = await axiosInstance.get(GROUPS_URLS.GET_ALL_GROUPS);
 
+      const groupData = res?.data;
 
+      const formattedOptions = groupData?.map((group: any) => ({
+        label: group.name,
+        value: group._id,
+      }));
 
-  const [groupOptions, setGroupOptions] = useState<{ label: string; value: string }[]>([])
-  const [loadingGroups, setLoadingGroups] = useState(false)
-  
- const getGroups = async () => {
-  setLoadingGroups(true)
-  try {
-    const res = await axiosInstance.get(GROUPS_URLS.GET_ALL_GROUPS)
-
-    const groupData = res?.data
-
-    const formattedOptions = groupData?.map((group: any) => ({
-      label: group.name,
-      value: group._id,
-    }))
-
-    setGroupOptions(formattedOptions)
-    console.log("Formatted Groups:", formattedOptions)
-  } catch (error: any) {
-    console.error("Error fetching groups:", error)
-    toast.error("Failed to fetch groups.")
-  } finally {
-    setLoadingGroups(false)
-  }
-}
+      setGroupOptions(formattedOptions);
+      console.log("Formatted Groups:", formattedOptions);
+    } catch (error: any) {
+      console.error("Error fetching groups:", error);
+      toast.error("Failed to fetch groups.");
+    } finally {
+      setLoadingGroups(false);
+    }
+  };
 
   useEffect(() => {
-    getGroups()
-  }, [])
-  
-  
-    if (!isOpen) return null
+    getGroups();
+  }, []);
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -238,14 +215,16 @@ setIsQuizSuccessModalOpen(true)
         className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
         role="document"
       >
-        {/* Header */}
+   
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h1 id="modal-title" className="text-xl sm:text-2xl font-semibold text-gray-900">
+          <h1
+            id="modal-title"
+            className="text-xl sm:text-2xl font-semibold text-gray-900"
+          >
             Set up a new quiz
           </h1>
           <div className="flex items-center gap-2">
             <button
-            
               type="submit"
               form="quiz-form"
               disabled={isSubmitting}
@@ -264,275 +243,269 @@ setIsQuizSuccessModalOpen(true)
           </div>
         </div>
 
-        {/* Form */}
-        <form id="quiz-form" onSubmit={handleSubmit(handleFormSubmit)} className="p-6 space-y-6">
-          {/* Details Section */}
+        <form
+          id="quiz-form"
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className="p-6 space-y-6"
+        >
+  
           <div>
             <h2 className="text-lg font-medium text-gray-900 mb-4">Details</h2>
 
-   <div className="mb-4 flex items-stretch">
-  <label
-    htmlFor="title"
-    className="min-w-[100px] text-sm text-center font-medium text-gray-700 px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center"
-  >
-    Title:
-  </label>
-  <div className="flex-1">
-    <input
-      {...register("title", {
-        required: "Title is required",
-        minLength: { value: 3, message: "Title must be at least 3 characters" },
-        maxLength: { value: 100, message: "Title must be less than 100 characters" },
-      })}
-      type="text"
-      id="title"
-      className="w-full h-full px-4 py-3 bg-orange-50 border  border-none rounded-r-xl focus:outline-none "
-      placeholder="Enter quiz title"
-      aria-invalid={errors.title ? "true" : "false"}
-      aria-describedby={errors.title ? "title-error" : undefined}
-    />
-    {errors.title && (
-      <p id="title-error" className="mt-1 text-sm text-red-600" role="alert">
-        {errors.title.message}
-      </p>
-    )}
-  </div>
-</div>
-
-            {/* Duration, Questions, Score Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-            <div className="flex items-stretch mb-4">
-  <label
-    htmlFor="duration"
-    className="min-w-[180px] text-center px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"
-  >
-    Duration (in minutes)
-  </label>
-  <Controller
-    name="duration"
-    control={control}
-    rules={{ required: "Duration is required" }}
-    render={({ field }) => (
-      <select
-        {...field}
-        id="duration"
-        className="w-full h-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-r-xl border-none focus:outline-none transition-all duration-200"
-        aria-invalid={errors.duration ? "true" : "false"}
-      >
-        {durationOptions.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    )}
-  />
-</div>
-
-           <div className="flex items-stretch mb-4">
-  <label
-    htmlFor="numberOfQuestions"
-    className="min-w-[180px] text-center px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"
-  >
-    No. of questions
-  </label>
-  <Controller
-    name="numberOfQuestions"
-    control={control}
-    rules={{ required: "Number of questions is required" }}
-    render={({ field }) => (
-      <select
-        {...field}
-        id="numberOfQuestions"
-        className="w-full h-full px-4 py-3 border-none bg-orange-50 border border-orange-200 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-        aria-invalid={errors.numberOfQuestions ? "true" : "false"}
-      >
-        {questionOptions.map((option, i) => (
-          <option key={i} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    )}
-  />
-</div>
-
-            <div className="flex items-stretch mb-4">
-  <label
-    htmlFor="scorePerQuestion"
-    className="min-w-[180px] text-center px-4 py-3  bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"
-  >
-    Score per question
-  </label>
-  <Controller
-    name="scorePerQuestion"
-    control={control}
-    rules={{ required: "Score per question is required" }}
-    render={({ field }) => (
-      <select
-        {...field}
-        id="scorePerQuestion"
-        className="w-full h-full px-4 py-3 bg-orange-50 border-none border-orange-200 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-        aria-invalid={errors.scorePerQuestion ? "true" : "false"}
-      >
-        {scoreOptions.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    )}
-  />
-</div>
-
+            <div className="mb-4 flex items-stretch">
+              <label
+                htmlFor="title"
+                className="min-w-[100px] text-sm text-center font-medium text-gray-700 px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center"
+              >
+                Title:
+              </label>
+              <div className="flex-1">
+                <input
+                   {...register("title", quizValidation.title)}
+                  type="text"
+                  id="title"
+                  className="w-full h-full px-4 py-3 bg-orange-50 border  border-none rounded-r-xl focus:outline-none "
+                  placeholder="Enter quiz title"
+                  aria-invalid={errors.title ? "true" : "false"}
+                  aria-describedby={errors.title ? "title-error" : undefined}
+                />
+                {errors.title && (
+                  <p
+                    id="title-error"
+                    className="mt-1 text-sm text-red-600"
+                    role="alert"
+                  >
+                    {errors.title.message}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* Description */}
-           <div className="mb-6 flex items-stretch">
-  <label
-    htmlFor="description"
-    className="min-w-[100px] text-center px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"
-  >
-    Description
-  </label>
-  <div className="flex-1">
-    <textarea
-      {...register("description", {
-        maxLength: {
-          value: 500,
-          message: "Description must be less than 500 characters",
-        },
-      })}
-      id="description"
-      rows={4}
-      className="w-full h-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
-      placeholder="Enter quiz description (optional)"
-      aria-invalid={errors.description ? "true" : "false"}
-      aria-describedby={errors.description ? "description-error" : undefined}
-    />
-    {errors.description && (
-      <p id="description-error" className="mt-1 text-sm text-red-600" role="alert">
-        {errors.description.message}
-      </p>
-    )}
-  </div>
-</div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              <div className="flex items-stretch mb-4">
+                <label
+                  htmlFor="duration"
+                  className="min-w-[180px] text-center px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"
+                >
+                  Duration (in minutes)
+                </label>
+                <Controller
+                  name="duration"
+                  control={control}
+                  rules={quizValidation.duration}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      id="duration"
+                      className="w-full h-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-r-xl border-none focus:outline-none transition-all duration-200"
+                      aria-invalid={errors.duration ? "true" : "false"}
+                    >
+                      {durationOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </div>
 
-            {/* Schedule */}
-        <div className="flex items-center mb-4 w-fit rounded-xl border border-gray-300 overflow-hidden text-sm font-medium text-gray-800 shadow-sm">
-  {/* Label */}
-  <div className="bg-[#FFEDDF] px-4 py-2 h-10 flex items-center justify-center">
-    Schedule
-  </div>
+              <div className="flex items-stretch mb-4">
+                <label
+                  htmlFor="numberOfQuestions"
+                  className="min-w-[180px] text-center px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"
+                >
+                  No. of questions
+                </label>
+                <Controller
+                  name="numberOfQuestions"
+                  control={control}
+              rules={quizValidation.numberOfQuestions}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      id="numberOfQuestions"
+                      className="w-full h-full px-4 py-3 border-none bg-orange-50 border border-orange-200 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                      aria-invalid={errors.numberOfQuestions ? "true" : "false"}
+                    >
+                      {questionOptions.map((option, i) => (
+                        <option key={i} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </div>
 
-  {/* Date */}
-  <div className="flex items-center gap-2 px-4 py-2 border-l border-gray-300">
-    <input
-      type="date"
-      {...register("scheduleDate", { required: "Schedule date is required" })}
-      className="bg-transparent focus:outline-none w-[110px] text-black"
-    />
-  </div>
+              <div className="flex items-stretch mb-4">
+                <label
+                  htmlFor="scorePerQuestion"
+                  className="min-w-[180px] text-center px-4 py-3  bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"
+                >
+                  Score per question
+                </label>
+                <Controller
+                  name="scorePerQuestion"
+                  control={control}
+                  rules={quizValidation.numberOfQuestions}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      id="scorePerQuestion"
+                      className="w-full h-full px-4 py-3 bg-orange-50 border-none border-orange-200 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                      aria-invalid={errors.scorePerQuestion ? "true" : "false"}
+                    >
+                      {scoreOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </div>
+            </div>
 
-  {/* Time */}
-  <div className="flex items-center gap-2 px-4 py-2 border-l border-gray-300">
-    <input
-      type="time"
-      {...register("scheduleTime", { required: "Schedule time is required" })}
-      className="bg-transparent focus:outline-none w-[60px] text-black"
-    />
-  </div>
-</div>
+        
+            <div className="mb-6 flex items-stretch">
+              <label
+                htmlFor="description"
+                className="min-w-[100px] text-center px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <div className="flex-1">
+                <textarea
+                 {...register("description", quizValidation.description)}
+                  id="description"
+                  rows={4}
+                  className="w-full h-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
+                  placeholder="Enter quiz description (optional)"
+                  aria-invalid={errors.description ? "true" : "false"}
+                  aria-describedby={
+                    errors.description ? "description-error" : undefined
+                  }
+                />
+                {errors.description && (
+                  <p
+                    id="description-error"
+                    className="mt-1 text-sm text-red-600"
+                    role="alert"
+                  >
+                    {errors.description.message}
+                  </p>
+                )}
+              </div>
+            </div>
 
+            <div className="flex items-center mb-4 w-fit rounded-xl border border-gray-300 overflow-hidden text-sm font-medium text-gray-800 shadow-sm">
+  
+              <div className="bg-[#FFEDDF] px-4 py-2 h-10 flex items-center justify-center">
+                Schedule
+              </div>
 
+     
+              <div className="flex items-center gap-2 px-4 py-2 border-l border-gray-300">
+                <input
+                  type="date"
+           {...register("scheduleDate", quizValidation.scheduleDate)}
+                  className="bg-transparent focus:outline-none w-[110px] text-black"
+                />
+              </div>
 
-            {/* Bottom Row - Difficulty, Category, Group */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-  {/* Difficulty Level */}
-  <div className="flex items-stretch rounded-xl overflow-hidden border border-orange-200 bg-orange-50">
-    <div className="min-w-[100px] px-4 py-2 flex items-center justify-center bg-[#FFEDDF] text-sm font-medium text-gray-700">
-      Difficulty
-    </div>
-    <Controller
-      name="difficultyLevel"
-      control={control}
-      render={({ field }) => (
-        <select
-          {...field}
-          id="difficultyLevel"
-          className="w-full px-4 py-2 border-none  bg-transparent focus:outline-none"
-        >
-          {difficultyOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      )}
-    />
-  </div>
+              {/* Time */}
+              <div className="flex items-center gap-2 px-4 py-2 border-l border-gray-300">
+                <input
+                  type="time"
+             {...register("scheduleTime", quizValidation.scheduleTime)}
+                  className="bg-transparent focus:outline-none w-[60px] text-black"
+                />
+              </div>
+            </div>
 
-  {/* Category Type */}
-  <div className="flex items-stretch rounded-xl overflow-hidden border border-orange-200 bg-orange-50">
-    <div className="min-w-[100px] px-4 py-2 flex items-center justify-center bg-[#FFEDDF] text-sm font-medium text-gray-700">
-      Category
-    </div>
-    <Controller
-      name="categoryType"
-      control={control}
-      render={({ field }) => (
-        <select
-          {...field}
-          id="categoryType"
-          className="w-full px-4 py-2 border-none  bg-transparent focus:outline-none"
-        >
-          {categoryOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      )}
-    />
-  </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+  
+              <div className="flex items-stretch rounded-xl overflow-hidden border border-orange-200 bg-orange-50">
+                <div className="min-w-[100px] px-4 py-2 flex items-center justify-center bg-[#FFEDDF] text-sm font-medium text-gray-700">
+                  Difficulty
+                </div>
+                <Controller
+                  name="difficultyLevel"
+                  control={control}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      id="difficultyLevel"
+                      className="w-full px-4 py-2 border-none  bg-transparent focus:outline-none"
+                    >
+                      {difficultyOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </div>
 
-  {/* Group Name */}
-  <div className="flex items-stretch rounded-xl overflow-hidden border border-orange-200 bg-orange-50">
-    <div className="min-w-[100px] px-4 py-2 flex items-center justify-center bg-[#FFEDDF] text-sm font-medium text-gray-700">
-      Group
-    </div>
-  <Controller
-  name="groupName"
-  control={control}
-  rules={{ required: "Group is required" }}
-  render={({ field }) => (
-    <select
-      {...field}
-      id="groupName"
-      disabled={loadingGroups}
-      className="w-full px-4 py-2 border-none bg-transparent focus:outline-none"
-    >
-      {loadingGroups ? (
-        <option value="">Loading groups...</option>
-      ) : (
-        <>
-          <option value="">Select a group</option>
-          {groupOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </>
-      )}
-    </select>
-  )}
-/>
-  </div>
-</div>
+              <div className="flex items-stretch rounded-xl overflow-hidden border border-orange-200 bg-orange-50">
+                <div className="min-w-[100px] px-4 py-2 flex items-center justify-center bg-[#FFEDDF] text-sm font-medium text-gray-700">
+                  Category
+                </div>
+                <Controller
+                  name="categoryType"
+                  control={control}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      id="categoryType"
+                      className="w-full px-4 py-2 border-none  bg-transparent focus:outline-none"
+                    >
+                      {categoryOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </div>
 
+              <div className="flex items-stretch rounded-xl overflow-hidden border border-orange-200 bg-orange-50">
+                <div className="min-w-[100px] px-4 py-2 flex items-center justify-center bg-[#FFEDDF] text-sm font-medium text-gray-700">
+                  Group
+                </div>
+                <Controller
+                  name="groupName"
+                  control={control}
+            rules={quizValidation.groupName}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      id="groupName"
+                      disabled={loadingGroups}
+                      className="w-full px-4 py-2 border-none bg-transparent focus:outline-none"
+                    >
+                      {loadingGroups ? (
+                        <option value="">Loading groups...</option>
+                      ) : (
+                        <>
+                          <option value="">Select a group</option>
+                          {groupOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </>
+                      )}
+                    </select>
+                  )}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Submit Button for Mobile */}
           <div className="flex cursor-pointer justify-end pt-4 border-t border-gray-200 sm:hidden">
             <button
               type="submit"
@@ -545,5 +518,5 @@ setIsQuizSuccessModalOpen(true)
         </form>
       </div>
     </div>
-  )
+  );
 }

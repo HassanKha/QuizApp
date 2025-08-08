@@ -2,8 +2,11 @@
 import { useState, useEffect, useRef } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { HiXMark, HiCheck } from "react-icons/hi2" // Changed to HiXMark
+import { answerOptions, categoryOptions, difficultyOptions} from "./options/options"
+import { questionValidation } from "../../../../Server/Validation"
 
-interface QuestionSetupModalProps {
+
+export interface QuestionSetupModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (data: QuestionFormData) => Promise<void> | void
@@ -23,24 +26,7 @@ export interface QuestionFormData {
   type: "FE" | "BE" | "DO"
 }
 
-const answerOptions = [
-  { value: "A", label: "A" },
-  { value: "B", label: "B" },
-  { value: "C", label: "C" },
-  { value: "D", label: "D" },
-]
 
-const difficultyOptions = [
-  { value: "easy", label: "Easy" },
-  { value: "medium", label: "Medium" },
-  { value: "hard", label: "Hard" },
-]
-
-const categoryOptions = [
-  { value: "FE", label: "Frontend (FE)" },
-  { value: "BE", label: "Backend (BE)" },
-  { value: "DO", label: "DevOps" },
-]
 
 export default function QuestionSetupModal({ isOpen, onClose, onSubmit }: QuestionSetupModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
@@ -182,11 +168,7 @@ export default function QuestionSetupModal({ isOpen, onClose, onSubmit }: Questi
               </label>
               <div className="flex-1">
                 <input
-                  {...register("title", {
-                    required: "Title is required",
-                    minLength: { value: 3, message: "Title must be at least 3 characters" },
-                    maxLength: { value: 12, message: "Title must be less than 200 characters" },
-                  })}
+           {...register("title", questionValidation.title)}
                   type="text"
                   id="question-title"
                   className="w-full h-full px-4 py-3 bg-orange-50 border border-none rounded-r-xl focus:outline-none"
@@ -212,9 +194,7 @@ export default function QuestionSetupModal({ isOpen, onClose, onSubmit }: Questi
               </label>
               <div className="flex-1">
                 <textarea
-                  {...register("description", {
-                    maxLength: { value: 1000, message: "Description must be less than 1000 characters" },
-                  })}
+               {...register("description", questionValidation.description)}
                   id="question-description"
                   rows={4}
                   className="w-full h-full px-4 py-3 bg-orange-50 border border-orange-200 rounded-r-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none"
@@ -242,11 +222,8 @@ export default function QuestionSetupModal({ isOpen, onClose, onSubmit }: Questi
                   </label>
                   <div className="flex-1">
                     <input
-                      {...register(`options.${optionKey}` as `options.${keyof QuestionFormData["options"]}`, {
-                        // Corrected register path
-                        required: `Option ${optionKey} is required`,
-                        maxLength: { value: 200, message: `Option ${optionKey} must be less than 200 characters` },
-                      })}
+                  {...register(`options.${optionKey}` as `options.${keyof QuestionFormData["options"]}`, questionValidation.options[optionKey as "A" | "B" | "C" | "D"])}
+
                       type="text"
                       id={`option-${optionKey}`}
                       className="w-full h-full px-4 py-3 bg-orange-50 border border-none rounded-r-xl focus:outline-none"
@@ -279,7 +256,7 @@ export default function QuestionSetupModal({ isOpen, onClose, onSubmit }: Questi
               <Controller
                 name="answer"
                 control={control}
-                rules={{ required: "Right answer is required" }}
+                 rules={questionValidation.answer}
                 render={({ field }) => (
                   <select
                     {...field}
