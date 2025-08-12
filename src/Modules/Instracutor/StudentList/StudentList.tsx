@@ -12,6 +12,8 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../../Redux/store';
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
+import Loader from '../../../Component/shared/Loader';
+import DeleteModal from '../../../Component/shared/Delete';
 
 interface Student {
   _id: string;
@@ -31,8 +33,8 @@ function StudentDetailsModal({ isOpen, onClose, student }: { isOpen: boolean; on
 
   return (
     <Transition show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <div className="fixed inset-0 flex items-center justify-center p-4">
+      <Dialog as="div" className="relative z-50 " onClose={onClose}>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -77,10 +79,23 @@ export default function StudentList() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [students, setStudents] = useState<Student[]>([]);
+  let [modalLoading, setmodalLoading] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [page, setPage] = useState(1);
   const itemsPerPage = 12;
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [studentId, setStudentId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+
+  const openDeleteModal = (studentid:string) => {
+    setStudentId(studentid)
+    setShowDeleteModal(true);
+    
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
 
   const toggleMenu = (id: string) => {
     setOpenMenuId(openMenuId === id ? null : id);
@@ -103,17 +118,18 @@ export default function StudentList() {
     }
   }
 
-  async function deleteStudent(id: string) {
-    setLoading(true);
+  async function deleteStudent() {
+    setmodalLoading(true);
     try {
-      const response = await axiosInstance.delete(STUDENTS_URLS.DELETE_STUDENT(id));
+      const response = await axiosInstance.delete(STUDENTS_URLS.DELETE_STUDENT(studentId));
       toast.success(response.data.message);
       fetchStudents();
       setOpenMenuId(null);
+      closeDeleteModal()
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to delete student");
     } finally {
-      setLoading(false);
+      setmodalLoading(false);
     }
   }
 
@@ -145,8 +161,8 @@ export default function StudentList() {
   return (
     <>
       {loading && (
-        <div className="flex justify-center items-center h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+        <div className="flex justify-center list-students items-center h-screen">
+          <Loader/>
         </div>
       )}
 
@@ -174,7 +190,7 @@ export default function StudentList() {
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div>
-                  <h4 className="font-semibold text-lg">{user.first_name} {user.last_name}</h4>
+                  <h4 className="font-semibold text-black text-lg">{user.first_name} {user.last_name}</h4>
                  <span className="block text-sm text-gray-600">
                     {t("studentList.group")}: {user.group?.name || t("studentDetails.noGroup")}
                   </span>
@@ -193,7 +209,7 @@ export default function StudentList() {
                   <button onClick={() => viewStudent(user._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
                     <FaRegEye className="mr-2 text-green-600 text-lg" /> {t("actions.view")}
                   </button>
-                  <button onClick={() => deleteStudent(user._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
+                  <button onClick={() => openDeleteModal(user?._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
                    <MdDelete className="mr-2 text-red-600 text-lg" /> {t("actions.delete")}
                   </button>
 
@@ -224,7 +240,7 @@ export default function StudentList() {
 
               {page > 3 && totalPages > 5 && (
                 <li
-                  className="cursor-pointer px-3 py-2 border border-gray-300 bg-white"
+                  className="cursor-pointer text-black px-3 py-2 border border-gray-300 bg-white"
                   onClick={() => setPage(Math.max(1, page - 2))}
                 >
                   ...
@@ -247,7 +263,7 @@ export default function StudentList() {
 
               {page < totalPages - 2 && totalPages > 5 && (
                 <li
-                  className="cursor-pointer px-3 py-2 border border-gray-300 bg-white"
+                  className="cursor-pointer pagination-points px-3 py-2 border border-gray-300 bg-white"
                   onClick={() => setPage(Math.min(totalPages, page + 2))}
                 >
                   ...
@@ -268,7 +284,7 @@ export default function StudentList() {
               <li
                 onClick={() => setPage((old) => Math.min(old + 1, totalPages))}
                 className={`cursor-pointer px-3 py-2 leading-tight border rounded-r-lg
-          ${page === totalPages ? 'text-gray-400 border-gray-300 bg-white cursor-not-allowed' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
+          ${page === totalPages ? 'text-black border-gray-300 bg-white cursor-not-allowed' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-900'}`}
               >
                 {t("pagination.next")}
               </li>
@@ -279,6 +295,13 @@ export default function StudentList() {
       </div>
 
       <StudentDetailsModal isOpen={showModal} onClose={() => setShowModal(false)} student={selectedStudent} />
+
+        <DeleteModal
+                show={showDeleteModal}
+                onClose={closeDeleteModal}
+                onDeleteConfirm={deleteStudent}
+                title="Delete Student"
+                loading={modalLoading}/> 
     </>
   );
 }

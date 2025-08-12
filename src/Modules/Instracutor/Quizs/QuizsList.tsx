@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import QuizSetupModal from "./AddModel/QuizSetupModal"
 import { useNavigate } from "react-router-dom"
 import AllQuizzesPage from "./AllQuizzs/AllQuizzes"
-import { toast } from "react-toastify"
+
 import { axiosInstance, Quizzes_URLS } from "../../../Server/baseUrl"
 import type { Quiz } from "../../../Interfaces/Quizzes/Interfaces"
 import { FaSpinner } from "react-icons/fa"
@@ -39,15 +39,10 @@ export default function QuizsList() {
     try {
       const res = await axiosInstance.get(Quizzes_URLS.completed_Quizz);
       const all = res.data || []
-
       setQuizzes(all)
-
-
-
-
       setCompleteQuizzes(all)
     } catch (err) {
-      toast.error("Failed to load quizzes")
+     
       console.error(err)
     }
     finally {
@@ -56,7 +51,7 @@ export default function QuizsList() {
   }
 
 
-  useEffect(() => {
+ 
     async function fetchAllQuizzes() {
       try {
         const res = await axiosInstance.get(Quizzes_URLS.SetUP_Quizz);
@@ -73,7 +68,7 @@ export default function QuizsList() {
 
         setUpcomingQuizzes(upcoming)
       } catch (err) {
-        toast.error("Failed to load quizzes")
+        
         console.error(err)
       }
       finally {
@@ -81,9 +76,12 @@ export default function QuizsList() {
       }
     }
 
+    useEffect(()=>{
     fetchAllQuizzes()
     fetchCompleteQuizzes()
-  }, [])
+    },[])
+    
+
 
   const handleViewDetails = (id: string) => {
     navigate(`/quizes/${id}`)
@@ -130,7 +128,7 @@ export default function QuizsList() {
               <div className="flex justify-center py-10">
                 <FaSpinner className="text-2xl text-gray-500 animate-spin" />
               </div>
-            ) : upcomingQuizzes.length === 0 ? (
+            ) : upcomingQuizzes.length < 0 ? (
               <div className="text-gray-500 text-center py-8">{t("QuizsList.noUpcoming")}</div>
             ) : (
               <div className="space-y-3 bg-white sm:space-y-4">
@@ -195,7 +193,7 @@ export default function QuizsList() {
                           <FaSpinner className="text-2xl animate-spin inline-block" />
                         </td>
                       </tr>
-                    ) : CompletedQuizes.length === 0 ? (
+                    ) : CompletedQuizes.length < 0 ? (
                       <tr>
                         <td colSpan={4} className="py-8 text-center text-gray-500">
                           No completed quizzes found.
@@ -242,9 +240,9 @@ export default function QuizsList() {
           </div>
         </div>
       </div>
-      {/* Quiz Setup Modal */}
+    
       <QuizSetupModal setGeneratedQuizCode={setGeneratedQuizCode} setIsQuizSuccessModalOpen={setIsQuizSuccessModalOpen} isOpen={isQuizModalOpen} onClose={() => setIsQuizModalOpen(false)} />
-      {/* Quiz Success Modal */}
+      
       <QuizSuccessModal isOpen={isQuizSuccessModalOpen} onClose={handleQuizSuccessClose} quizCode={generatedQuizCode} />
     </div>
   )

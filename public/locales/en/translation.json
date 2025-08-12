@@ -117,6 +117,22 @@
       "cancel": "Cancel",
       "codeRequired": "Code is required"
     }
+  },
+  "quizSection": {
+    "availableQuizzes": "Available Quizzes",
+    "searchPlaceholder": "Search quizzes...",
+    "scheduled": "Scheduled",
+    "at": "at",
+    "duration": "Duration",
+    "minutes": "min",
+    "questions": "Questions",
+    "difficulty": "Difficulty",
+    "participants": "Participants",
+    "type": "Type",
+    "status": "Status",
+    "viewDetails": "View Details",
+    "noQuizzesFound": "No quizzes found matching your search.",
+    "fetchError": "Failed to fetch quizzes"
   }
 }
 

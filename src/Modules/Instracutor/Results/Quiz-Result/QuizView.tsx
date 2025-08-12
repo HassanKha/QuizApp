@@ -41,17 +41,17 @@ export default function QuizView() {
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       {/* Breadcrumb */}
-      <nav className="mb-6 text-sm text-gray-600" aria-label="Breadcrumb">
+      <nav className="mb-6 text-sm quiz-nav text-gray-600" aria-label="Breadcrumb">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link to="/quizes" className="hover:underline">
+            <Link to="/quizes" className="hover:underline ">
               Quizzes
             </Link>
           </li>
           <li>
             <HiChevronRight className="w-4 h-4 text-gray-400" />
           </li>
-          <li className="font-medium text-gray-900" aria-current="page">
+          <li className="font-medium quiz-tiele text-gray-900" aria-current="page">
             {quizTitle}
           </li>
         </ol>

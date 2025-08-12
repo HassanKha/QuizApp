@@ -272,7 +272,7 @@ export default function QuizSetupModal({
                 {errors.title && (
                   <p
                     id="title-error"
-                    className="mt-1 text-sm text-red-600"
+                    className="text-sm text-red-600"
                     role="alert"
                   >
                     {errors.title.message}

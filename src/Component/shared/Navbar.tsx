@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../Redux/store";
+import DarkModeToggle from "../DarkModeToggle";
 
 interface HeaderProps {
   onMenuToggle: () => void
@@ -42,7 +43,7 @@ const routeTitles = (pathname: string): string => {
   const pageTitle = routeTitles(location.pathname) || "";
 console.log(location.pathname)
   return (
-    <header className="bg-white border-b border-gray-200 px-4  sm:px-6 py-4 sticky top-0 z-40">
+    <header className="bg-white border-b border-gray-200 px-4 dark:bg-black  sm:px-6 py-4 sticky top-0 z-40">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
@@ -68,7 +69,7 @@ console.log(location.pathname)
             {i18n.language === "en" ? "عربي" : "English"}
           </button>
 
-
+            <DarkModeToggle />
 
           <div className="relative">
             <button

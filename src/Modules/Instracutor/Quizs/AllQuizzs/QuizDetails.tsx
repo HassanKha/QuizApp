@@ -18,6 +18,7 @@ import ConfirmationModal from "../../../../Component/shared/ConfirmationModal";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { FaCheck, FaSpinner, FaTimes } from "react-icons/fa";
+import DeleteModal from "../../../../Component/shared/Delete";
 
 export default function QuizDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +29,15 @@ export default function QuizDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
 
   const showModalUpdate = () => {
     if (quiz) {
@@ -88,21 +97,22 @@ export default function QuizDetailsPage() {
     }
   }, [id]);
 
-  const handleDeleteClick = () => {
-    setIsDeleteConfirmOpen(true);
-  };
+
 
   const handleConfirmDelete = async () => {
     if (!quiz) return;
 
     try {
+      setmodalLoading(true)
       await axiosInstance.delete(Quizzes_URLS.delete_QuizzID(quiz._id));
-      setIsDeleteConfirmOpen(false);
+      closeDeleteModal()
       toast.success("deleting quiz successfully");
-
       navigate("/quizes");
     } catch (err) {
       console.error("Error deleting quiz:", err);
+    }
+    finally{
+      setmodalLoading(false)
     }
   };
 
@@ -241,7 +251,7 @@ export default function QuizDetailsPage() {
 
           <div className="flex justify-end gap-4">
             <button
-              onClick={handleDeleteClick}
+              onClick={openDeleteModal}
               className="flex items-center cursor-pointer gap-2 px-6 py-3 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 transition-all duration-200"
               aria-label="Delete quiz"
             >
@@ -268,14 +278,12 @@ export default function QuizDetailsPage() {
         />
       )}
 
-      <ConfirmationModal
-        isOpen={isDeleteConfirmOpen}
-        onClose={() => setIsDeleteConfirmOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="Confirm Deletion"
-        message={`Are you sure you want to delete the quiz "${quiz.title}"? This action cannot be undone.`}
-        confirmText="Delete"
-      />
+       <DeleteModal
+       show={showDeleteModal}
+       onClose={closeDeleteModal}
+       onDeleteConfirm={handleConfirmDelete}
+       title="Delete Quiz"
+       loading={modalLoading}/> 
 
       {showModal && (
         <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50">

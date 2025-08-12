@@ -2,3 +2,22 @@
 .e {
     color: #b0ee95;
 }
+
+
+.dark header,.dark .layout{
+    background-color: black;
+    color: white;
+    transition: all 0.4s;
+}
+
+.dark .pagination-points ,.dark .student-card{
+    color: black;
+}
+
+.dark .list-students .loader{
+    border-color: white;
+}
+
+.dark .quiz-tiele ,.dark .quiz-nav {
+    color: white;
+}

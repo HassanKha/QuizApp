@@ -117,6 +117,22 @@
       "cancel": "إلغاء",
       "codeRequired": "الكود مطلوب"
     }
+  },
+   "quizSection": {
+    "availableQuizzes": "الاختبارات المتاحة",
+    "searchPlaceholder": "ابحث عن اختبار...",
+    "scheduled": "موعد البدء",
+    "at": "في",
+    "duration": "المدة",
+    "minutes": "دقيقة",
+    "questions": "عدد الأسئلة",
+    "difficulty": "الصعوبة",
+    "participants": "عدد المشاركين",
+    "type": "النوع",
+    "status": "الحالة",
+    "viewDetails": "عرض التفاصيل",
+    "noQuizzesFound": "لا توجد اختبارات مطابقة لبحثك.",
+    "fetchError": "فشل في جلب الاختبارات"
   }
 
 }

@@ -1,4 +1,3 @@
-
 import { useState, useMemo, useEffect } from "react"
 import { HiMagnifyingGlass, HiClock, HiQuestionMarkCircle, HiScale, HiUsers, HiArrowRight } from "react-icons/hi2"
 import { useNavigate } from "react-router-dom"
@@ -8,14 +7,14 @@ import { FaSpinner } from "react-icons/fa"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../../../Redux/store"
 import type { Quiz, QuizSectionProps } from "../../../../Interfaces/Quizzes/Interfaces"
-
+import { useTranslation } from "react-i18next"
 
 export default function QuizSection({ showTitle = true, embedded = true }: QuizSectionProps) {
+  const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState("")
   const navigate = useNavigate()
   const [QuizzsData, setQuizzsData] = useState<Quiz[]>([])
   const [loading, setLoading] = useState(false);
-
 
   const filteredQuizzes = useMemo(() => {
     if (loading || !QuizzsData.length) return []
@@ -30,13 +29,9 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
     )
   }, [searchTerm, QuizzsData, loading])
 
-
   const handleViewDetails = (code: string) => {
     navigate(`/quizes/${code}`)
   }
-
-
-
 
   async function fetchQuestion() {
     setLoading(true);
@@ -44,7 +39,7 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
       const response = await axiosInstance.get(Quizzes_URLS.SetUP_Quizz);
       setQuizzsData(response.data);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to fetch students");
+      toast.error(error.response?.data?.message || t("quizSection.fetchError"))
     } finally {
       setLoading(false);
     }
@@ -59,22 +54,23 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
     fetchQuestion();
   }, []);
 
-
   return (
     <section className={embedded ? "rounded-xl bg-white shadow-sm border p-4 sm:p-6" : "p-4 sm:p-6 max-w-7xl mx-auto"}>
-      {showTitle && <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Available Quizzes</h2>}
+      {showTitle && <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">{t("quizSection.availableQuizzes")}</h2>}
+
       {/* Search Bar */}
       <div className="relative mb-6 max-w-md">
         <HiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
         <input
           type="text"
-          placeholder="Search quizzes..."
+          placeholder={t("quizSection.searchPlaceholder")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-          aria-label="Search quizzes"
+          aria-label={t("quizSection.searchPlaceholder")}
         />
       </div>
+
       {loading ? (
         <div className="flex justify-center py-12">
           <FaSpinner className="text-3xl text-gray-500 animate-spin" />
@@ -93,9 +89,9 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
                 <p className="flex items-center gap-2">
                   <HiClock className="w-4 h-4 text-gray-500" />
                   <span>
-                    Scheduled:{" "}
+                    {t("quizSection.scheduled")}:{" "}
                     <span className="font-medium">
-                      {new Date(quiz.schadule).toLocaleDateString()} at{" "}
+                      {new Date(quiz.schadule).toLocaleDateString()} {t("quizSection.at")}{" "}
                       {new Date(quiz.schadule).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -106,29 +102,29 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
                 <p className="flex items-center gap-2">
                   <HiClock className="w-4 h-4 text-gray-500" />
                   <span>
-                    Duration: <span className="font-medium">{quiz.duration} min</span>
+                    {t("quizSection.duration")}: <span className="font-medium">{quiz.duration} {t("quizSection.minutes")}</span>
                   </span>
                 </p>
                 <p className="flex items-center gap-2">
                   <HiQuestionMarkCircle className="w-4 h-4 text-gray-500" />
                   <span>
-                    Questions: <span className="font-medium">{quiz.questions_number}</span>
+                    {t("quizSection.questions")}: <span className="font-medium">{quiz.questions_number}</span>
                   </span>
                 </p>
                 <p className="flex items-center gap-2">
                   <HiScale className="w-4 h-4 text-gray-500" />
                   <span>
-                    Difficulty: <span className="font-medium capitalize">{quiz.difficulty}</span>
+                    {t("quizSection.difficulty")}: <span className="font-medium capitalize">{quiz.difficulty}</span>
                   </span>
                 </p>
                 <p className="flex items-center gap-2">
                   <HiUsers className="w-4 h-4 text-gray-500" />
                   <span>
-                    Participants: <span className="font-medium">{quiz.participants}</span>
+                    {t("quizSection.participants")}: <span className="font-medium">{quiz.participants}</span>
                   </span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <span className="font-medium">Type:</span>{" "}
+                  <span className="font-medium">{t("quizSection.type")}:</span>{" "}
                   <span className="font-medium">{quiz.type}</span>
                 </p>
               </div>
@@ -140,14 +136,14 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
                       : "bg-red-100 text-red-800"
                     }`}
                 >
-                  Status: {quiz.status.charAt(0).toUpperCase() + quiz.status.slice(1)}
+                  {t("quizSection.status")}: {quiz.status.charAt(0).toUpperCase() + quiz.status.slice(1)}
                 </span>
                 <button
                   onClick={() => handleViewDetails(quiz._id)}
                   className="flex cursor-pointer items-center gap-2 px-3 py-1.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
-                  aria-label={`View details for ${quiz.title}`}
+                  aria-label={`${t("quizSection.viewDetails")} ${quiz.title}`}
                 >
-                  <span className="text-sm">View Details</span>
+                  <span className="text-sm">{t("quizSection.viewDetails")}</span>
                   <HiArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -155,7 +151,7 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500">No quizzes found matching your search.</div>
+        <div className="text-center py-8 text-gray-500">{t("quizSection.noQuizzesFound")}</div>
       )}
     </section>
   )

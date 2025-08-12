@@ -11,7 +11,6 @@ import { ToastContainer } from "react-toastify";
 import ResetPassword from "./Modules/Authentication/ResetPassword/ResetPassword";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
-
 import GroupsList from "./Modules/Instracutor/Groups/GroupsList";
 import StudentList from "./Modules/Instracutor/StudentList/StudentList";
 import QuizsList from "./Modules/Instracutor/Quizs/QuizsList";
@@ -19,7 +18,6 @@ import ProtectedRouting from "./Component/shared/ProtectedRouting";
 import Questions from "./Modules/Instracutor/Questions/Questions";
 import QuizDetails from "./Modules/Instracutor/Quizs/AllQuizzs/QuizDetails";
 import Quizs from "./Modules/Student/Quizs/Quizs";
-//import Results from "./Modules/Student/Results/Results";
 import QuizExam from "./Modules/Student/QuizExam/QuizExam";
 import ResultsPage from "./Modules/Instracutor/Results/Results";
 import QuizView from "./Modules/Instracutor/Results/Quiz-Result/QuizView";
@@ -71,6 +69,7 @@ function App() {
         <RouterProvider router={routes}></RouterProvider>
         <ToastContainer position="top-right" autoClose={2000} />
       </Provider>
+      
     </>
   );
 }

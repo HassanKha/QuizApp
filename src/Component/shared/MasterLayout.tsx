@@ -25,7 +25,7 @@ const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
 
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen layout bg-gray-50">
       <Sidebar onMenuToggle={handleMenuToggle} isOpen={isSidebarOpen} isSidebarOpen={isSidebarOpen} onClose={handleSidebarClose} />
 
       <div className="flex-1 flex flex-col min-w-0">

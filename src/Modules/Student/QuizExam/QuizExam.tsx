@@ -8,7 +8,9 @@ export default function QuizExam() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const quizId = location.state;
+  const quizId = location.state
+ 
+  
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);
@@ -84,6 +86,8 @@ export default function QuizExam() {
       navigate("/quiz-result");
     } catch (error: any) {
       toast.error("Failed to send answers.");
+      console.log(error);
+      
     } finally {
       setIsSubmitting(false);
     }
@@ -96,7 +100,7 @@ export default function QuizExam() {
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
+    <div className="p-4 mx-auto">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">
           📝 Quiz{quizTitle ? `: ${quizTitle}` : ""}

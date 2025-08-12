@@ -4,6 +4,7 @@ import {
   TOP_STUDENTS,
   STUDENTS_URLS,
   Quizzes_URLS,
+  Students_Quizes,
 } from "../../Server/baseUrl";
 import { FaArrowRight, FaLongArrowAltRight } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -78,7 +79,7 @@ function StudentDetailsModal({
                 </button>
               </div>
               <div className="space-y-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-gray-50  p-4 rounded-lg">
                   <h3 className="flex items-center text-gray-700 font-semibold mb-2">
                     <HiOutlineUser className="mr-2" /> Personal Information
                   </h3>
@@ -107,7 +108,10 @@ function StudentDetailsModal({
 const images = Array.from({ length: 5 }, (_, i) => `https://randomuser.me/api/portraits/men/${i + 1}.jpg`);
 
 export default function Dashboard() {
-  const [isLoading, setIsLoading] = useState(true);
+  // separate loading states so we don't show "no upcoming" before fetch finishes
+  const [isQuizzesLoading, setIsQuizzesLoading] = useState(true);
+  const [isTopStudentsLoading, setIsTopStudentsLoading] = useState(true);
+
   const [topStudents, setTopStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -115,22 +119,40 @@ export default function Dashboard() {
   const user = useSelector((state: RootState) => state.auth.LogData);
 
   const fetchTopStudents = async () => {
+    setIsTopStudentsLoading(true);
     try {
       const { data } = await axiosInstance.get(TOP_STUDENTS.GET_TOP_STUDENTS);
       setTopStudents(data);
     } catch {
       toast.error("Error fetching top students");
+    } finally {
+      setIsTopStudentsLoading(false);
     }
   };
 
+   const getFirstFiveIncommingQuizz = async () => {
+    setIsQuizzesLoading(true);
+      try {
+        const { data } = await axiosInstance.get(Students_Quizes.First_Five_Incomming_Quizz);
+       
+        setQuizzes(data);
+      } catch (error: any) {
+        console.log(error);
+      } 
+      finally{
+        setIsQuizzesLoading(false)
+      }
+    };
+
   const fetchQuizzes = async () => {
+    setIsQuizzesLoading(true);
     try {
       const { data } = await axiosInstance.get(Quizzes_URLS.SetUP_Quizz);
       setQuizzes(data);
     } catch (error: any) {
-      if (user?.role !== "Student") {
-        toast.error(error?.response?.data?.message || "Failed to fetch quizzes");
-      }
+      console.log(error);
+    } finally {
+      setIsQuizzesLoading(false);
     }
   };
 
@@ -145,23 +167,30 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (user?.role === "Student") {
-      fetchQuizzes();
-    } else {
-      fetchTopStudents();
-      fetchQuizzes();
-    }
-    setTimeout(() => setIsLoading(false), 500);
-  }, []);
+    // run on mount or when user.role changes
+    const init = async () => {
+      try {
+        if (user?.role === "Instructor") {
+          // fetch both in parallel
+          await Promise.all([fetchQuizzes(), fetchTopStudents()]);
+        } else {
+          await getFirstFiveIncommingQuizz();
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    init();
+  }, [user?.role]);
 
   const renderLoadingBox = (text = "Loading upcoming quizzes...") => (
-    <div className="bg-white border rounded-lg shadow p-4 text-center text-gray-500">
+    <div className="bg-white border  rounded-lg shadow p-4 text-center text-gray-500">
       {text}
     </div>
   );
 
   const renderQuizCard = (quiz: Quiz) => (
-    <div key={quiz._id} className="bg-white border rounded-lg shadow p-4 flex justify-between items-start mb-3">
+    <div key={quiz._id} className="bg-white border border-gray-200 rounded-lg shadow p-4 flex justify-between items-start mb-3">
       <div>
         <h3 className="text-md font-semibold text-gray-800 mb-2">{quiz.title}</h3>
         <p className="text-sm text-gray-600 mb-1">
@@ -182,12 +211,11 @@ export default function Dashboard() {
       >
         ● {quiz.status.charAt(0).toUpperCase() + quiz.status.slice(1)}
       </span>
-
     </div>
   );
 
   const renderStudentCard = (student: Student, index: number) => (
-    <div key={student._id} className="flex items-center gap-4 p-2 border rounded-lg hover:bg-gray-50">
+    <div key={student._id} className="flex items-center gap-4 p-2 border border-gray-200 rounded-lg hover:bg-gray-50">
       <img
         src={images[index % images.length]}
         alt={`${student.first_name} ${student.last_name}`}
@@ -195,7 +223,7 @@ export default function Dashboard() {
         loading="lazy"
       />
       <div className="flex-1">
-        <h3 className="font-medium text-sm capitalize">
+        <h3 className="font-medium text-black text-sm capitalize">
           {student.first_name} {student.last_name}
         </h3>
         <p className="text-xs text-gray-500">
@@ -213,7 +241,7 @@ export default function Dashboard() {
       <div className="w-full px-4 py-6">
         <div className="mt-10 w-full">
           <h2 className="text-lg font-semibold mb-4">Upcoming 5 quizzes</h2>
-          {isLoading
+          {isQuizzesLoading
             ? renderLoadingBox()
             : quizzes.length > 0
               ? quizzes.slice(0, 5).map(renderQuizCard)
@@ -235,8 +263,8 @@ export default function Dashboard() {
     <div className="w-full px-4 py-6">
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="mt-10 w-full lg:w-1/2">
-          <h2 className="text-lg font-semibold mb-4">{t("Dashboard.upcomingQuizzes")}</h2>
-          {isLoading
+          <h2 className="text-lg upcomming-quizees font-semibold mb-4">{t("Dashboard.upcomingQuizzes")}</h2>
+          {isQuizzesLoading
             ? renderLoadingBox()
             : quizzes.length > 0
               ? quizzes.slice(0, 5).map(renderQuizCard)
@@ -250,9 +278,9 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="w-full lg:w-1/2 rounded-xl border bg-white shadow p-4 space-y-4">
+        <div className="w-full lg:w-1/2 rounded-xl border border-gray-200 bg-white shadow p-4 space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">{t("Dashboard.topStudents")}</h2>
+            <h2 className="text-lg text-black font-semibold">{t("Dashboard.topStudents")}</h2>
             <Link
               to="/students"
               className="text-sm font-bold hover:underline flex items-center"
@@ -261,7 +289,7 @@ export default function Dashboard() {
             </Link>
           </div>
           <div className="space-y-3">
-            {isLoading
+            {isTopStudentsLoading
               ? renderLoadingBox(t("Dashboard.loadingTopStudents"))
               : topStudents.slice(0, 5).map(renderStudentCard)}
           </div>
