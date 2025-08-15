@@ -13,6 +13,7 @@
   "GroupsList": {
     "title": "قائمة المجموعات",
     "addGroup": "إضافة مجموعة",
+    "UpdateGroup": "تحديث مجموعه",
     "group": "المجموعة",
     "studentsCount": "عدد الطلاب",
     "update": "تحديث المجموعة",

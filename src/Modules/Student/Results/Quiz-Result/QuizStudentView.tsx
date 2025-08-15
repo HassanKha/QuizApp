@@ -6,8 +6,8 @@ type QuizResult = {
   quiz: { _id: string; title: string };
   participant: { _id: string; first_name: string; last_name: string; email: string };
   score: number;
-  started_at: string;   // ISO datetime
-  finished_at: string;  // ISO datetime
+  started_at: string;   
+  finished_at: string;  
 };
 
 export default function QuizStudentView() {

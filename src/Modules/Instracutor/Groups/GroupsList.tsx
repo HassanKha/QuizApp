@@ -1,44 +1,42 @@
 import { useEffect, useState } from 'react';
 import { FaPlusCircle, FaEdit, FaTrash, FaTimes, FaCheck, FaSpinner, FaEye, FaCheckCircle } from 'react-icons/fa';
-import Loader from '../../../Component/shared/Loader';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
-
 import { axiosInstance, GROUPS_URLS, STUDENTS_URLS } from '../../../Server/baseUrl';
 import DeleteModal from '../../../Component/shared/Delete';
-import { IoCloseSharp } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../Redux/store';
 import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
+import type { AddGroup, Group, Student, StudentOption } from '../../../Interfaces/Groups/Interfaces';
+import GroupDetailsModal from './roupDetailsModal';
 
-interface Group {
-  _id: string;
-  name: string;
-  status: 'active' | 'inactive';
-  instructor: string;
-  students: Student[];
-  max_students: number;
-}
-interface AddGroup {
-  name: string;
-  students: string[];
-}
+function SkeletonGroupCard() {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between border border-gray-200 animate-pulse">
+      <div className="flex-grow space-y-3">
+        {/* Group Name */}
+        <div className="h-5 bg-gray-300 rounded w-2/3"></div>
 
-interface Student {
-  _id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  status: 'active' | 'inactive';
-  role: string;
-  avg_score: number;
-}
+        {/* Students Count */}
+        <div className="h-4 bg-gray-200 rounded w-1/3"></div>
 
-interface StudentOption {
-  value: string;
-  label: string;
+        {/* Status + Icons */}
+        <div className="flex items-center justify-between gap-4 mt-2">
+          {/* Status */}
+          <div className="h-6 bg-gray-300 rounded w-32"></div>
+
+          {/* Icons */}
+          <div className="flex space-x-3">
+            <div className="h-5 w-5 bg-gray-300 rounded-full"></div>
+            <div className="h-5 w-5 bg-gray-300 rounded-full"></div>
+            <div className="h-5 w-5 bg-gray-300 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function GroupsList() {
@@ -142,8 +140,7 @@ export default function GroupsList() {
     setIsUpdateMode(true);
     setCurrentGroupId(group._id);
     reset({
-      name: group.name,
-      students: group.students
+      name: group.name
     });
     setShowModal(true);
   };
@@ -199,7 +196,7 @@ export default function GroupsList() {
   useEffect(() => {
 
     getAllStudents();
-  }, []);
+  }, [Students]);
 
 
   const studentOptions: StudentOption[] =  Students?.map(student => ({
@@ -232,10 +229,10 @@ export default function GroupsList() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {loading ? (
-              <div className="col-span-1 md:col-span-2 flex justify-center items-center py-10">
-                <Loader />
-              </div>
-            ) : (
+                  Array.from({ length:  Groups?.length || 6 }).map((_, index) => (
+                    <SkeletonGroupCard key={index} />
+                  ))
+                ) : (
               <>
                 {Groups.length > 0 ? (
                   Groups.map((group) => (
@@ -428,43 +425,12 @@ export default function GroupsList() {
         loading={modalLoading}
       />
 
-      {showModalGroup && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-900 text-black dark:text-white rounded-2xl shadow-2xl w-[90%] max-w-lg p-6 relative animate-fade-in">
-            <button
-              onClick={() => setShowModalGroup(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl font-bold"
-              aria-label="Close Modal"
-            >
-              <IoCloseSharp />
-            </button>
-
-            
-            {modalLoading ? (
-              <Loader />
-            ) : (
-              <>
-                <h2 className="text-2xl font-bold mb-6 text-center  pb-2">{t("GroupsList.groupDetails")}</h2>
-                <div className="space-y-3">
-                  <p><span className="font-semibold">{t("GroupsList.groupName")}:</span> {Group?.name}</p>
-                  <p><span className="font-semibold">{t("GroupsList.instructor")}:</span> {Group?.instructor}</p>
-                  <p><span className="font-semibold">{t("GroupsList.status")}:</span> {Group?.status}</p>
-                  <p><span className="font-semibold">{t("GroupsList.students")}:</span> {Group?.students?.length}</p>
-                  
-                 <div className='flex gap-2'>
-                   <span className="font-semibold">{t("GroupsList.students")}:</span>{" "}
-                    {Group?.students?.map((student) => (
-                      <p key={student._id}>
-                      {student.first_name} {student.last_name}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+     <GroupDetailsModal
+  show={showModalGroup}
+  onClose={() => setShowModalGroup(false)}
+  group={Group}
+  loading={modalLoading}
+/>
 
     </>
   );

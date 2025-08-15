@@ -13,6 +13,7 @@
   "GroupsList": {
     "title": "Groups list",
     "addGroup": "Add Group",
+    "UpdateGroup": "Update Group",
     "group": "Group",
     "studentsCount": "No. of students",
     "update": "Update Group",
@@ -91,7 +92,7 @@
     "actionsCol": "Actions",
     "loading": "Loading questions...",
     "noQuestions": "No questions found.",
-    "updateTitle": "Update Quiz",
+    "updateTitle": "Update Question",
     "answerLabel": "Question Answer",
     "answerRequired": "Answer is required"
   },

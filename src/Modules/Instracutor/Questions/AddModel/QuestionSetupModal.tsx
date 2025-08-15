@@ -1,30 +1,12 @@
-
 import { useState, useEffect, useRef } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { HiXMark, HiCheck } from "react-icons/hi2" // Changed to HiXMark
 import { answerOptions, categoryOptions, difficultyOptions} from "./options/options"
 import { questionValidation } from "../../../../Server/Validation"
+import type { QuestionFormData, QuestionSetupModalProps } from "../../../../Interfaces/Questions/Interfaces"
 
 
-export interface QuestionSetupModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSubmit: (data: QuestionFormData) => Promise<void> | void
-}
 
-export interface QuestionFormData {
-  title: string
-  description: string
-  options: {
-    A: string
-    B: string
-    C: string
-    D: string
-  }
-  answer: "A" | "B" | "C" | "D"
-  difficulty: "easy" | "medium" | "hard"
-  type: "FE" | "BE" | "DO"
-}
 
 
 

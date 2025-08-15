@@ -1,29 +1,29 @@
 import { useEffect, useState, useMemo } from "react";
-import { FaRegEye, FaSpinner } from "react-icons/fa";
+import { FaRegEye} from "react-icons/fa";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { axiosInstance } from "../../../Server/baseUrl";
 import { t } from 'i18next';
 import { useNavigate } from "react-router-dom";
+import type { QuizResult } from "../../../Interfaces/Quizzes/Interfaces";
 
-interface Quiz {
-  _id: string;
-  title: string;
-  description: string;
-  status: string;
-  code: string;
-  schadule: string;
-  duration: number;
-  score_per_question: number;
-  difficulty: string;
-  type: string;
-  createdAt: string;
-  closed_at?: string;
+
+
+function ResultsTableSkeleton({ rows = 5 }) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, rowIndex) => (
+        <tr key={rowIndex} className={rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+          {Array.from({ length: 7 }).map((_, colIndex) => (
+            <td key={colIndex} className="px-4 py-3">
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  );
 }
 
-interface QuizResult {
-  quiz: Quiz;
-  participants: any[]; // Can be typed later
-}
 
 export default function ResultsPage() {
   const [results, setResults] = useState<QuizResult[]>([]);
@@ -35,7 +35,6 @@ const navigate = useNavigate();
   const fetchResults = async () => {
     setLoading(true);
     try {
-      // Replace with actual endpoint
       const res = await axiosInstance.get("/api/quiz/result"); 
       console.log(res.data)
       setResults(res.data);
@@ -57,7 +56,7 @@ const navigate = useNavigate();
   }, [searchTerm, results]);
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-3 mx-auto">
       <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-200">
         <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h1 className="text-2xl font-semibold text-gray-800">Closed Quizzes</h1>
@@ -84,17 +83,12 @@ const navigate = useNavigate();
                   <th className="text-center px-4 py-3">Schedule</th>
                   <th className="text-center px-4 py-3">Duration</th>
                   <th className="text-center px-4 py-3">Difficulty</th>
-                    <th className="text-center px-4 py-3"></th>
+                  <th className="text-center px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr>
-                    <td colSpan={6} className="text-center py-8">
-                      <FaSpinner className="animate-spin mx-auto text-xl text-gray-500" />
-                      <div className="text-gray-500 mt-2">Loading results...</div>
-                    </td>
-                  </tr>
+                  <ResultsTableSkeleton rows={6} />
                 ) : filteredResults.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="text-center py-8 text-gray-500">

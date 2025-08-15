@@ -1,11 +1,9 @@
-
-
 import { useForm } from "react-hook-form"
 import { MdEmail, MdCheckCircle } from "react-icons/md";
 import FB from "../../../assets/FP-BG.png"
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../../assets/Logo-white.png';
-import type { ForgotPasswordForm } from "../../../Interfaces/interfaces";
+import type { ForgotPasswordForm } from "../../../Interfaces/Auth/interfaces";
 import { useState } from "react";
 import { axiosInstance, USERS_URLS } from "../../../Server/baseUrl";
 import { toast } from "react-toastify";

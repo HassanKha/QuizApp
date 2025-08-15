@@ -9,12 +9,10 @@ import { axiosInstance, USERS_URLS } from '../../../Server/baseUrl';
 import { useState } from 'react';
 import { validation } from '../../../Server/Validation';
 import { toast } from 'react-toastify';
-
-
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { MdCheckCircle, MdRemoveRedEye } from 'react-icons/md';
 import { IoEyeOffSharp } from 'react-icons/io5';
-import type { Logged_in_Users } from '../../../Interfaces/interfaces';
+import type { Logged_in_Users } from "../../../Interfaces/Auth/interfaces";
 import { setToken } from '../../../Redux/authSlice';
 import { useDispatch } from 'react-redux';
 
@@ -68,12 +66,12 @@ const onSubmit = async (data: Logged_in_Users): Promise<void> => {
 
             <div className="flex flex-nowrap gap-6 pt-10 overflow-x-auto">
               <button className="cursor-pointer flex flex-col items-center bg-[#2d2d2d] text-white min-w-[140px] px-6 py-4 rounded-lg border-2 border-lime-300 hover:bg-[#3a3a3a] transition">
-                <img src={img2} className="text-lime-300 text-5xl mb-2" />
+                <img alt='login' src={img2} className="text-lime-300 text-5xl mb-2" />
                 <span className="text-sm">Sign in</span>
               </button>
               <Link to="/register">
                 <button className="flex flex-col items-center bg-[#2d2d2d] text-white min-w-[140px] px-6 py-4 rounded-lg hover:bg-[#3a3a3a] transition cursor-pointer">
-                  <img src={img1} className="text-white text-5xl mb-2" />
+                  <img alt='register' src={img1} className="text-white text-5xl mb-2" />
                   <span className="text-sm">Sign Up</span>
                 </button>
               </Link>
@@ -120,7 +118,7 @@ const onSubmit = async (data: Logged_in_Users): Promise<void> => {
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                <img src={img3} className="text-white w-5 h-5" />
+                <img alt='eye' src={img3} className="text-white w-5 h-5" />
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}

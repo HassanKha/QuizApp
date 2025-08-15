@@ -4,25 +4,8 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { axiosInstance } from "../../../Server/baseUrl";
 import { t } from 'i18next';
 import { useNavigate } from "react-router-dom";
-interface Quiz {
-  _id: string;
-  title: string;
-  description: string;
-  status: string;
-  code: string;
-  schadule: string;
-  duration: number;
-  score_per_question: number;
-  difficulty: string;
-  type: string;
-  createdAt: string;
-  closed_at?: string;
-}
+import type { QuizResult } from "../../../Interfaces/Quizzes/Interfaces";
 
-interface QuizResult {
-  quiz: Quiz;
-  result: any[]; // Can be typed later
-}
 
 export default function Results() {
   const [results, setResults] = useState<QuizResult[]>([]);
@@ -99,7 +82,7 @@ const navigate = useNavigate();
                     </td>
                   </tr>
                 ) : (
-                  filteredResults.map(({ quiz , result }) => (
+                  filteredResults.map(({ quiz , score }) => (
                     <tr key={quiz._id} className="border-b border-gray-200">
                       <td className="px-4 py-3 text-center font-medium">{quiz.title}</td>
                       <td className="px-4 py-3 text-center">{quiz.status}</td>
@@ -108,7 +91,7 @@ const navigate = useNavigate();
                       <td className="px-4 py-3 text-center">{quiz.duration} mins</td>
                       <td className="px-4 py-3 text-center capitalize">{quiz.difficulty}</td>
                       <button
-                      onClick={() => navigate(`/quiz-result-studentview`,{ state: {result , title:quiz.title}  })}
+                      onClick={() => navigate(`/quiz-result-studentview`,{ state: {score , title:quiz.title}  })}
                         className="w-full rounded-2xl text-center px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
                                           <FaRegEye className="mr-2 text-green-600 text-lg" /> {t("actions.view")}
                                         </button>

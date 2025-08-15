@@ -37,3 +37,23 @@ export interface QuestionData {
   type: "FE" | "BE" | "DO"
   points:number
 }
+
+export interface QuestionSetupModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (data: QuestionFormData) => Promise<void> | void
+}
+
+export interface QuestionFormData {
+  title: string
+  description: string
+  options: {
+    A: string
+    B: string
+    C: string
+    D: string
+  }
+  answer: "A" | "B" | "C" | "D"
+  difficulty: "easy" | "medium" | "hard"
+  type: "FE" | "BE" | "DO"
+}

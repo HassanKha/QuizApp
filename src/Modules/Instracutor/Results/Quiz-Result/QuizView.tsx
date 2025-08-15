@@ -1,23 +1,9 @@
 import { useLocation, Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { HiChevronRight, HiMagnifyingGlass } from "react-icons/hi2";
+import type { QuizResult } from "../../../../Interfaces/Quizzes/Interfaces";
 
-interface QuizResult {
-  _id: string;
-  quiz: {
-    _id: string;
-    title: string;
-  };
-  participant: {
-    _id: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-  };
-  score: number;
-  started_at: string;
-  finished_at: string;
-}
+
 
 export default function QuizView() {
   const { state } = useLocation();

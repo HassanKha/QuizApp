@@ -3,11 +3,35 @@ import { HiMagnifyingGlass, HiClock, HiQuestionMarkCircle, HiScale, HiUsers, HiA
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import { axiosInstance, Quizzes_URLS } from "../../../../Server/baseUrl"
-import { FaSpinner } from "react-icons/fa"
+
 import { useSelector } from "react-redux"
 import type { RootState } from "../../../../Redux/store"
 import type { Quiz, QuizSectionProps } from "../../../../Interfaces/Quizzes/Interfaces"
 import { useTranslation } from "react-i18next"
+
+
+
+function SkeletonQuizCard() {
+  return (
+    <div className="bg-orange-50 rounded-xl border border-orange-100 p-4 flex flex-col shadow animate-pulse">
+      <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+      <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
+      <div className="h-3 bg-gray-200 rounded w-5/6 mb-3"></div>
+
+      <div className="flex flex-col gap-2 text-sm mb-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-3 bg-gray-200 rounded w-2/3"></div>
+        ))}
+      </div>
+
+      <div className="mt-auto flex items-center justify-between pt-2">
+        <div className="h-5 bg-gray-200 rounded-full w-20"></div>
+        <div className="h-8 bg-gray-200 rounded-lg w-24"></div>
+      </div>
+    </div>
+  );
+}
+
 
 export default function QuizSection({ showTitle = true, embedded = true }: QuizSectionProps) {
   const { t } = useTranslation()
@@ -71,11 +95,13 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
         />
       </div>
 
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <FaSpinner className="text-3xl text-gray-500 animate-spin" />
-        </div>
-      ) : filteredQuizzes.length > 0 ? (
+      {loading ?  (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
+    {Array.from({ length: 4 }).map((_, idx) => (
+      <SkeletonQuizCard key={idx} />
+    ))}
+  </div>
+) : filteredQuizzes.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
           {filteredQuizzes.map((quiz) => (
             <div

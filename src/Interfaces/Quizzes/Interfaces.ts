@@ -42,14 +42,31 @@ export interface Quiz {
   participants: number
 }
 
+export interface JoinQuiz {
+  code:string
+}
+
+
 export interface UpdatedQuiz{
   title:string
 }
 
 
-
-
 export interface QuizSectionProps {
   showTitle?: boolean
   embedded?: boolean
+}
+
+export interface QuizResult {
+  _id: string;
+  quiz:Quiz
+  participant: {
+    _id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+  score: number;
+  started_at: string;
+  finished_at: string;
 }

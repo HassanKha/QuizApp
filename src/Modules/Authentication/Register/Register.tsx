@@ -5,8 +5,6 @@ import img3 from '../../../assets/input icon.svg';
 import img4 from '../../../assets/email-1-svgrepo-com (1).svg';
 import img5 from '../../../assets/contact-details-svgrepo-com.svg';
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
-import eye from '../../../assets/eye-svgrepo-com.svg';
-import uneye from '../../../assets/eye-off-svgrepo-com.svg';
 import FB from "../../../assets/FP-BG.png"
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -14,7 +12,7 @@ import { axiosInstance, USERS_URLS } from '../../../Server/baseUrl';
 import { useState } from 'react';
 import { validation } from '../../../Server/Validation';
 import { toast } from 'react-toastify';
-import type { UserRegister } from '../../../Interfaces/interfaces';
+import type { UserRegister } from "../../../Interfaces/Auth/interfaces";
 import { MdCheckCircle } from 'react-icons/md';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 

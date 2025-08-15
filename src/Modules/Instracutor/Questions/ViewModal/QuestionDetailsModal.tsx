@@ -1,25 +1,8 @@
 import { useEffect, useRef } from "react"
 import { HiXMark } from "react-icons/hi2"
-import type { QuestionViewModalProps } from "../../../../Interfaces/Questions/Interfaces"
+import type { QuestionData, QuestionViewModalProps } from "../../../../Interfaces/Questions/Interfaces"
 
 
-
-export interface QuestionData {
-  title: string
-  description: string
-  options: {
-    A: string
-    B: string
-    C: string
-    D: string
-  }
-  answer: "A" | "B" | "C" | "D"
-  difficulty: "easy" | "medium" | "hard"
-  type: "FE" | "BE" | "DO"
-  points:number
-}
-
-// Helper function to get the full label for a category
 const getCategoryLabel = (type: string) => {
     switch (type) {
         case "FE": return "Frontend (FE)";

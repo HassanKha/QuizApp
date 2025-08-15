@@ -7,7 +7,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md"
 import FB from "../../../assets/FP-BG.png"
 import { Link, useNavigate } from "react-router-dom"
 import logo from "../../../assets/Logo-white.png"
-import type { ResetPasswordForm } from "../../../Interfaces/interfaces"
+import type { ResetPasswordForm } from "../../../Interfaces/Auth/interfaces";
 import { useState } from "react"
 import { axiosInstance, USERS_URLS } from "../../../Server/baseUrl"
 import { toast } from "react-toastify"

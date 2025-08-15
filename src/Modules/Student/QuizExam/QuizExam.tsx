@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { axiosInstance, Students_Quizes } from "../../../Server/baseUrl";
 import { toast } from "react-toastify";
-import type { Question } from "../../../Interfaces/Quizzes/Interfaces";
+import type { Question } from "../../../Interfaces/Questions/Interfaces";
+
 
 export default function QuizExam() {
   const location = useLocation();
@@ -40,7 +41,7 @@ export default function QuizExam() {
 
         setQuestions(data.questions);
         setTimeLeft(data.duration * 60);
-        setQuizTitle(data.title); // ← تم إضافة اسم المادة هنا
+        setQuizTitle(data.title); 
       } catch (error: any) {
         toast.error(error?.response?.data?.message || "Error fetching questions.");
       } finally {

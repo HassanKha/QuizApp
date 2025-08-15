@@ -1,61 +1,70 @@
+
 import { useState, useMemo, useEffect } from "react";
 import { HiEye, HiPencilSquare, HiTrash, HiPlus, HiMagnifyingGlass } from "react-icons/hi2";
-import QuestionSetupModal, { type QuestionFormData } from "./AddModel/QuestionSetupModal";
 import { toast } from "react-toastify";
 import { axiosInstance, Questions_URLS } from "../../../Server/baseUrl";
-import { FaCheck, FaSpinner, FaTimes } from "react-icons/fa";
 import DeleteModal from "../../../Component/shared/Delete";
-import { useForm } from "react-hook-form";
-import QuestionViewModal, { type QuestionData } from "./ViewModal/QuestionDetailsModal";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../Redux/store";
 import { useNavigate } from "react-router-dom";
 import { t } from "i18next";
+import type { Question, QuestionData, QuestionFormData, UpdatedQuestion } from "../../../Interfaces/Questions/Interfaces";
+import QuestionSetupModal from "./AddModel/QuestionSetupModal";
+import QuestionViewModal from "./ViewModal/QuestionDetailsModal";
+import QuestionAnswerUpdateModal from "./QuestionAnswerUpdateModal/QuestionAnswerUpdateModal";
 
-interface UpdatedQuestion {
-  answer: "A" | "B" | "C" | "D";
-}
-
-interface Question {
-  _id: string;
-  title: string;
-  description: string;
-  options: {
-    A: string;
-    B: string;
-    C: string;
-    D: string;
-  };
-  difficulty: string;
-  hasActions: boolean;
-  answer: string;
-  points: number;
+function SkeletonTable({ rows = 5 }) {
+  return (
+    <div className="overflow-hidden rounded-xl min-w-full">
+      <table className="w-full min-w-[700px]">
+        <tbody>
+          {Array.from({ length: rows }).map((_, index) => (
+            <tr
+              key={index}
+              className={`last:border-b-0 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
+            >
+              {[1, 2, 3, 4].map((_, i) => (
+                <td key={i} className="py-3 px-3 sm:px-6">
+                  <div className="h-5 bg-gray-200 rounded animate-pulse w-full"></div>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default function QuestionBankPage() {
-  const [showModal, setShowModal] = useState(false);
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [questionsData, setQuestionsData] = useState<Question[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionData | null>(null);
-  const [questionId, setQuestionId] = useState<string | null>(null);
+  const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
+  const [selectedQuestionUpdatedId, setSelectedQuestionUpdatedId] = useState<string | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<"A" | "B" | "C" | "D" | "">("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [modalLoading, setmodalLoading] = useState<boolean>(false);
+  const [modalLoading, setModalLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
+  const user = useSelector((state: RootState) => state.auth.LogData);
+  const navigate = useNavigate();
 
-  const { register, formState: { errors }, handleSubmit, setValue } = useForm<UpdatedQuestion>();
+
+  useEffect(() => {
+    if (user?.role === "Student") navigate('/dashboard');
+  }, [user, navigate]);
 
   const handleViewQuestion = (question: Question) => {
-    // Map Question to QuestionData, adding a default or derived 'type'
     setSelectedQuestion({
       title: question.title,
       description: question.description,
       options: question.options,
       answer: question.answer as "A" | "B" | "C" | "D",
       difficulty: question.difficulty as "easy" | "medium" | "hard",
-      type: "FE", 
-      points: question.points
+      type: "FE",
+      points: question.points,
     });
     setIsModalOpen(true);
   };
@@ -65,199 +74,153 @@ export default function QuestionBankPage() {
     setSelectedQuestion(null);
   };
 
+ 
   const showModalUpdate = (question: Question) => {
-    setQuestionId(question._id);
-    setValue("answer", question.answer as "A" | "B" | "C" | "D");
-    setShowModal(true);
+    setSelectedQuestionUpdatedId(question._id);
+    setSelectedAnswer(question.answer as "A" | "B" | "C" | "D");
   };
 
-  const closeModalUpdate = () => {
-    setShowModal(false);
-  };
 
   const openDeleteModal = (question: Question) => {
-    setQuestionId(question._id);
+    setSelectedQuestionId(question._id);
     setShowDeleteModal(true);
   };
 
-  const closeDeleteModal = () => {
-    setShowDeleteModal(false);
-  };
+  const closeDeleteModal = () => setShowDeleteModal(false);
 
-  const updateQuestionAnswer = async (data: UpdatedQuestion) => {
-    if (!questionId) {
-      toast.error("Question ID is missing. Cannot update.");
-      return;
-    }
+
+  const handleUpdateAnswer = async (data: UpdatedQuestion) => {
+    if (!selectedQuestionUpdatedId) return toast.error("Question ID is missing");
 
     try {
-      setmodalLoading(true);
-      const res = await axiosInstance.put(Questions_URLS.Update_Question(questionId), data);
-      toast.success(res?.data?.message);
-      fetchQuestion();
-      closeModalUpdate();
+      setModalLoading(true);
+      const res = await axiosInstance.put(Questions_URLS.Update_Question(selectedQuestionUpdatedId), data);
+      toast.success(res.data.message);
+      setSelectedQuestionUpdatedId(null);
+      setSelectedAnswer("");
+      fetchQuestions();
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "An error occurred.");
+      toast.error(err.response?.data?.message || "Error updating answer");
     } finally {
-      setmodalLoading(false);
+      setModalLoading(false);
     }
   };
-  const user = useSelector((state: RootState) => state.auth.LogData);
 
-  let navigate = useNavigate()
-  if (user?.role === "Student") {
-    navigate('/dashboard')
-  }
+  
   const handleDeleteQuestion = async () => {
-    if (!questionId) {
-      toast.error("Question ID is missing. Cannot delete.");
-      return;
-    }
+    if (!selectedQuestionId) return toast.error("Question ID is missing");
 
     try {
-      setmodalLoading(true);
-      const res = await axiosInstance.delete(Questions_URLS.Delete_Question(questionId));
-      toast.success(res?.data?.message);
+      setModalLoading(true);
+      const res = await axiosInstance.delete(Questions_URLS.Delete_Question(selectedQuestionId));
+      toast.success(res.data.message);
       closeDeleteModal();
-      fetchQuestion();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message);
+      fetchQuestions();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message);
     } finally {
-      setmodalLoading(false);
+      setModalLoading(false);
     }
   };
 
+ 
   const handleAddQuestion = async (payload: QuestionFormData) => {
     try {
       await axiosInstance.post(Questions_URLS.SetUP_Questions, payload);
       toast.success("Question added successfully");
-      fetchQuestion();
-    } catch (error) {
+      fetchQuestions();
+    } catch (err) {
       toast.error("Failed to add question");
-      console.error(error);
+      console.error(err);
     }
   };
 
+
   const filteredQuestions = useMemo(() => {
-    if (!searchTerm) {
-      return questionsData;
-    }
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    if (!searchTerm) return questionsData;
+    const lower = searchTerm.toLowerCase();
     return questionsData.filter(
-      (question) =>
-        question.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-        question.description.toLowerCase().includes(lowerCaseSearchTerm) ||
-        question.difficulty.toLowerCase().includes(lowerCaseSearchTerm)
+      (q) =>
+        q.title.toLowerCase().includes(lower) ||
+        q.description.toLowerCase().includes(lower) ||
+        q.difficulty.toLowerCase().includes(lower)
     );
   }, [questionsData, searchTerm]);
 
-  async function fetchQuestion() {
+
+  async function fetchQuestions() {
     setLoading(true);
     try {
-      const response = await axiosInstance.get(Questions_URLS.SetUP_Questions);
-      setQuestionsData(response.data);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to fetch questions");
+      const res = await axiosInstance.get(Questions_URLS.SetUP_Questions);
+      setQuestionsData(res.data);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to fetch questions");
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchQuestion();
+    fetchQuestions();
   }, []);
 
   return (
     <>
-      <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+      <div className="mx-auto">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">{t("questions.title")}</h1>
             <button
               onClick={() => setIsQuestionModalOpen(true)}
-              className="flex cursor-pointer items-center gap-2 px-4 py-2 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 transition-all duration-200"
-              aria-label="Add new question"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white font-medium rounded-xl hover:bg-gray-800 transition-all"
             >
               <HiPlus className="w-5 h-5" />
               <span>{t("questions.addQuestion")}</span>
             </button>
           </div>
 
-    
           <div className="relative mb-6">
             <HiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
             <input
               type="text"
-             placeholder={t("questions.searchPlaceholder")}
+              placeholder={t("questions.searchPlaceholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900"
-              aria-label="Search questions"
+              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
             />
           </div>
 
           <div className="overflow-x-auto">
             <div className="overflow-hidden rounded-xl border border-gray-200 min-w-full">
-              <table className="w-full min-w-[700px]">
+              <table className="w-full">
                 <thead>
                   <tr className="bg-gray-900">
-                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                     {t("questions.titleCol")}
-                    </th>
-                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                     {t("questions.descriptionCol")}
-                    </th>
-                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                      {t("questions.difficultyCol")}
-                    </th>
-                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">
-                      {t("questions.actionsCol")}
-                    </th>
+                    <th className="py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">{t("questions.titleCol")}</th>
+                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">{t("questions.descriptionCol")}</th>
+                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">{t("questions.difficultyCol")}</th>
+                    <th className="text-center py-3 sm:py-4 px-3 sm:px-6 font-semibold text-white text-sm sm:text-base">{t("questions.actionsCol")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {!loading && filteredQuestions.length > 0 ? (
-                    filteredQuestions.map((question, index) => (
-                      <tr
-                        key={question._id}
-                        className={`border-b border-gray-200 last:border-b-0 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                          }`}
-                      >
-                        <td className="py-3 sm:py-4 px-3 sm:px-6 font-medium text-gray-900 text-sm sm:text-base">
-                          {question.title}
-                        </td>
+                    filteredQuestions.map((question, idx) => (
+                      <tr key={question._id} className={`border-b border-gray-200 last:border-b-0 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 font-medium text-gray-900 text-sm sm:text-base">{question.title}</td>
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">{question.description}</td>
                         <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">
-                          {question.description}
+                          <span className={`${question.difficulty === "easy" ? "bg-green-500" : question.difficulty === "medium" ? "bg-gray-500" : "bg-red-700"} rounded-2xl p-2 text-white font-bold`}>
+                            {question.difficulty}
+                          </span>
                         </td>
-                        <td
-                          className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base"
-                        >
-                          <span className={ `${question.difficulty === "easy" ? "bg-green-500" : 
-                              question.difficulty === "medium" ? "bg-gray-500" : 
-                              question.difficulty === "hard" ? "bg-red-700" : ""} rounded-2xl p-2 text-white font-bold`}>{question.difficulty}</span>
-                          
-                        </td>
-                        <td className="py-3 sm:py-4 px-3 sm:px-6">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleViewQuestion(question)}
-                              className="p-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
-                              aria-label={`View ${question.title}`}
-                            >
+                        <td className="py-3 sm:py-4 px-3 sm:px-5">
+                          <div className="flex items-center lg:gap-2 gap-0">
+                            <button onClick={() => handleViewQuestion(question)} className="p-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100">
                               <HiEye className="w-5 h-5" />
                             </button>
-                            <button
-                              onClick={() => showModalUpdate(question)}
-                              className="p-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
-                              aria-label={`Edit ${question.title}`}
-                            >
+                            <button onClick={() => showModalUpdate(question)} className="p-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100">
                               <HiPencilSquare className="w-5 h-5" />
                             </button>
-                            <button
-                              onClick={() => openDeleteModal(question)}
-                              className="p-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
-                              aria-label={`Delete ${question.title}`}
-                            >
+                            <button onClick={() => openDeleteModal(question)} className="p-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100">
                               <HiTrash className="w-5 h-5" />
                             </button>
                           </div>
@@ -266,15 +229,8 @@ export default function QuestionBankPage() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-gray-500">
-                        {loading ? (
-                          <div className="flex flex-col items-center justify-center gap-2">
-                            <FaSpinner className="animate-spin text-xl" />
-                            Loading questions...
-                          </div>
-                        ) : (
-                          "No questions found."
-                        )}
+                      <td colSpan={12} className="text-center text-gray-500">
+                        {loading ? <SkeletonTable rows={questionsData.length || 5} /> : "No questions found."}
                       </td>
                     </tr>
                   )}
@@ -285,56 +241,25 @@ export default function QuestionBankPage() {
         </div>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white w-[800px] rounded-lg shadow-lg">
-            <form onSubmit={handleSubmit(updateQuestionAnswer)}>
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800">{t("questions.updateTitle")}</h3>
-                <div className="flex items-center gap-4">
-                  <button
-                    type="submit"
-                    disabled={modalLoading}
-                    className="text-gray-600 hover:text-green-600 transition-colors"
-                  >
-                    {modalLoading ? <FaSpinner className="animate-spin" /> : <FaCheck className="text-xl" />}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={closeModalUpdate}
-                    className="text-gray-600 hover:text-red-600 transition-colors"
-                  >
-                    <FaTimes className="text-xl" />
-                  </button>
-                </div>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="relative flex border border-gray-200 rounded-lg focus-within:border-gray-200">
-                  <label
-                    htmlFor="groupName"
-                    className="flex items-center justify-center flex-shrink-0 bg-[#f8ebd9] text-lg font-bold text-black px-4 py-3 rounded-l-lg"
-                    style={{ minWidth: "110px" }}
-                  >
-                    {t("questions.answerLabel")}
-                  </label>
-                  <input
-                    id="groupName"
-                    {...register("answer", { required: "Answer is required" })}
-                    type="text"
-                    className="flex-grow px-4 py-3 rounded-r-lg focus:outline-none text-gray-800"
-                  />
-                </div>
-                {errors.answer && <p className="text-red-600 text-sm mt-1">{errors.answer.message}</p>}
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Modals */}
+      <QuestionAnswerUpdateModal
+        isOpen={!!selectedQuestionUpdatedId}
+        onClose={() => setSelectedQuestionUpdatedId(null)}
+        onSubmit={handleUpdateAnswer}
+        defaultAnswer={selectedAnswer}
+        loading={modalLoading}
+      />
 
-      {/* Question Setup Modal */}
       <QuestionSetupModal isOpen={isQuestionModalOpen} onClose={() => setIsQuestionModalOpen(false)} onSubmit={handleAddQuestion} />
 
-      <DeleteModal  message="Are you sure you want to delete this Qusetion?" show={showDeleteModal} onClose={closeDeleteModal} onDeleteConfirm={handleDeleteQuestion} title="Delete Question" loading={modalLoading} />
+      <DeleteModal
+        message="Are you sure you want to delete this Question?"
+        show={showDeleteModal}
+        onClose={closeDeleteModal}
+        onDeleteConfirm={handleDeleteQuestion}
+        title="Delete Question"
+        loading={modalLoading}
+      />
 
       <QuestionViewModal isOpen={isModalOpen} onClose={handleCloseViewModal} question={selectedQuestion} />
     </>

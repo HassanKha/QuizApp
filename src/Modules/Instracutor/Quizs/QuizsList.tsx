@@ -5,14 +5,66 @@ import { useEffect, useState } from "react"
 import QuizSetupModal from "./AddModel/QuizSetupModal"
 import { useNavigate } from "react-router-dom"
 import AllQuizzesPage from "./AllQuizzs/AllQuizzes"
-
 import { axiosInstance, Quizzes_URLS } from "../../../Server/baseUrl"
 import type { Quiz } from "../../../Interfaces/Quizzes/Interfaces"
-import { FaSpinner } from "react-icons/fa"
 import QuizSuccessModal from "./AddModel/QuizSuccessModal"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../../Redux/store"
 import { t } from "i18next"
+
+function UpcomingSkeleton() {
+  return (
+    <div className="space-y-3 sm:space-y-4">
+      {[1, 2].map((i) => (
+        <div
+          key={i}
+          className="flex items-center gap-3 sm:gap-4 lg:gap-6 p-4 sm:p-6 bg-white rounded-2xl border border-orange-100 animate-pulse"
+        >
+          <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-32 lg:h-32 rounded-2xl bg-gray-200 flex-shrink-0" />
+          <div className="flex-1 space-y-2">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+          </div>
+          <div className="w-20 h-8 bg-gray-200 rounded-lg"></div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function CompletedSkeleton() {
+  return (
+    <table className="w-full text-sm">
+      <thead>
+        <tr className="bg-gray-900">
+          <th className="text-left py-3 px-3 sm:px-6 text-white text-sm">Title</th>
+          <th className="text-left py-3 px-3 sm:px-6 text-white text-sm">Group</th>
+          <th className="text-left py-3 px-3 sm:px-6 text-white text-sm">Persons</th>
+          <th className="text-left py-3 px-3 sm:px-6 text-white text-sm">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {[1, 2, 3].map((i) => (
+          <tr key={i} className="animate-pulse">
+            <td className="py-3 px-3 sm:px-6">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            </td>
+            <td className="py-3 px-3 sm:px-6">
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            </td>
+            <td className="py-3 px-3 sm:px-6">
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+            </td>
+            <td className="py-3 px-3 sm:px-6">
+              <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
 
 
 export default function QuizsList() {
@@ -124,9 +176,7 @@ export default function QuizsList() {
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">{t("QuizsList.upcomingQuizzes")}</h2>
 
             {loadingUpcoming ? (
-              <div className="flex justify-center py-10">
-                <FaSpinner className="text-2xl text-gray-500 animate-spin" />
-              </div>
+               <UpcomingSkeleton />
             ) : upcomingQuizzes.length < 0 ? (
               <div className="text-gray-500 text-center py-8">{t("QuizsList.noUpcoming")}</div>
             ) : (
@@ -187,11 +237,7 @@ export default function QuizsList() {
     
                   <tbody>
                     {loadingComplete ? (
-                      <tr>
-                        <td colSpan={4} className="py-10 text-center text-gray-500">
-                          <FaSpinner className="text-2xl animate-spin inline-block" />
-                        </td>
-                      </tr>
+                        <CompletedSkeleton />
                     ) : CompletedQuizes.length < 0 ? (
                       <tr>
                         <td colSpan={4} className="py-8 text-center text-gray-500">

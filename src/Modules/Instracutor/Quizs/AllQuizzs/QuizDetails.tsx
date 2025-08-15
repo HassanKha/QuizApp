@@ -16,8 +16,62 @@ import { axiosInstance, Quizzes_URLS } from "../../../../Server/baseUrl";
 import QuizSetupModal from "../AddModel/QuizSetupModal";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { FaCheck, FaSpinner, FaTimes } from "react-icons/fa";
 import DeleteModal from "../../../../Component/shared/Delete";
+import UpdateQuizModal from "./UpdateModal/UpdateQuizaModal";
+
+
+function QuizDetailsSkeleton() {
+  return (
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto animate-pulse">
+      <div className="h-4 bg-gray-200 rounded w-32 mb-6"></div>
+
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
+        <div className="h-8 bg-gray-200 rounded w-1/2 mb-4"></div>
+
+        <div className="flex items-center gap-4 mb-6">
+          <div className="h-5 bg-gray-200 rounded w-24"></div>
+          <div className="h-5 bg-gray-200 rounded w-20"></div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-center justify-between"
+            >
+              <div className="h-4 bg-gray-200 rounded w-20"></div>
+              <div className="h-4 bg-gray-200 rounded w-12"></div>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-6">
+          <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+          <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
+          <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-center justify-between">
+            <div className="h-4 bg-gray-200 rounded w-28"></div>
+            <div className="h-4 bg-gray-200 rounded w-12"></div>
+          </div>
+          <div className="flex items-center gap-2 p-4">
+            <div className="h-5 w-5 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded w-32"></div>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-4">
+          <div className="h-10 bg-gray-200 rounded-xl w-24"></div>
+          <div className="h-10 bg-gray-200 rounded-xl w-24"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 
 export default function QuizDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -52,9 +106,6 @@ export default function QuizDetailsPage() {
   };
 
   let {
-    register,
-    formState: { errors },
-    handleSubmit,
     setValue,
   } = useForm<UpdatedQuiz>();
 
@@ -117,9 +168,7 @@ export default function QuizDetailsPage() {
 
   if (loading)
     return (
-      <div className="p-6 text-center text-gray-600">
-        Loading quiz details...
-      </div>
+      <QuizDetailsSkeleton />
     );
   if (error || !quiz)
     return (
@@ -285,64 +334,14 @@ export default function QuizDetailsPage() {
         message="Are you sure you want to delete this Quiz?"
        loading={modalLoading}/> 
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white w-[800px] rounded-lg shadow-lg">
-            <form onSubmit={handleSubmit(updateQuiz)}>
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Update Quiz
-                </h3>
-                <div className="flex items-center gap-4">
-                  <button
-                    type="submit"
-                    disabled={modalLoading}
-                    className="text-gray-600 hover:text-green-600 transition-colors"
-                  >
-                    {modalLoading ? (
-                      <FaSpinner className="animate-spin" />
-                    ) : (
-                      <FaCheck className="text-xl" />
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={closeModalUpdate}
-                    className="text-gray-600 hover:text-red-600 transition-colors"
-                  >
-                    <FaTimes className="text-xl" />
-                  </button>
-                </div>
-              </div>
+    <UpdateQuizModal
+  isOpen={showModal}
+  onClose={closeModalUpdate}
+  onSubmit={updateQuiz}
+  defaultValues={{ title: quiz?.title }}
+  loading={modalLoading}
+/>
 
-              <div className="p-6 space-y-4">
-                <div className="relative flex border border-gray-200 rounded-lg focus-within:border-gray-200">
-                  <label
-                    htmlFor="groupName"
-                    className="flex items-center justify-center flex-shrink-0 bg-[#f8ebd9] text-lg font-bold text-black px-4 py-3 rounded-l-lg"
-                    style={{ minWidth: "110px" }}
-                  >
-                    Quiz Name
-                  </label>
-                  <input
-                    id="groupName"
-                    {...register("title", {
-                      required: "Quiz Title is required",
-                    })}
-                    type="text"
-                    className="flex-grow px-4 py-3 rounded-r-lg focus:outline-none text-gray-800"
-                  />
-                </div>
-                {errors.title && (
-                  <p className="text-red-600 text-sm mt-1">
-                    {errors.title.message}
-                  </p>
-                )}
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </>
   );
 }
