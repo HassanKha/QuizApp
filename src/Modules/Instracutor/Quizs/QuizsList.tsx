@@ -95,7 +95,6 @@ export default function QuizsList() {
   return (
     <div className="p-4 sm:p-6 max-w-full ">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        {/* Left Column - Action Cards */}
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
             <button onClick={() => setIsQuizModalOpen(true)} className="flex cursor-pointer flex-col items-center justify-center p-6 lg:p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group min-h-[200px]">
@@ -119,7 +118,7 @@ export default function QuizsList() {
           <AllQuizzesPage />
         </div>
 
-        {/* Right Column - Upcoming and Completed Quizzes */}
+       
         <div className="space-y-6">
           <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">{t("QuizsList.upcomingQuizzes")}</h2>

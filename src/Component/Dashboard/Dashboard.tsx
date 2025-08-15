@@ -6,7 +6,7 @@ import {
   Quizzes_URLS,
   Students_Quizes,
 } from "../../Server/baseUrl";
-import { FaArrowRight, FaLongArrowAltRight } from "react-icons/fa";
+import { FaArrowRight, FaLongArrowAltRight, FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
@@ -47,17 +47,17 @@ function StudentDetailsModal({
   isOpen,
   onClose,
   student,
+  loading
 }: {
   isOpen: boolean;
   onClose: () => void;
   student: Student | null;
+  loading: boolean;
 }) {
-  if (!student) return null;
-
   return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-30">
+        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black/60 bg-opacity-30">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -78,25 +78,34 @@ function StudentDetailsModal({
                   ×
                 </button>
               </div>
-              <div className="space-y-4">
-                <div className="bg-gray-50  p-4 rounded-lg">
-                  <h3 className="flex items-center text-gray-700 font-semibold mb-2">
-                    <HiOutlineUser className="mr-2" /> Personal Information
-                  </h3>
-                  <p><strong>Full Name:</strong> {student.first_name} {student.last_name}</p>
-                  <p><strong>Email:</strong> {student.email}</p>
-                  <p><strong>Student ID:</strong> {student._id}</p>
-                  <p className="flex items-center gap-1">
-                    <HiOutlineShieldCheck className="text-sm" /> {student.role || "student"}
-                  </p>
+
+              {loading ? (
+                <div className="flex justify-center items-center h-40">
+                  <FaSpinner className="animate-spin text-3xl text-gray-600" />
                 </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h3 className="flex items-center text-gray-700 font-semibold mb-2">
-                    <HiOutlineUsers className="mr-2" /> Group Information
-                  </h3>
-                  <p><strong>Group Name:</strong> {student.group?.name || "No Group"}</p>
+              ) : student ? (
+                <div className="space-y-4">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="flex items-center text-gray-700 font-semibold mb-2">
+                      <HiOutlineUser className="mr-2" /> Personal Information
+                    </h3>
+                    <p><strong>Full Name:</strong> {student.first_name} {student.last_name}</p>
+                    <p><strong>Email:</strong> {student.email}</p>
+                    <p><strong>Student ID:</strong> {student._id}</p>
+                    <p className="flex items-center gap-1">
+                      <HiOutlineShieldCheck className="text-sm" /> {student.role || "student"}
+                    </p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <h3 className="flex items-center text-gray-700 font-semibold mb-2">
+                      <HiOutlineUsers className="mr-2" /> Group Information
+                    </h3>
+                    <p><strong>Group Name:</strong> {student.group?.name || "No Group"}</p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <p className="text-center text-gray-500">No student data</p>
+              )}
             </Dialog.Panel>
           </Transition.Child>
         </div>
@@ -105,13 +114,14 @@ function StudentDetailsModal({
   );
 }
 
+
 const images = Array.from({ length: 5 }, (_, i) => `https://randomuser.me/api/portraits/men/${i + 1}.jpg`);
 
 export default function Dashboard() {
-  // separate loading states so we don't show "no upcoming" before fetch finishes
-  const [isQuizzesLoading, setIsQuizzesLoading] = useState(true);
-  const [isTopStudentsLoading, setIsTopStudentsLoading] = useState(true);
 
+  const [isQuizzesLoading, setIsQuizzesLoading] = useState(false);
+  const [isTopStudentsLoading, setIsTopStudentsLoading] = useState(false);
+  const [viewStudentLoading, setViewStudentLoading] = useState(false);
   const [topStudents, setTopStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -158,20 +168,24 @@ export default function Dashboard() {
 
   const viewStudent = async (id: string) => {
     try {
+      setShowModal(true);
+      setViewStudentLoading(true)
       const { data } = await axiosInstance.get(STUDENTS_URLS.GET_STUDENT_BY_ID(id));
       setSelectedStudent(data);
-      setShowModal(true);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Failed to view student");
+    }
+    finally{
+      setViewStudentLoading(false)
     }
   };
 
   useEffect(() => {
-    // run on mount or when user.role changes
+  
     const init = async () => {
       try {
         if (user?.role === "Instructor") {
-          // fetch both in parallel
+        
           await Promise.all([fetchQuizzes(), fetchTopStudents()]);
         } else {
           await getFirstFiveIncommingQuizz();
@@ -295,7 +309,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <StudentDetailsModal isOpen={showModal} onClose={() => setShowModal(false)} student={selectedStudent} />
+      <StudentDetailsModal loading={viewStudentLoading} isOpen={showModal} onClose={() => setShowModal(false)} student={selectedStudent} />
     </div>
   );
 }

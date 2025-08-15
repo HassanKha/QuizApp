@@ -15,6 +15,7 @@ import { t } from 'i18next';
 import Loader from '../../../Component/shared/Loader';
 import DeleteModal from '../../../Component/shared/Delete';
 
+
 interface Student {
   _id: string;
   first_name: string;
@@ -27,56 +28,60 @@ interface Student {
     name: string;
   };
 }
-
-function StudentDetailsModal({ isOpen, onClose, student }: { isOpen: boolean; onClose: () => void; student: Student | null }) {
-  if (!student) return null;
-
+function StudentDetailsModal({ isOpen, onClose, student, loading }: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  student: Student | null;
+  loading: boolean;
+}) {
   return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50 " onClose={onClose}>
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4">
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0 scale-95"
-            enterTo="opacity-100 scale-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-95"
-          >
-            <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
-              <div className="flex justify-between items-center mb-4">
-                <Dialog.Title className="text-lg font-bold">{t("studentDetails.title")}</Dialog.Title>
-                <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-3xl font-bold">×</button>
+          <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
+            {loading ? (
+              <div className="flex justify-center items-center h-40">
+                <Loader />
               </div>
+            ) : (
+              student && (
+                <>
+                  <div className="flex justify-between items-center mb-4">
+                    <Dialog.Title className="text-lg font-bold">{t("studentDetails.title")}</Dialog.Title>
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-3xl font-bold">×</button>
+                  </div>
 
-              <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                <h3 className="flex items-center text-gray-700 font-semibold mb-2">
-                  <HiOutlineUser className="mr-2" /> {t("studentDetails.personalInfo")}
-                </h3>
-                <p><strong>{t("studentDetails.fullName")}:</strong> {student.first_name} {student.last_name}</p>
-                  <p><strong>{t("studentDetails.email")}:</strong> {student.email}</p>
-                  <p><strong>{t("studentDetails.studentId")}:</strong> {student._id}</p>
-                <p className="flex items-center gap-1"><HiOutlineShieldCheck className="text-sm" /> {student.role || 'student'}</p>
-              </div>
+                  <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                    <h3 className="flex items-center text-gray-700 font-semibold mb-2">
+                      <HiOutlineUser className="mr-2" /> {t("studentDetails.personalInfo")}
+                    </h3>
+                    <p><strong>{t("studentDetails.fullName")}:</strong> {student.first_name} {student.last_name}</p>
+                    <p><strong>{t("studentDetails.email")}:</strong> {student.email}</p>
+                    <p><strong>{t("studentDetails.studentId")}:</strong> {student._id}</p>
+                    <p className="flex items-center gap-1"><HiOutlineShieldCheck className="text-sm" /> {student.role || 'student'}</p>
+                  </div>
 
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h3 className="flex items-center text-gray-700 font-semibold mb-2">
-                    <HiOutlineUsers className="mr-2" /> {t("studentDetails.groupInfo")}
-                </h3>
-               <p><strong>{t("studentDetails.groupName")}:</strong> {student.group?.name || t("studentDetails.noGroup")}</p>
-              </div>
-            </Dialog.Panel>
-          </Transition.Child>
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <h3 className="flex items-center text-gray-700 font-semibold mb-2">
+                      <HiOutlineUsers className="mr-2" /> {t("studentDetails.groupInfo")}
+                    </h3>
+                    <p><strong>{t("studentDetails.groupName")}:</strong> {student.group?.name || t("studentDetails.noGroup")}</p>
+                  </div>
+                </>
+              )
+            )}
+          </Dialog.Panel>
         </div>
       </Dialog>
     </Transition>
   );
 }
 
+
 export default function StudentList() {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [viewLoading, setViewLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [students, setStudents] = useState<Student[]>([]);
   let [modalLoading, setmodalLoading] = useState<boolean>(false);
@@ -133,20 +138,19 @@ export default function StudentList() {
     }
   }
 
-  async function viewStudent(id: string) {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.get(STUDENTS_URLS.GET_STUDENT_BY_ID(id));
-      setSelectedStudent(response.data);
-      setShowModal(true);
-      setOpenMenuId(null);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to view student");
-    } finally {
-      setLoading(false);
-    }
+ async function viewStudent(id: string) {
+  setViewLoading(true);
+  setShowModal(true); 
+  try {
+    const response = await axiosInstance.get(STUDENTS_URLS.GET_STUDENT_BY_ID(id));
+    setSelectedStudent(response.data);
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || "Failed to view student");
+    setShowModal(false);
+  } finally {
+    setViewLoading(false);
   }
-
+}
   useEffect(() => {
     fetchStudents();
   }, []);
@@ -206,10 +210,10 @@ export default function StudentList() {
 
               {openMenuId === user._id && (
                 <div className="absolute right-4 top-16 bg-white shadow-lg rounded-md z-20 text-sm w-48">
-                  <button onClick={() => viewStudent(user._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
+                  <button onClick={() => viewStudent(user._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex text-black items-center">
                     <FaRegEye className="mr-2 text-green-600 text-lg" /> {t("actions.view")}
                   </button>
-                  <button onClick={() => openDeleteModal(user?._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-left flex items-center">
+                  <button onClick={() => openDeleteModal(user?._id)} className="w-full px-4 py-2 hover:bg-gray-100 text-black text-left flex items-center">
                    <MdDelete className="mr-2 text-red-600 text-lg" /> {t("actions.delete")}
                   </button>
 
@@ -294,13 +298,14 @@ export default function StudentList() {
 
       </div>
 
-      <StudentDetailsModal isOpen={showModal} onClose={() => setShowModal(false)} student={selectedStudent} />
+      <StudentDetailsModal loading={viewLoading} isOpen={showModal} onClose={() => setShowModal(false)} student={selectedStudent} />
 
         <DeleteModal
                 show={showDeleteModal}
                 onClose={closeDeleteModal}
                 onDeleteConfirm={deleteStudent}
                 title="Delete Student"
+                 message="Are you sure you want to delete this Student?"
                 loading={modalLoading}/> 
     </>
   );

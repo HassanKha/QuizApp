@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaPlusCircle, FaEdit, FaTrash, FaTimes, FaCheck, FaSpinner, FaEye } from 'react-icons/fa';
+import { FaPlusCircle, FaEdit, FaTrash, FaTimes, FaCheck, FaSpinner, FaEye, FaCheckCircle } from 'react-icons/fa';
 import Loader from '../../../Component/shared/Loader';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -18,7 +18,7 @@ interface Group {
   name: string;
   status: 'active' | 'inactive';
   instructor: string;
-  students: string[];
+  students: Student[];
   max_students: number;
 }
 interface AddGroup {
@@ -114,6 +114,8 @@ export default function GroupsList() {
     try {
       setmodalLoading(true)
       let res = await axiosInstance.get(GROUPS_URLS.GET_GROUP_BY_ID(_id));
+      console.log(res.data);
+      
       setGroup(res.data)
     } catch (error) {
       console.error(error);
@@ -135,6 +137,8 @@ export default function GroupsList() {
   };
 
   const GetGroupForUpdate = (group: Group) => {
+    console.log(group);
+    
     setIsUpdateMode(true);
     setCurrentGroupId(group._id);
     reset({
@@ -235,32 +239,53 @@ export default function GroupsList() {
               <>
                 {Groups.length > 0 ? (
                   Groups.map((group) => (
-                    <div
-                      key={group._id}
-                      className="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between border border-gray-200"
-                    >
-                      <div className="flex-grow">
-                        <h3 className="font-semibold text-gray-800 text-lg">{t("GroupsList.group")} : {group?.name}</h3>
-                        <p className="text-sm text-gray-500 mt-1">{t("GroupsList.studentsCount")} : {group?.students?.length}</p>
-                      </div>
+                   <div
+  key={group._id}
+  className="bg-white p-4 rounded-lg shadow-sm flex items-center justify-between border border-gray-200"
+>
+  <div className="flex-grow">
+    <h3 className="font-semibold text-gray-800 text-lg">
+      {t("GroupsList.group")} : {group?.name}
+    </h3>
+    <p className="text-sm text-gray-500 mt-1">
+      {t("GroupsList.studentsCount")} : {group?.students?.length}
+    </p>
 
-                      <div className="flex space-x-3">
-                        <button onClick={() => { GetGroupForUpdate(group); }} className="text-black cursor-pointer hover:text-green-600 transition">
-                          <FaEdit className="w-5 h-5" />
-                        </button>
-                        <button onClick={() => { openDeleteModal(group) }}>
-                          <span className="text-black cursor-pointer hover:text-red-600 transition">
-                            <FaTrash className="w-5 h-5" />
-                          </span>
-                        </button>
-                        <button onClick={() => { showSpecificGroupModal(group) }}>
-                          <span className="text-black cursor-pointer hover:text-sky-600 transition">
-                            <FaEye className="w-5 h-5" />
-                          </span>
-                        </button>
+    {/* Status + Icons جنب بعض */}
+    <div className="flex items-center justify-between gap-4 mt-2">
+      <h5 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
+        Group Status :
+        <span className="px-2 py-1 rounded-md flex gap-2 items-center bg-green-600 text-white">
+          <FaCheckCircle />
+          {group?.status}
+        </span>
+      </h5>
 
-                      </div>
-                    </div>
+      {/* Icons */}
+      <div className="flex space-x-3">
+        <button
+          onClick={() => {
+            GetGroupForUpdate(group);
+          }}
+          className="text-black cursor-pointer hover:text-green-600 transition"
+        >
+          <FaEdit className="w-5 h-5" />
+        </button>
+        <button onClick={() => { openDeleteModal(group); }}>
+          <span className="text-black cursor-pointer hover:text-red-600 transition">
+            <FaTrash className="w-5 h-5" />
+          </span>
+        </button>
+        <button onClick={() => { showSpecificGroupModal(group); }}>
+          <span className="text-black cursor-pointer hover:text-sky-600 transition">
+            <FaEye className="w-5 h-5" />
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
                   ))
                 ) : (
                   <p className="col-span-1 md:col-span-2 text-center text-gray-500 py-10">{t("GroupsList.noGroups")}</p>
@@ -399,6 +424,7 @@ export default function GroupsList() {
         onClose={closeDeleteModal}
         onDeleteConfirm={deleteGroup}
         title="Delete Group"
+         message="Are you sure you want to delete this Group?"
         loading={modalLoading}
       />
 
@@ -413,17 +439,26 @@ export default function GroupsList() {
               <IoCloseSharp />
             </button>
 
-            {/* المحتوى */}
+            
             {modalLoading ? (
               <Loader />
             ) : (
               <>
-                <h2 className="text-2xl font-bold mb-6 text-center border-b pb-2">{t("GroupsList.groupDetails")}</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center  pb-2">{t("GroupsList.groupDetails")}</h2>
                 <div className="space-y-3">
                   <p><span className="font-semibold">{t("GroupsList.groupName")}:</span> {Group?.name}</p>
                   <p><span className="font-semibold">{t("GroupsList.instructor")}:</span> {Group?.instructor}</p>
                   <p><span className="font-semibold">{t("GroupsList.status")}:</span> {Group?.status}</p>
                   <p><span className="font-semibold">{t("GroupsList.students")}:</span> {Group?.students?.length}</p>
+                  
+                 <div className='flex gap-2'>
+                   <span className="font-semibold">{t("GroupsList.students")}:</span>{" "}
+                    {Group?.students?.map((student) => (
+                      <p key={student._id}>
+                      {student.first_name} {student.last_name}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               </>
             )}

@@ -54,7 +54,7 @@ export default function QuestionBankPage() {
       options: question.options,
       answer: question.answer as "A" | "B" | "C" | "D",
       difficulty: question.difficulty as "easy" | "medium" | "hard",
-      type: "FE", // Replace "FE" with the correct value if available in your data
+      type: "FE", 
       points: question.points
     });
     setIsModalOpen(true);
@@ -67,7 +67,6 @@ export default function QuestionBankPage() {
 
   const showModalUpdate = (question: Question) => {
     setQuestionId(question._id);
-    // Assertion is needed because `question.answer` is `string` but `setValue` expects a literal type
     setValue("answer", question.answer as "A" | "B" | "C" | "D");
     setShowModal(true);
   };
@@ -184,7 +183,7 @@ export default function QuestionBankPage() {
             </button>
           </div>
 
-          {/* Search Bar */}
+    
           <div className="relative mb-6">
             <HiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
             <input
@@ -230,8 +229,13 @@ export default function QuestionBankPage() {
                         <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">
                           {question.description}
                         </td>
-                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base">
-                          {question.difficulty}
+                        <td
+                          className="py-3 sm:py-4 px-3 sm:px-6 text-gray-700 text-sm sm:text-base"
+                        >
+                          <span className={ `${question.difficulty === "easy" ? "bg-green-500" : 
+                              question.difficulty === "medium" ? "bg-gray-500" : 
+                              question.difficulty === "hard" ? "bg-red-700" : ""} rounded-2xl p-2 text-white font-bold`}>{question.difficulty}</span>
+                          
                         </td>
                         <td className="py-3 sm:py-4 px-3 sm:px-6">
                           <div className="flex items-center gap-2">
@@ -330,7 +334,7 @@ export default function QuestionBankPage() {
       {/* Question Setup Modal */}
       <QuestionSetupModal isOpen={isQuestionModalOpen} onClose={() => setIsQuestionModalOpen(false)} onSubmit={handleAddQuestion} />
 
-      <DeleteModal show={showDeleteModal} onClose={closeDeleteModal} onDeleteConfirm={handleDeleteQuestion} title="Delete Question" loading={modalLoading} />
+      <DeleteModal  message="Are you sure you want to delete this Qusetion?" show={showDeleteModal} onClose={closeDeleteModal} onDeleteConfirm={handleDeleteQuestion} title="Delete Question" loading={modalLoading} />
 
       <QuestionViewModal isOpen={isModalOpen} onClose={handleCloseViewModal} question={selectedQuestion} />
     </>

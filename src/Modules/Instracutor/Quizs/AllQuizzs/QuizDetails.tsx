@@ -14,7 +14,6 @@ import type {
 } from "../../../../Interfaces/Quizzes/Interfaces";
 import { axiosInstance, Quizzes_URLS } from "../../../../Server/baseUrl";
 import QuizSetupModal from "../AddModel/QuizSetupModal";
-import ConfirmationModal from "../../../../Component/shared/ConfirmationModal";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { FaCheck, FaSpinner, FaTimes } from "react-icons/fa";
@@ -283,6 +282,7 @@ export default function QuizDetailsPage() {
        onClose={closeDeleteModal}
        onDeleteConfirm={handleConfirmDelete}
        title="Delete Quiz"
+        message="Are you sure you want to delete this Quiz?"
        loading={modalLoading}/> 
 
       {showModal && (
@@ -322,7 +322,7 @@ export default function QuizDetailsPage() {
                     className="flex items-center justify-center flex-shrink-0 bg-[#f8ebd9] text-lg font-bold text-black px-4 py-3 rounded-l-lg"
                     style={{ minWidth: "110px" }}
                   >
-                    Quiz Title
+                    Quiz Name
                   </label>
                   <input
                     id="groupName"
