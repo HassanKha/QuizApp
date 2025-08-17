@@ -6,10 +6,6 @@ import { questionValidation } from "../../../../Server/Validation"
 import type { QuestionFormData, QuestionSetupModalProps } from "../../../../Interfaces/Questions/Interfaces"
 
 
-
-
-
-
 export default function QuestionSetupModal({ isOpen, onClose, onSubmit }: QuestionSetupModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const firstInputRef = useRef<HTMLInputElement>(null)
@@ -159,7 +155,7 @@ export default function QuestionSetupModal({ isOpen, onClose, onSubmit }: Questi
                   aria-describedby={errors.title ? "question-title-error" : undefined}
                 />
                 {errors.title && (
-                  <p id="question-title-error" className="mt-1 text-sm text-red-600" role="alert">
+                  <p id="question-title-error" className="mt-0 py text-sm text-red-600" role="alert">
                     {errors.title.message}
                   </p>
                 )}
@@ -167,7 +163,7 @@ export default function QuestionSetupModal({ isOpen, onClose, onSubmit }: Questi
             </div>
 
             {/* Description */}
-            <div className="mb-6 flex items-stretch">
+            <div className="mb-5 flex items-stretch">
               <label
                 htmlFor="question-description"
                 className="min-w-[100px] text-center px-4 py-3 bg-[#FFEDDF] rounded-l-xl flex items-center justify-center text-sm font-medium text-gray-700"

@@ -17,6 +17,7 @@
     "group": "Group",
     "studentsCount": "No. of students",
     "update": "Update Group",
+     "groupStatus": "Group Status",
     "create": "Set up a new Group",
     "groupName": "Group Name",
     "listStudents": "List Students",

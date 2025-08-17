@@ -251,7 +251,7 @@ export default function GroupsList() {
     {/* Status + Icons جنب بعض */}
     <div className="flex items-center justify-between gap-4 mt-2">
       <h5 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
-        Group Status :
+         {t("GroupsList.groupStatus")}
         <span className="px-2 py-1 rounded-md flex gap-2 items-center bg-green-600 text-white">
           <FaCheckCircle />
           {group?.status}

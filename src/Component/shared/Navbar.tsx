@@ -77,7 +77,7 @@ console.log(location.pathname)
           <div className="relative">
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center gap-2 sm:gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+              className="flex items-center gap-2 sm:gap-3 p-2 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
               aria-expanded={isProfileOpen}
               aria-haspopup="true"
             >
@@ -90,12 +90,12 @@ console.log(location.pathname)
 
             {/* Dropdown menu */}
            {isProfileOpen && (
-  <div className="absolute right-0 top-full mt-2 z-50 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden transition-all duration-200">
+  <div className="absolute droplist-std right-0 top-full mt-2 z-50 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden transition-all duration-200">
     <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
       <li>
         <button
           onClick={logOut}
-          className="w-full flex gap-2 items-center text-left px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-gray-700 transition"
+          className="w-full flex gap-2 items-center text-left px-4 py-2 text-red-600 hover:bg-red-50   transition"
         >
           <MdLogout className="text-lg" /> Logout
         </button>

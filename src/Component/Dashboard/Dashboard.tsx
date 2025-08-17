@@ -242,7 +242,7 @@ export default function Dashboard() {
             : "Invalid date"}
         </p>
         <p className="text-sm text-gray-600">
-          👥 <span className="font-medium">Enrolled:</span> {quiz.enrolled} students
+          🔒 <span className="font-medium">Code:</span> {quiz.code}
         </p>
       </div>
       <span
