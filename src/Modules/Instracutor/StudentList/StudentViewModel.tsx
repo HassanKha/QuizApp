@@ -1,6 +1,5 @@
 import type { Student } from "../../../Interfaces/Students/Interfaces";
 import { Fragment } from "react/jsx-runtime";
-import Loader from "../../../Component/shared/Loader";
 import { HiOutlineShieldCheck, HiOutlineUser, HiOutlineUsers } from "react-icons/hi";
 import { t } from "i18next";
 import { Dialog, Transition } from '@headlessui/react';
@@ -22,8 +21,27 @@ export function StudentDetailsModal({
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
             {loading ? (
-              <div className="flex justify-center items-center h-40">
-                <Loader />
+              // ✅ Skeleton Loader
+              <div className="animate-pulse">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="h-6 w-32 bg-gray-200 rounded"></div>
+                  <div className="h-6 w-6 bg-gray-200 rounded-full"></div>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                  <div className="h-5 w-40 bg-gray-200 rounded mb-3"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 w-56 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-44 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-52 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <div className="h-5 w-40 bg-gray-200 rounded mb-3"></div>
+                  <div className="h-4 w-48 bg-gray-200 rounded"></div>
+                </div>
               </div>
             ) : (
               student && (

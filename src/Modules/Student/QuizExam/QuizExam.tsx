@@ -116,7 +116,7 @@ export default function QuizExam() {
       ) : (
         <>
           {questions.map((q, index) => (
-            <div key={q._id} className="mb-6 p-4 border rounded-lg shadow bg-white">
+            <div key={q._id} className="mb-6 p-4 border rounded-lg shadow quesition-container bg-white">
               <h2 className="text-md font-semibold mb-3">
                 {index + 1}. {q.title}
               </h2>
@@ -131,7 +131,7 @@ export default function QuizExam() {
                       className={`w-full cursor-pointer text-left border px-4 py-2 rounded-md transition ${
                         selectedAnswers[q._id] === key
                           ? "bg-green-100 border-green-400 text-green-800"
-                          : "hover:bg-gray-100 border-gray-300"
+                          : " border-gray-300"
                       }`}
                     >
                       <span className="font-bold mr-2">{key}.</span> {value}

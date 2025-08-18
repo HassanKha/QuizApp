@@ -8,6 +8,7 @@ import { useSelector } from "react-redux"
 import type { RootState } from "../../../../Redux/store"
 import type { Quiz, QuizSectionProps } from "../../../../Interfaces/Quizzes/Interfaces"
 import { useTranslation } from "react-i18next"
+import Nodata from "../../../../Component/shared/Nodata"
 
 
 
@@ -79,7 +80,7 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
   }, []);
 
   return (
-    <section className={embedded ? "rounded-xl bg-white shadow-sm border p-4 sm:p-6" : "p-4 sm:p-6 max-w-7xl mx-auto"}>
+    <section className={embedded ? "rounded-xl bg-white shadow-sm border border-gray-200 p-4 sm:p-6" : "p-4 sm:p-6 max-w-7xl mx-auto"}>
       {showTitle && <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">{t("quizSection.availableQuizzes")}</h2>}
 
       {/* Search Bar */}
@@ -177,7 +178,7 @@ export default function QuizSection({ showTitle = true, embedded = true }: QuizS
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500">{t("quizSection.noQuizzesFound")}</div>
+        <Nodata/>
       )}
     </section>
   )

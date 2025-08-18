@@ -323,6 +323,7 @@ export default function QuizDetailsPage() {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           defaultValues={defaultEditValues}
+          fetchAllQuizzes={()=>{''}}
         />
       )}
 

@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { t } from 'i18next';
 import type { AddGroup, Group, Student, StudentOption } from '../../../Interfaces/Groups/Interfaces';
 import GroupDetailsModal from './roupDetailsModal';
+import Nodata from '../../../Component/shared/Nodata';
 
 function SkeletonGroupCard() {
   return (
@@ -248,7 +249,6 @@ export default function GroupsList() {
       {t("GroupsList.studentsCount")} : {group?.students?.length}
     </p>
 
-    {/* Status + Icons جنب بعض */}
     <div className="flex items-center justify-between gap-4 mt-2">
       <h5 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
          {t("GroupsList.groupStatus")}
@@ -258,7 +258,7 @@ export default function GroupsList() {
         </span>
       </h5>
 
-      {/* Icons */}
+      
       <div className="flex space-x-3">
         <button
           onClick={() => {
@@ -285,7 +285,7 @@ export default function GroupsList() {
 
                   ))
                 ) : (
-                  <p className="col-span-1 md:col-span-2 text-center text-gray-500 py-10">{t("GroupsList.noGroups")}</p>
+                  <Nodata/>
                 )}
               </>
             )}

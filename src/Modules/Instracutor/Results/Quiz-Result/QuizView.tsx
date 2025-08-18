@@ -25,7 +25,7 @@ export default function QuizView() {
   }, [searchTerm, quizResults]);
 
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6  mx-auto">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm quiz-nav text-gray-600" aria-label="Breadcrumb">
         <ol className="flex items-center space-x-2">

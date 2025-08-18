@@ -4,6 +4,8 @@ import { MdQuiz } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next"; 
 import logo from "../../assets/Log-icon.png";
+import darkLogo from "../../assets/Logo-white.png";
+
 import { useSelector } from "react-redux";
 import type { RootState } from "../../Redux/store";
 import { useEffect } from "react";
@@ -105,10 +107,10 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
             <div className={`flex items-center transition-all duration-300 ${isSidebarOpen ? "gap-4" : "gap-0"}`}>
               <button
                 onClick={onMenuToggle}
-                className="inline-flex cursor-pointer items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 flex-shrink-0"
+                className="inline-flex cursor-pointer hamburger-button items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 flex-shrink-0"
                 aria-label="Toggle navigation menu"
               >
-                <HiBars3 className="w-5 h-5 lg:w-6 lg:h-6" />
+                <HiBars3 className="w-5 hamburger-menu h-5 lg:w-6 lg:h-6" />
               </button>
 
               <div
@@ -116,7 +118,8 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
                   isSidebarOpen ? "w-16 opacity-100 ml-4" : "w-0 opacity-0 ml-0"
                 }`}
               >
-                <img src={logo || "/placeholder.svg"} alt="logo" className="w-16 h-auto" />
+                <img src={logo || "/placeholder.svg"} alt="logo" className="w-16 h-auto light-logo" />
+                <img src={darkLogo || "/placeholder.svg"} alt="logo" className="w-16  dark-logo" />
               </div>
             </div>
           </div>
@@ -125,7 +128,7 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
         <nav className={`space-y-1 transition-all duration-300 ${isSidebarOpen ? "px-4" : "px-2"}`} role="navigation">
           {navigationItems
             .filter((item) => {
-              // ✅ لو فيه onlyFor نتحقق من صلاحية الدور
+            
               if (item.onlyFor) {
                 return item.onlyFor.includes(user?.role || "");
               }
@@ -146,21 +149,21 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
                       flex items-center rounded-lg transition-all duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 w-full
                       ${isSidebarOpen ? "gap-4 px-4 py-4" : "gap-0 px-2 py-3 justify-center"}
                       ${isActive
-                        ? "bg-gray-900 text-white focus-visible:ring-white focus-visible:ring-offset-gray-900"
-                        : "text-gray-700 hover:bg-gray-50"}
+                        ? "bg-gray-900 active-link  text-white focus-visible:ring-white focus-visible:ring-offset-gray-900"
+                        : "text-gray-700 dark-links hover:bg-gray-100"}
                     `}
                     aria-current={isActive ? "page" : undefined}
                   >
                     <div className={`relative flex-shrink-0 ${!isSidebarOpen ? "mx-auto" : ""}`}>
                       <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                        className={`w-8 h-8 rounded-lg  flex items-center justify-center transition-all duration-200 ${
                           isActive ? "bg-white" : item.iconBg
                         }`}
                       >
-                        <Icon className={`w-5 h-5 ${isActive ? "text-gray-900" : item.iconColor}`} aria-hidden="true" />
+                        <Icon className={`w-5 h-5  ${isActive ? "text-gray-900" : item.iconColor}`} aria-hidden="true" />
                       </div>
                       {item.badge && (
-                        <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px] z-10">
+                        <span className="absolute -top-1 -right-1 bg-black  text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px] z-10">
                           {item.badge}
                         </span>
                       )}
@@ -207,7 +210,7 @@ export default function Sidebar({ isOpen, onClose, onMenuToggle, isSidebarOpen }
               </div>
 
               {isSidebarOpen && (
-                <span className="font-medium whitespace-nowrap transition-all duration-300">
+                <span className="font-medium help-link whitespace-nowrap transition-all duration-300">
                   {t("sidebar.help")}
                 </span>
               )}

@@ -11,6 +11,7 @@ import QuizSuccessModal from "./AddModel/QuizSuccessModal"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../../Redux/store"
 import { t } from "i18next"
+import Nodata from "../../../Component/shared/Nodata"
 
 function UpcomingSkeleton() {
   return (
@@ -177,9 +178,7 @@ export default function QuizsList() {
 
             {loadingUpcoming ? (
                <UpcomingSkeleton />
-            ) : upcomingQuizzes.length < 0 ? (
-              <div className="text-gray-500 text-center py-8">{t("QuizsList.noUpcoming")}</div>
-            ) : (
+            ) : upcomingQuizzes.length > 0 ? (
               <div className="space-y-3 bg-white sm:space-y-4">
                 {upcomingQuizzes.map((quiz) => (
                   <div
@@ -218,7 +217,7 @@ export default function QuizsList() {
                   </div>
                 ))}
               </div>
-            )}
+            ):(<Nodata/>) }
           </div>
 
           {/* Completed Quizzes */}
@@ -238,13 +237,7 @@ export default function QuizsList() {
                   <tbody>
                     {loadingComplete ? (
                         <CompletedSkeleton />
-                    ) : CompletedQuizes.length < 0 ? (
-                      <tr>
-                        <td colSpan={4} className="py-8 text-center text-gray-500">
-                          No completed quizzes found.
-                        </td>
-                      </tr>
-                    ) : (
+                    ) : CompletedQuizes.length > 0 ? (
                       <div className="overflow-x-auto">
                         <div className="overflow-hidden rounded-xl border border-gray-200 min-w-full">
                           <table className="w-full text-sm">
@@ -277,7 +270,13 @@ export default function QuizsList() {
                           </table>
                         </div>
                       </div>
-                    )}
+                    ): (
+                      <tr>
+                        <td colSpan={4} className="py-8 text-center text-gray-500">
+                          <Nodata/>
+                        </td>
+                      </tr>
+                    ) }
                   </tbody>
                 </table>
               </div>
@@ -286,7 +285,7 @@ export default function QuizsList() {
         </div>
       </div>
     
-      <QuizSetupModal setGeneratedQuizCode={setGeneratedQuizCode} setIsQuizSuccessModalOpen={setIsQuizSuccessModalOpen} isOpen={isQuizModalOpen} onClose={() => setIsQuizModalOpen(false)} />
+      <QuizSetupModal fetchAllQuizzes={fetchAllQuizzes} setGeneratedQuizCode={setGeneratedQuizCode} setIsQuizSuccessModalOpen={setIsQuizSuccessModalOpen} isOpen={isQuizModalOpen} onClose={() => setIsQuizModalOpen(false)} />
       
       <QuizSuccessModal isOpen={isQuizSuccessModalOpen} onClose={handleQuizSuccessClose} quizCode={generatedQuizCode} />
     </div>

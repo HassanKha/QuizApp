@@ -3,8 +3,10 @@ export interface QuizSetupModalProps {
   onClose: () => void
   onUpdate?: (data: QuizFormData) => Promise<string>  // ✅ now optional
   defaultValues?: QuizFormData
+  fetchAllQuizzes: () => void  
   setGeneratedQuizCode?: (code: string) => void
-  setIsQuizSuccessModalOpen?: (isOpen: boolean) => void
+  setIsQuizSuccessModalOpen?: (isOpen: boolean) => void,
+   
 
 }
 
@@ -15,6 +17,7 @@ export interface QuizSetupModalProps {
   scorePerQuestion: number
   description: string
   scheduleDate: string
+  
   scheduleTime: string
   difficultyLevel: string
   categoryType: string

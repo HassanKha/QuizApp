@@ -12,6 +12,7 @@ import type { Question, QuestionData, QuestionFormData, UpdatedQuestion } from "
 import QuestionSetupModal from "./AddModel/QuestionSetupModal";
 import QuestionViewModal from "./ViewModal/QuestionDetailsModal";
 import QuestionAnswerUpdateModal from "./QuestionAnswerUpdateModal/QuestionAnswerUpdateModal";
+import Nodata from "../../../Component/shared/Nodata";
 
 function SkeletonTable({ rows = 5 }) {
   return (
@@ -230,7 +231,7 @@ export default function QuestionBankPage() {
                   ) : (
                     <tr>
                       <td colSpan={12} className="text-center text-gray-500">
-                        {loading ? <SkeletonTable rows={questionsData.length || 5} /> : "No questions found."}
+                        {loading ? <SkeletonTable rows={questionsData.length || 5} /> : <Nodata/>}
                       </td>
                     </tr>
                   )}

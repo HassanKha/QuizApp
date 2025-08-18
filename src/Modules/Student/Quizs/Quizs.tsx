@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import type { JoinQuiz, Quiz } from '../../../Interfaces/Quizzes/Interfaces';
 import JoinQuizModal from './JoinQuizModal';
+import Nodata from '../../../Component/shared/Nodata';
 
 export default function Quizs() {
   const [FirstFiveIncommingQuizes, setFirstFiveIncommingQuiz] = useState<Quiz[]>([]);
@@ -143,7 +144,7 @@ export default function Quizs() {
                   </>
                 ) : FirstFiveIncommingQuizes.length <= 0 ? (
                   <div className="text-center py-4 text-gray-500 text-sm sm:text-base">
-                    {t('quizPage.noData')}
+                    <Nodata/>
                   </div>
                 ) : (
                   <>
@@ -254,7 +255,7 @@ export default function Quizs() {
                         <tbody>
                           <tr>
                             <td colSpan={4} className="text-center py-4 text-gray-500">
-                              {t('quizPage.noData')}
+                              <Nodata/>
                             </td>
                           </tr>
                         </tbody>

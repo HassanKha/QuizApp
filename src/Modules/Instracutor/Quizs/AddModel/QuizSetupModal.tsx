@@ -24,6 +24,7 @@ export default function QuizSetupModal({
   isOpen,
   onClose,
   setGeneratedQuizCode,
+  fetchAllQuizzes,
   setIsQuizSuccessModalOpen,
   defaultValues,
 }: QuizSetupModalProps) {
@@ -142,6 +143,7 @@ export default function QuizSetupModal({
         formattedData
       );
       toast.success(response.data.message);
+      fetchAllQuizzes()
       console.log(response.data.data);
       if (setGeneratedQuizCode && setIsQuizSuccessModalOpen) {
         setGeneratedQuizCode(response.data.data.code);
