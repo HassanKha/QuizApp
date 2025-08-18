@@ -63,7 +63,7 @@ export interface QuizSectionProps {
 export interface QuizResult {
   _id: string;
   quiz:Quiz
-  participant: {
+  participants: {
     _id: string;
     first_name: string;
     last_name: string;

@@ -73,7 +73,7 @@ export default function Quizs() {
     getLastFiveCompletedQuizz();
   }, []);
 
-  // 🔹 سكليتون للكروت
+
   const QuizCardSkeleton = () => (
     <div className="space-y-3 bg-white sm:space-y-4 mt-4 animate-pulse">
       <div className="flex items-center gap-3 sm:gap-4 lg:gap-6 p-4 sm:p-6 bg-white rounded-2xl border border-gray-200">
@@ -88,7 +88,7 @@ export default function Quizs() {
     </div>
   );
 
-  // 🔹 سكليتون للجدول
+
   const TableSkeleton = () => (
     <tbody className="animate-pulse">
       {[...Array(3)].map((_, i) => (
@@ -112,7 +112,7 @@ export default function Quizs() {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-6 Quiz-Students">
         <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6">
           <button
             onClick={() => {

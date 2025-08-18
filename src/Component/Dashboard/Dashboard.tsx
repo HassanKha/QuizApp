@@ -304,7 +304,7 @@ export default function Dashboard() {
 
   return (
 
-    <div className="w-full px-4 py-6">
+    <div className="w-full Quiz-Dashborad px-4 py-6">
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="mt-10 w-full lg:w-1/2">
           <h2 className="text-lg upcomming-quizees font-semibold mb-4">{t("Dashboard.upcomingQuizzes")}</h2>

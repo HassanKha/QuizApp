@@ -140,7 +140,7 @@ export default function StudentList() {
         </form>
 
         {loading ? (
-          // Skeleton يظهر مكان الكروت
+         
           <StudentSkeletonLoader count={itemsPerPage} />
         ) : (
           <>

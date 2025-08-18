@@ -146,7 +146,7 @@ export default function QuizsList() {
 
 
   return (
-    <div className="p-4 sm:p-6 max-w-full ">
+    <div className="p-4 sm:p-6 max-w-full Quizes">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">

@@ -167,7 +167,7 @@ export default function QuestionBankPage() {
 
   return (
     <>
-      <div className="mx-auto">
+      <div className="mx-auto Questions-list">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">{t("questions.title")}</h1>

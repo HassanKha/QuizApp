@@ -37,7 +37,7 @@ const navigate = useNavigate();
   }, [searchTerm, results]);
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto Results">
       <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-200">
         <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h1 className="text-2xl font-semibold text-gray-800">Closed Quizzes</h1>

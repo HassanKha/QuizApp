@@ -213,7 +213,7 @@ export default function GroupsList() {
     <>
 
 
-      <div className="flex-1 p-2 md:p-2 dark:bg-black   min-h-screen">
+      <div className="flex-1 p-2 md:p-2 dark:bg-black Groups-list min-h-screen">
         <div className="bg-white border dark:bg-black  border-gray-300 rounded-lg p-6">
           <div className="flex justify-between items-center mb-6">
            <h2 className="text-2xl font-bold text-gray-800">{t("GroupsList.title")}</h2>

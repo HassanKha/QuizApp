@@ -101,7 +101,7 @@ export default function QuizExam() {
   };
 
   return (
-    <div className="p-4 mx-auto">
+    <div className="p-4 mx-auto quiz-exam">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">
           📝 Quiz{quizTitle ? `: ${quizTitle}` : ""}
